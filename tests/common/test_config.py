@@ -1,5 +1,5 @@
-from SBMLLint.common import config
-from SBMLLint.common import constants as cn
+from src.common import config
+from src.common import constants as cn
 
 import os
 import unittest

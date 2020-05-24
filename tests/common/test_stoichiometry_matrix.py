@@ -1,12 +1,12 @@
 """
 Tests for StoichiometryMatrix
 """
-from SBMLLint.common import constants as cn
-from SBMLLint.common.reaction import Reaction
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.games.som import SOM
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common.stoichiometry_matrix import StoichiometryMatrix
+from src.common import constants as cn
+from src.common.reaction import Reaction
+from src.common.simple_sbml import SimpleSBML
+from src.games.som import SOM
+from src.common.simple_sbml import SimpleSBML
+from src.common.stoichiometry_matrix import StoichiometryMatrix
 
 from scipy.optimize import linprog
 import numpy as np

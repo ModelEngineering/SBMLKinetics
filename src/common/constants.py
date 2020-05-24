@@ -145,3 +145,4 @@ CFG_DEFAULTS = {}
 CFG_DEFAULT_PATH = PROJECT_DIR
 CFG_DEFAULT_PATH = os.path.join(PROJECT_DIR,
     "kinetics_validator_cfg.yml")
+CFG_SECTIONS = []

@@ -1,11 +1,11 @@
 """
 Tests for simple_sbml
 """
-from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule
-from SBMLLint.common import simple_sbml
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common import util
+from src.common import constants as cn
+from src.common.molecule import Molecule
+from src.common import simple_sbml
+from src.common.simple_sbml import SimpleSBML
+from src.common import util
 
 import numpy as np
 import os

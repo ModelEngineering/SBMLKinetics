@@ -41,7 +41,7 @@ def getXML(model_reference):
   # Process model_str into a model  
   if not "<sbml" in model_str:
     # Antimony
-    model_str = getXMLFromAntimony(model_str)
+    raise ValueError("Invalid SBML model.")
   return model_str
 
 def isInt(obj):

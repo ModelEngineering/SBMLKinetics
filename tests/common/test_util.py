@@ -1,6 +1,6 @@
-from SBMLLint.common import constants as cn
-from SBMLLint.common import exceptions
-from SBMLLint.common import util
+from src.common import constants as cn
+from src.common import exceptions
+from src.common import util
 import libsbml
 
 
@@ -41,21 +41,8 @@ class TestFunctions(unittest.TestCase):
       try:
         test(util.getXML(path))
         test(util.getXML(getString(path)))
-      except exceptions.MissingTelluriumError:
+      except ValueError:
         pass
-
-  def testGetXMLFromAntimony(self):
-    try:
-      xml = util.getXMLFromAntimony(ANTIMONY_STG)
-    except exceptions.MissingTelluriumError:
-      return
-    self.assertTrue(isinstance(xml, str))
-    reader = libsbml.SBMLReader()
-    libsbml_document = reader.readSBMLFromString(xml)
-    util.checkSBMLDocument(libsbml_document)
-    model = libsbml_document.getModel()
-    self.assertTrue('Reaction' in 
-       str(type(model.getReaction(0))))
 
   def testIsInt(self):
     self.assertTrue(util.isInt(1))

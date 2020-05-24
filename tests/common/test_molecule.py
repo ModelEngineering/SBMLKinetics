@@ -1,11 +1,11 @@
 """
 Tests for Molecule
 """
-from SBMLLint.common import constants as cn
-from SBMLLint.common import config
-from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
-from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
-from SBMLLint.common.simple_sbml import SimpleSBML
+from src.common import constants as cn
+from src.common import config
+from src.common.moiety import Moiety, MoietyStoichiometry
+from src.common.molecule import Molecule, MoleculeStoichiometry
+from src.common.simple_sbml import SimpleSBML
 
 import itertools
 import numpy as np

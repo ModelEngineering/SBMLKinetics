@@ -1,10 +1,11 @@
 """
 Tests for Reactions
 """
-from SBMLLint.common import constants as cn
-from SBMLLint.common.simple_sbml import SimpleSBML
-from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
-from SBMLLint.common.reaction import Reaction, REACTION_SEPARATOR
+from src.common import constants as cn
+from src.common.simple_sbml import SimpleSBML
+from src.common.molecule import Molecule, MoleculeStoichiometry
+from src.common.reaction import Reaction,
+   REACTION_SEPARATOR
 
 import numpy as np
 import os
