@@ -1,7 +1,6 @@
 """Commonly used utilities."""
 
-from SBMLLint.common import constants as cn
-from SBMLLint.common.tellurium_sandbox import TelluriumSandbox
+from src.common import constants as cn
 
 import os
 import zipfile
@@ -44,18 +43,6 @@ def getXML(model_reference):
     # Antimony
     model_str = getXMLFromAntimony(model_str)
   return model_str
-
-def getXMLFromAntimony(antimony_stg):
-  """
-  Constructs an SBML model from the antimony string.
-  :param str antimony_stg:
-  :return str: SBML model in xml format
-  """
-  sandbox = TelluriumSandbox()
-  sandbox.run("getSBMLFromAntimony", antimony_stg)
-  if sandbox.return_code != 0:
-    raise ValueError("Bad antimony string: %s" % antimony_stg)
-  return sandbox.output
 
 def isInt(obj):
   try:

@@ -13,8 +13,8 @@ Examples of
     A_P                          INVALID
 """
 
-from SBMLLint.common import constants as cn
-from SBMLLint.common import util
+from src.common import constants as cn
+from src.common import util
 
 from collections import namedtuple
 import numpy as np

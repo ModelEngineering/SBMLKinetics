@@ -14,10 +14,10 @@ MOLECULE           MOIETY, STOICHIOMETRY
  A__P_3             (A, 1), (P, 3)
 """
 
-from SBMLLint.common import constants as cn
-from SBMLLint.common import config
-from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
-from SBMLLint.common import util
+from src.common import constants as cn
+from src.common import config
+from src.common.moiety import Moiety, MoietyStoichiometry
+from src.common import util
 
 import pandas as pd
 import numpy as np

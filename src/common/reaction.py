@@ -1,7 +1,7 @@
 """Chemical Reaction."""
 
-from SBMLLint.common import constants as cn
-from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
+from src.common import constants as cn
+from src.common.molecule import Molecule, MoleculeStoichiometry
 
 import numpy as np
 

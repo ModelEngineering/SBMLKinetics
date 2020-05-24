@@ -8,11 +8,11 @@ saving the libsbml object (since these objects are fragile with python
 garbage collection).
 """
 
-from SBMLLint.common import constants as cn
-from SBMLLint.common.moiety import Moiety, MoietyStoichiometry
-from SBMLLint.common.molecule import Molecule, MoleculeStoichiometry
-from SBMLLint.common.reaction import Reaction
-from SBMLLint.common import util
+from src.common import constants as cn
+from src.common.moiety import Moiety, MoietyStoichiometry
+from src.common.molecule import Molecule, MoleculeStoichiometry
+from src.common.reaction import Reaction
+from src.common import util
 
 import collections
 import os.path

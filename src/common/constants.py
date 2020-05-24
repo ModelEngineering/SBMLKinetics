@@ -2,35 +2,17 @@
 import collections
 import os
 
-PROJECT_NAME = "SBMLLint"
-
-MOIETY_ANALYSIS = "moiety_analysis"
-GAMES = "games"
-
-############### COLUMN NAMES ##############
-FILENAME = "filename"
-IS_STRUCTURED = "is_structured"
-NUM_BOUNDARY_REACTIONS = "num_boundary_reactions"
-TOTAL_REACTIONS = "total_reactions"
-NUM_IMBALANCED_REACTIONS = "num_imbalanced_reactions"
-NUM_BALANCED_REACTIONS = "num_balanced_reactions"
-FRAC_BALANCED_REACTIONS = "frac_balanced_reactions"
-FRAC_BOUNDARY_REACTIONS = "frac_Boundary_reactions"
 
 ################ DIRECTORIES #################
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 for _ in range(2):
   PROJECT_DIR = os.path.dirname(PROJECT_DIR)
-CODE_DIR = os.path.join(PROJECT_DIR, PROJECT_NAME)
+CODE_DIR = os.path.join(PROJECT_DIR, "src")
 TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 
 ################ DATA DIRECTORIES #################
-BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data/biomodels")
+BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data")
 BIOMODELS_ZIP_FILENAME = "biomodels.zip"
-BIGG_DIR = os.path.join(PROJECT_DIR, "data/bigg")
-ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(PROJECT_DIR, "analysis")
-ANALYSIS_MOIETY_ANALYSIS_DIR = os.path.join(
-    ANALYSIS_MOIETY_ANALYSIS_DIR, "moiety_analysis")
 
 ############### TEST FILES #####################
 TEST_FILE = os.path.join(TEST_DIR, "test_file.xml")
@@ -73,7 +55,6 @@ NUM_SPECIES = 32
 ############## FUNCTIONAL CONSTANTS ##############
 # DataFrame Columns
 VALUE = "value"
-MOIETY = "moiety"
 
 #
 ARC_ARROW = "->"
@@ -159,25 +140,8 @@ PathComponents = collections.namedtuple('PathComponents',
 # used for creating a report
 NULL_STR = ""
 
-# Top level keys in configuration file
-CFG_IGNORED_MOIETIES = "ignored_moieties"
-CFG_IGNORED_MOLECULES = "ignored_molecules"
-CFG_MOIETY_STRUCTURE = "moiety_structure"
-CFG_PROCESS_BOUNDARY_REACTIONS = "process_boundary_reactions"
-CFG_GAMES_THRESHOLD = "games_threshold_num_reactions"
-CFG_SECTIONS = [
-    CFG_IGNORED_MOLECULES,
-    CFG_IGNORED_MOIETIES,
-    CFG_PROCESS_BOUNDARY_REACTIONS,
-    CFG_MOIETY_STRUCTURE,
-    CFG_GAMES_THRESHOLD,
-    ]
-
 # Default values for configuration file
 CFG_DEFAULTS = {}
-CFG_DEFAULTS[CFG_IGNORED_MOIETIES] = ['DUMMYMOIETY']
-CFG_DEFAULTS[CFG_IGNORED_MOLECULES] = ['DUMMYMOLECULE']
-CFG_DEFAULTS[CFG_PROCESS_BOUNDARY_REACTIONS] = False
-CFG_DEFAULTS[CFG_GAMES_THRESHOLD] = 20
-CFG_DEFAULT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CFG_DEFAULT_PATH = os.path.join(CFG_DEFAULT_PATH, ".sbmllint_cfg.yml")
+CFG_DEFAULT_PATH = PROJECT_DIR
+CFG_DEFAULT_PATH = os.path.join(PROJECT_DIR,
+    "kinetics_validator_cfg.yml")

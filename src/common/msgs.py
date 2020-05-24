@@ -3,6 +3,6 @@
 import sys
 
 def error(text):
-  print("***Error in SBMLLint. Reason follows.")
+  print("***Error. Reason follows.")
   print("   %s" % text)
   sys.exit()
