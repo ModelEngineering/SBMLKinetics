@@ -2,11 +2,13 @@
 Tests for simple_sbml
 """
 from src.common import constants as cn
-from src.common.molecule import Molecule
 from src.common import simple_sbml
 from src.common.simple_sbml import SimpleSBML
+from src.common.reaction import Reaction
 from src.common import util
+from tests.common import helpers
 
+import copy
 import numpy as np
 import os
 import libsbml
@@ -16,11 +18,6 @@ import zipfile
 
 IGNORE_TEST = False
 NO_NAME = "dummy"
-ANTIMONY_STG = '''
-2S1 -> 3S2; 1
-S1 = 0
-S2 = 0
-'''
 
 
 #############################
@@ -29,59 +26,32 @@ S2 = 0
 class TestSimpleSBML(unittest.TestCase):
 
   def setUp(self):
-    self.simple = SimpleSBML()
-    self.simple.initialize(cn.TEST_FILE)
+    self.simple = helpers.getSimple()
 
-  def testInitialize(self):
+  def testConstructor(self):
     if IGNORE_TEST:
       return
-    simple = SimpleSBML()
-    simple.initialize(cn.TEST_FILE)
-    self.assertEqual(len(simple.reactions), cn.NUM_REACTIONS)
-    self.assertEqual(len(simple.molecules), len(simple.moietys))
-
-  def testGetMolecule(self):
-    if IGNORE_TEST:
-      return
-    molecule1 = self.simple.molecules[0]
-    name = molecule1.name
-    molecule2 = self.simple.getMolecule(name)
-    self.assertTrue(molecule1.isEqual(molecule2))
-    self.assertIsNone(self.simple.getMolecule(NO_NAME))
-
-  def testAdd(self):
-    if IGNORE_TEST:
-      return
-    def test():
-      self.assertEqual(len(self.simple.reactions), 2)
-      for reaction in [reaction0, reaction1]:
-        self.assertTrue(reaction in self.simple.reactions)
+    def test(a_list, a_type):
+      self.assertGreater(len(a_list), 0)
+      self.assertTrue(isinstance(a_list[0], a_type))
     #
-    reaction0 = self.simple.reactions[0]
-    reaction1 = self.simple.reactions[1]
-    self.simple.reactions = [reaction0]
-    self.simple.add(reaction1)
-    test()
-    self.simple.add(reaction1)
-    test()
+    test(self.simple.reactions, Reaction)
+    test(self.simple.species, libsbml.Species)
+    test(self.simple.parameters, libsbml.Parameter)
+    self.assertTrue(isinstance(self.simple.model,
+        libsbml.Model))
 
-  def testRemove(self):
-    num_reactions = len(self.simple.reactions)
-    reaction0 = self.simple.reactions[0]
-    reaction1 = self.simple.reactions[1]
-    self.simple.remove(reaction0)
-    self.assertTrue(reaction0 not in self.simple.reactions)
-    self.assertTrue(reaction1 in self.simple.reactions)
-    self.simple.add(reaction0)
-    self.assertTrue(len(self.simple.reactions), num_reactions)
-
-  def testGetReaction(self):
+  def testGet(self):
     if IGNORE_TEST:
       return
-    reaction = self.simple.reactions[0]
-    label = reaction.label
-    reaction1 = self.simple.getReaction(label)
-    self.assertTrue(reaction.isEqual(reaction1))
+    def test(func, a_list):
+      this_id = a_list[0].id
+      an_object = func(this_id)
+      self.assertEqual(an_object, a_list[0])
+    #
+    test(self.simple.getReaction, self.simple.reactions)
+    test(self.simple.getSpecies, self.simple.species)
+    test(self.simple.getParameter, self.simple.parameters)
 
 
 class TestFunctions(unittest.TestCase):
@@ -90,18 +60,18 @@ class TestFunctions(unittest.TestCase):
     pass
 
   def _testIterator(self, itr):
-     for item in itr:
-       model = item.model
-       self.assertTrue(isinstance(model.getSpecies(0),
-           libsbml.Species))
-     COUNT = 20
-     itr = simple_sbml.modelIterator(final=COUNT)
-     item_number = -1
-     for item in itr:
-       self.assertTrue(isinstance(item.filename, str))
-       self.assertTrue(util.isSBMLModel(item.model))
-       item_number = item.number
-     self.assertEqual(item_number, COUNT - 1)
+    for item in itr:
+      model = item.model
+      self.assertTrue(isinstance(model.getSpecies(0),
+          libsbml.Species))
+    COUNT = 20
+    itr = simple_sbml.modelIterator(final=COUNT)
+    item_number = -1
+    for item in itr:
+      self.assertTrue(isinstance(item.filename, str))
+      self.assertTrue(util.isSBMLModel(item.model))
+      item_number = item.number
+    self.assertEqual(item_number, COUNT - 1)
 
   def testModelIterator1(self):
     if IGNORE_TEST:

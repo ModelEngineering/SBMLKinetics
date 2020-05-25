@@ -1,16 +1,7 @@
-"""
-Pythonic representation of an SBML model with some extensions.
-- moietys (functional groups within a molecule)
-- molecules (species)
-- reactions
-SimpleSBML extracts all information required from an SBML model to avoid
-saving the libsbml object (since these objects are fragile with python
-garbage collection).
-"""
+'''Python representation of an SBML model.'''
 
 from src.common import constants as cn
-from src.common.moiety import Moiety, MoietyStoichiometry
-from src.common.molecule import Molecule, MoleculeStoichiometry
+from src.common.kinetic_law import KineticLaw
 from src.common.reaction import Reaction
 from src.common import util
 
@@ -37,131 +28,74 @@ IteratorItem = collections.namedtuple('IteratorItem',
 
 
 class SimpleSBML(object):
-  """
-  This class address stability of the underlying libsbml 
-  (libsbml) library that seems not to survive garbage collection
-  by python (e.g., returning a libsbml object to a caller.) As
-  a result, no libsbml object is maintained by SimpleSBML instances.
-  """
 
-  def __init__(self):
+  def __init__(self, model_reference):
     """
     Initializes instance variables
+    :param str model_reference: string or SBML file
     """
-    self.moietys = []
-    self.molecules = []
-    self.reactions = []
-
-  def initialize(self, model_reference):
-    """
-    Initializes the instance variables in the model.
-    :param str or libsbml.model: for str may be path or model string
-       and file/str may be xml or antimony.
-    """
+    ##### PUBLIC #####
+    self.model = None  # libsbml object
+    self.reactions = []  # Python wrapper for Reaction
+    self.species = []  # libsbml Species
+    # Read the model
     if util.isSBMLModel(model_reference):
-      model = model_reference
+      self.model = model_reference
     else:
       xml = util.getXML(model_reference)
       reader = libsbml.SBMLReader()
       document = reader.readSBMLFromString(xml)
       util.checkSBMLDocument(document, model_reference=model_reference)
-      model = document.getModel()
+      self.model = document.getModel()
     # Do the initializations
-    self.reactions = self._getReactions(model)
-    self.molecules = self._getMolecules()
-    self.moietys = self._getMoietys()
+    self.reactions = [Reaction(self.model.getReaction(nn))
+        for nn in range(self.model.getNumReactions())]
+    self.species = [self.model.getSpecies(nn)
+        for nn in range(self.model.getNumSpecies())]
+    self.parameters = [self.model.getParameter(nn)
+        for nn in range(self.model.getNumParameters())]
 
-  def _getReactions(self, model):
-    reactions = []
-    for nn in range(model.getNumReactions()):
-      simple_reaction = Reaction(model.getReaction(nn))
-      reactions.append(simple_reaction)
-    return reactions
-
-  def getReaction(self, label):
+  def getReaction(self, an_id):
     """
-    :param str label: label for the reaction
+    Finds a reaction with the specified id.
+    :param str an_id: id for the reaction
     :return Reaction/None:
     """
-    reactions = [r for r in self.reactions if r.label == label]
-    if len(reactions) > 1:
-      raise ValueError("Two reactions with the same label: %s" %
-          label)
-    if len(reactions) == 0:
-      return None
-    return reactions[0]
+    return self._getInstance(self.reactions, an_id)
 
-  def _getMoietys(self):
+  def getSpecies(self, an_id):
     """
-    Sees if there is a valid moiety structure.
-    If not, the molecule is a single moiety.
+    Finds and returns the species with given name
+    :param str an_id:
+    Return None if there is no such species.
     """
-    moietys = []
-    for molecule in self.molecules:
-      try:
-        new_moietys = ([m_s.moiety 
-          for m_s in molecule.moiety_stoichiometrys])
-      except ValueError:
-        new_moietys = [Moiety(molecule.name)]
-      moietys.extend(new_moietys)
-    return util.uniqueify(moietys)
+    return self._getInstance(self.species, an_id)
 
-  def _getMolecules(self):
+  def getParameter(self, an_id):
     """
-    :return dict: key is species name, value is species object
+    Finds and returns the Parameter with given name
+    :param str an_id:
+    Return None if there is no such parameter.
     """
-    molecules = []
-    for reaction in self.reactions:
-      molecules.extend(MoleculeStoichiometry.getMolecules(
-          reaction.reactants))
-      molecules.extend(MoleculeStoichiometry.getMolecules(
-          reaction.products))
-    return util.uniqueify(molecules)
+    return self._getInstance(self.parameters, an_id)
 
-  def getMolecule(self, name):
+  def _getInstance(self, a_list, an_id):
     """
-    Finds and returns molecule with given name
+    Finds and returns the species with given name
     Return None if there is no such molecules
-    :param str name:
+    :param str id:
     """
-    molecules = [m for m in self.molecules if m.name == name]
-    if len(molecules) > 1:
-      raise ValueError("Duplicate names in simple.molecules.")
-    elif len(molecules) == 1:
-      return molecules[0]
-    else:
+    results = [e for e in a_list if e.id == an_id]
+    if len(results) > 1:
+      raise ValueError(
+          "Two instances have the same id: %s" %
+          id)
+    if len(results) == 0:
       return None
+    return results[0]
 
-  def add(self, element):
-    """
-    Adds an element of the type to its list
-    """
-    type_list = {
-        Moiety: self.moietys,
-        Molecule: self.molecules,
-        Reaction: self.reactions,
-        }
-    this_list = type_list[element.__class__]
-    appended_list = list(this_list)
-    appended_list.append(element)
-    new_list = util.uniqueify(appended_list)
-    if len(new_list) > len(this_list):
-      this_list.append(element)
-    
-  def remove(self, element):
-    """
-    Removes an element of the type to its list
-    """
-    type_list = {
-        Moiety: self.moietys,
-        Molecule: self.molecules,
-        Reaction: self.reactions,
-        }
-    this_list = type_list[element.__class__]
-    if element in this_list:
-      this_list.remove(element)
 
-###################### FUNCTIONS #############################
+#################### FUNCTIONS #########################
 def readURL(url):
   """
   :param str url:

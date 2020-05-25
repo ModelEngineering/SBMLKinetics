@@ -1,9 +1,9 @@
 """
-Tests for Reactions
+Tests for Kinetic Law
 """
 from src.common import constants as cn
 from src.common.simple_sbml import SimpleSBML
-from src.common.reaction import Reaction
+from src.common.kinetic_law import KineticLaw
 from tests.common import helpers
 
 import copy
@@ -18,24 +18,17 @@ IGNORE_TEST = False
 #############################
 # Tests
 #############################
-class TestReaction(unittest.TestCase):
+class TestKineticLaw(unittest.TestCase):
 
   def setUp(self):
     self.simple = helpers.getSimple()
-    self.reactions = self.simple.reactions
-    self.reaction = self.reactions[2]
+    self.law = self.simple.reactions[1].kinetic_law
 
   def testConstructor(self):
     if IGNORE_TEST:
       return
-    def test(a_list, a_type):
-      self.assertGreater(len(a_list), 0)
-      self.assertTrue(isinstance(a_list[0], a_type))
-    #
-    test(self.reaction.reactants,
-        libsbml.SpeciesReference)
-    test(self.reaction.products,
-        libsbml.SpeciesReference)
+    self.assertTrue(
+        isinstance(self.law, KineticLaw))
 
 
 if __name__ == '__main__':
