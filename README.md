@@ -8,5 +8,12 @@ Repository of tests to validate kinetics expressions in SBML models.
   - Sometimes you may need to separately use ``pip install python-libsbml``.
   - Also do ``conda install -c anaconda nose ``
 
+## Running Codes
 To use this environment, ``conda activate base``, where
 base is the name. To exit the environment, ``conda deactivate``.
+
+- Change directory to the top level folder of the repositor, ``kinetics_validator``.
+- ``source setup_run.sh``
+
+After completing these steps, you can run test codes. For example, to run tests for ``simple\_sbml``, use
+``python tests/common/test\_simple\_sbml.py``.
