@@ -16,5 +16,5 @@ Now, do the following:
 - Change directory to the top level folder of the repositor, ``kinetics_validator``.
 - ``source setup_run.sh``
 
-After completing these steps, you can run test codes. For example, to run tests for ``simple\_sbml``, use
+After completing these steps, you can run test codes. For example, to run tests for ``simple_sbml``, use
 ``python tests/common/test_simple_sbml.py``.
