@@ -124,16 +124,18 @@ def getZipfilePaths(data_dir=cn.BIOMODELS_DIR,
   files = [f.filename for f in zipper.filelist]
   return files, zipper
   
-def modelIterator(initial=0, final=1000, data_dir=cn.BIOMODELS_DIR,
+def modelIterator(initial=0, final=1000,
+    data_dir=cn.BIOMODELS_DIR,
     zip_filename=cn.BIOMODELS_ZIP_FILENAME):
   """
   Iterates across all models in a data directory.
   :param int initial: initial file to process
   :param int final: final file to process
-  :param str data_dir: absolute path of the directory containing
+  :param str data_dir: absolute path of the 
+      directory containing
       the xml files
-  :param str zip_filename: name of the zipfile to process. If
-      None, then looks for XML files in the directory.
+  :param str zip_filename: name of the zipfile to process. 
+      If None, then looks for XML files in the directory.
   :return IteratorItem:
   """
   # Handle zip vs. XML file
