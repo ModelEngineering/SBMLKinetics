@@ -32,7 +32,9 @@ class KineticLaw(object):
   def _getSymbols(self):
     """
     Finds the parameters and species names for the
-    kinetics law.
+    kinetics law. Exposing this information requires
+    a recursive search of the parse tree for the
+    kinetics expression.
     :return list-str:
     """
     global cur_depth
