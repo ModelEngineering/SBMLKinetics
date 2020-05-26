@@ -7,7 +7,7 @@ Repository of tests to validate kinetics expressions in SBML models.
 - Create a virtual environment for the project.
   - ``cd kinetics_validator``
   - ``python -m venv kv``
-  - ``source kv/bin/activate`` (use "\" in windows)
+  - ``source kv/bin/activate`` (use "\\" in windows)
   - ``pip install -r requirements.txt``
   - ``deactivate``
 
