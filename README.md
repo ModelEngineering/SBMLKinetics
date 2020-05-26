@@ -3,7 +3,7 @@ Repository of tests to validate kinetics expressions in SBML models.
 
 ## Setup environment
 - Install [spyder3](http://www.psych.mcgill.ca/labs/mogillab/anaconda2/lib/python2.7/site-packages/spyder/doc/installation.html)
-- Clone the ``kinetics_validator`` repository.
+- Clone the ``kinetics_validator`` repository using ``git clone https://github.com/ModelEngineering/kinetics_validator``
 - Create a virtual environment for the project.
   - ``cd kinetics_validator``
   - ``python -m venv kv``
