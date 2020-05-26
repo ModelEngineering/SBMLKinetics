@@ -138,12 +138,8 @@ def modelIterator(initial=0, final=1000,
       If None, then looks for XML files in the directory.
   :return IteratorItem:
   """
-  # Handle zip vs. XML file
-  if zip_filename is not None:
-    files, zipper = getZipfilePaths(
-        data_dir=data_dir, zip_filename=zip_filename)
-  else:
-    files = [f for f in os.listdir(data_dir) if f[-4:] == ".xml"]
+  files, zipper = getZipfilePaths(
+      data_dir=data_dir, zip_filename=zip_filename)
   # Functions for file types
   def readXML(filename):
     path = os.path.join(data_dir, filename)
@@ -167,9 +163,7 @@ def modelIterator(initial=0, final=1000,
     lines = read_func(filename)
     if isinstance(lines, bytes):
       lines = lines.decode("utf-8") 
-    reader = libsbml.SBMLReader()
-    document = reader.readSBMLFromString(lines)
-    model = document.getModel()
+    model = SimpleSBML(lines)
     iterator_item = IteratorItem(filename=filename,
         model=model, number=num)
     yield iterator_item

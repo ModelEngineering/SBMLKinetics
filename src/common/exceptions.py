@@ -1,4 +1,4 @@
 """Named exceptions."""
 
-class MissingTelluriumError(Exception):
+class BadKineticsMath(Exception):
   pass

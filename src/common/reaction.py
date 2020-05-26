@@ -22,5 +22,5 @@ class Reaction(object):
     self.products =  [self.reaction.getProduct(n)
         for n in range(self.reaction.getNumProducts())]
     self.kinetic_law = KineticLaw(
-        self.reaction.getKineticLaw())
+        self.reaction.getKineticLaw(), self)
     self.id = self.reaction.id

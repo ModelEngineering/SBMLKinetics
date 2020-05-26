@@ -29,6 +29,8 @@ class TestKineticLaw(unittest.TestCase):
       return
     self.assertTrue(
         isinstance(self.law, KineticLaw))
+    trues = [isinstance(s, str) for s in self.law.symbols]
+    self.assertTrue(all(trues))
 
 
 if __name__ == '__main__':
