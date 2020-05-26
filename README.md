@@ -26,3 +26,10 @@ tests should run without error.
 - ``source kv/bin/activate``
 (Use "\\" in windows.)
 When you're done, use ``deactivate``.
+
+## Documentation
+- ``examples/tutorial.py`` has code illustrating usage
+- ``src/common/*.py`` has codes for the 
+SmpleSBML (``simple_sbml.py``),
+Reaction (``reaction.py``),
+and KineticLaw (``kinetic_law.py``).
