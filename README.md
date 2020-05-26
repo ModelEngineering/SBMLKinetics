@@ -13,7 +13,7 @@ Repository of tests to validate kinetics expressions in SBML models.
   - ``deactivate``
 
 To verify the setup:
-- ``cd kinetics_validator``
+- Return to the ``kinetics_evaluator``.
 - ``source kv/bin/activate``
 (Use "\\" in windows.)
 - ``export PYTHONPATH=`pwd` ``
