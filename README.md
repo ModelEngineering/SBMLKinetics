@@ -15,7 +15,7 @@ Repository of tests to validate kinetics expressions in SBML models.
 To verify the setup:
 - ``source kv/bin/activate``
 (Use "\\" in windows.)
-- ``export PYTHONPATH=`pwd```
+- ``export PYTHONPATH=`pwd` ``
 - ``python tests/common/test_simple_sbml.py``. The
 tests should run without error.
 (Use "\\" in windows.)
