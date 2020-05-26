@@ -1,0 +1,6 @@
+python-libsbml
+nose
+pandas
+numpy
+urllib3
+pip>20
