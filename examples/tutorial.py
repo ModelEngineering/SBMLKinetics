@@ -31,7 +31,7 @@ simple = SimpleSBML(path)  # Creates a model
 names = ""
 for spc in simple.species:
   names = names + " " + spc.id
-print("***Species names***\n  %s" % names)
+print("\n***Species names***\n  %s" % names)
 
 # Reactions have a more complex structure.
 #  reactants - list of libsbl SpeciesReference
@@ -40,7 +40,7 @@ print("***Species names***\n  %s" % names)
 # KineticLaw object that provides
 #  formula - string of kinetics formula
 #  symbols - list of chemical species and parameters
-print("""***Reactions w/o stoichiometries.""")
+print("\n***Reactions w/o stoichiometries.")
 for reaction in simple.reactions:
   reactant_stg = " + ".join(
       [r.species for r in reaction.reactants])
@@ -50,3 +50,10 @@ for reaction in simple.reactions:
       reactant_stg, product_stg,
       reaction.kinetic_law.formula))
 
+# The code below shows how to iterate through all
+# of BioModels. The iterator returns an object
+# that contains the file name and a SimpleSBML object.
+print("\n***Iterating through BioModels.")
+iterator = simple_sbml.modelIterator(initial=0, final=10)
+for item in iterator:
+    print("File %s has %d reactions." % (item.filename, len(item.model.reactions)))
