@@ -24,3 +24,6 @@ class Reaction(object):
     self.kinetic_law = KineticLaw(
         self.reaction.getKineticLaw(), self)
     self.id = self.reaction.getId()
+
+  def getId(self):
+    return self.id

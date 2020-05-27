@@ -45,7 +45,7 @@ class TestSimpleSBML(unittest.TestCase):
     if IGNORE_TEST:
       return
     def test(func, a_list):
-      this_id = a_list[0].id
+      this_id = a_list[0].getId()
       an_object = func(this_id)
       self.assertEqual(an_object, a_list[0])
     #
