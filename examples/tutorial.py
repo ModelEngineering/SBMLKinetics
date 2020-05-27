@@ -30,7 +30,7 @@ simple = SimpleSBML(path)  # Creates a model
 # Here's an example of using these objects
 names = ""
 for spc in simple.species:
-  names = names + " " + spc.id
+  names = names + " " + spc.getId()
 print("\n***Species names***\n  %s" % names)
 
 # Reactions have a more complex structure.
