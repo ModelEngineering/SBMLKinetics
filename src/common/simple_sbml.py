@@ -85,7 +85,7 @@ class SimpleSBML(object):
     Return None if there is no such molecules
     :param str id:
     """
-    results = [e for e in a_list if e.id == an_id]
+    results = [e for e in a_list if e.getId() == an_id]
     if len(results) > 1:
       raise ValueError(
           "Two instances have the same id: %s" %
