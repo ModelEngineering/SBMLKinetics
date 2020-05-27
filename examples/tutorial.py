@@ -43,9 +43,9 @@ print("\n***Species names***\n  %s" % names)
 print("\n***Reactions w/o stoichiometries.")
 for reaction in simple.reactions:
   reactant_stg = " + ".join(
-      [r.species for r in reaction.reactants])
+      [r.getSpecies() for r in reaction.reactants])
   product_stg = " + ".join(
-      [p.species for p in reaction.products])
+      [p.getSpecies() for p in reaction.products])
   print("%s -> %s; %s" % (
       reactant_stg, product_stg,
       reaction.kinetic_law.formula))
