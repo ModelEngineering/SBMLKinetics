@@ -5,3 +5,4 @@ numpy
 urllib3
 pip>20
 matplotlib
+coverage
