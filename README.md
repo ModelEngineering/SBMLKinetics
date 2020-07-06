@@ -1,3 +1,5 @@
+,img src="https://api.travis-ci.org/ModelEngineering/kinetics_validator.svg?branch=master" width="100"/>
+
 # Kinetics Validator
 Repository of tests to validate kinetics expressions in SBML models.
 
