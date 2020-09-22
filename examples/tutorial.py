@@ -1,9 +1,5 @@
-"""
-This is a tutorial on using libsbml and the python
-wrappers.
-Make sure that you have setup your PYTHONPATH environment
-variable as described in the github repository.
-"""
+""" This is a tutorial on using libsbml and the python wrappers. Make sure that you have setup your PYTHONPATH 
+environment variable as described in the github repository. """
 
 # Import the required files
 from src.common.simple_sbml import SimpleSBML
@@ -16,7 +12,8 @@ import os
 # Create an SBML model. We'll use the model
 # tests/common/test_file.xml
 path = os.path.join(cn.TEST_DIR, "common")
-path = os.path.join(path, "test_file.xml")
+#path = os.path.join(path, "test_file.xml")
+path = os.path.join(path, "BIOMD0000000006.xml")
 simple = SimpleSBML(path)  # Creates a model
 
 # The model has instance variables for the following:
@@ -49,11 +46,19 @@ for reaction in simple.reactions:
   print("%s -> %s; %s" % (
       reactant_stg, product_stg,
       reaction.kinetic_law.formula))
+  #print(reaction.kinetic_law.symbols)
+
 
 # The code below shows how to iterate through all
 # of BioModels. The iterator returns an object
 # that contains the file name and a SimpleSBML object.
 print("\n***Iterating through BioModels.")
-iterator = simple_sbml.modelIterator(initial=0, final=10)
-for item in iterator:
+initial = 0
+iterator = simple_sbml.modelIterator(initial=initial, final=20)
+for idx,item in enumerate(iterator):
+  if item is not None:
     print("File %s has %d reactions." % (item.filename, len(item.model.reactions)))
+  else: #if item is None:
+    file_num = initial+idx
+    print("File %d has an error." % (file_num))
+    
