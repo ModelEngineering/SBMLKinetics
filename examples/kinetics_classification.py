@@ -16,7 +16,7 @@ import collections #use set to compare two lists
 import os
 
 import sympy
-from sympy import symbols, simplify 
+from sympy import *
 
 from libsbml import *
 import tesbml # access functions in SBML
@@ -40,8 +40,8 @@ rxn_bi_num = 0     #reaction number for bi-directional mass reaction
 rxn_bi_mod_num = 0 #reaction number for bi-terms with moderator
 rxn_mm_num = 0     #reaction number for Michaelis-Menton kinetics
 rxn_mm_cat_num = 0 #reaction number for Michaelis-Menton-catalyzed kinetics
-rxn_mm_rev_num = 0 #reaction number for Michaelis-Menton-catalyzed kinetics
-rxn_no_prd_num = 0 #reaction number w/o products and not above\
+rxn_mm_rev_num = 0 #reaction number for Michaelis-Menton-reversible kinetics
+rxn_no_prd_num = 0 #reaction number w/o products and not above
 
 file = open("classification.txt", "w+")
 file.write("SBML id \tReaction id \tReaction \tKinetic law \tTypes of kinetics \n")
@@ -65,13 +65,11 @@ for idx, item in enumerate(iterator):
     simple = item.model # Create a model
 
     model = simple.model
-
-    # try to access the info of functions,
     # If there are functions in the sbml file, expand the functions to kinetic law first
     if (model.getNumFunctionDefinitions() != 0):
-      func_id_list = []
-      var_list = []
-      func_list = []
+      func_id_list = [] #function id list
+      var_list = []     #list of variables in the function
+      func_list = []    #the equation of the function
       for f in range(model.getNumFunctionDefinitions()):
         var_list_per_func = []
         fd = model.getFunctionDefinition(f)
@@ -81,17 +79,18 @@ for idx, item in enumerate(iterator):
         var_list.append(var_list_per_func)
         func_list.append(tesbml.formulaToL3String(fd.getBody()))
 
-      for reaction in simple.reactions:   
+      for reaction in simple.reactions:    
         #check if there are functions in the certain reaction
-        
         possible_func = []
         for i in range(model.getNumFunctionDefinitions()):
           if func_id_list[i] in reaction.kinetic_law.formula:
             possible_func.append(func_id_list[i])
   
         func_trial = 0
-        while len(possible_func) > 0 and func_trial < 5: #there are funcs in funcs
-          #obtain the function name, removing the error if it is only part of the func name.    
+        #there are funcs in funcs, so give five trials
+        while len(possible_func) > 0 and func_trial < 5: 
+          #to obtain the function name, removing the error when there is only part of the 
+          #function name in the kinetics    
           func_trial += 1
           func_len = len(possible_func[0])
           KL_func_id = possible_func[0]
@@ -102,11 +101,14 @@ for idx, item in enumerate(iterator):
           #do the function expansion for the certain kinetics
           for i in range(model.getNumFunctionDefinitions()):
             if func_id_list[i] == KL_func_id:
+              #search for the "func_id(variables)" and obtain the list of variables
               bw_bracket = re.findall(r'{}\(.*?\)'.format(KL_func_id), reaction.kinetic_law.formula)
               if len(bw_bracket) > 0:
                 bw_bracket = re.findall(r'\(.*?\)', bw_bracket[0])
                 if len(bw_bracket) > 0:
                   KL_var_list_per_func = bw_bracket[0][1:-1].split(',')
+                  #exchange any variables shown differently from the functions in the 
+                  #front of the sbml file.
                   if (len(var_list[i]) == len(KL_var_list_per_func)):
                     temp = func_list[i].replace(var_list[i][0],KL_var_list_per_func[0])
                     for j in range(1,len(var_list[i])):
@@ -116,9 +118,9 @@ for idx, item in enumerate(iterator):
           possible_func = []
           for i in range(model.getNumFunctionDefinitions()):
             if func_id_list[i] in reaction.kinetic_law.formula:
-              possible_func.append(func_id_list[i])
-        
+              possible_func.append(func_id_list[i])        
 
+    #do the statistics per model
     rxn_num_permol = len(simple.reactions)
     if rxn_num_permol != 0:
       file_mol_stat.write("%s \t" % name[10:])
@@ -178,6 +180,8 @@ for idx, item in enumerate(iterator):
 
         ids_list = list(dict.fromkeys(reaction.kinetic_law.symbols))
 
+        #type: zeroth order
+        #classification rule: if there are no species in the kinetics
         if all(s not in ids_list for s in species_list):
           print("zeroth order")
           file.write("zeroth order")
@@ -185,20 +189,31 @@ for idx, item in enumerate(iterator):
 
         else:
           kinetics = reaction.kinetic_law.formula
-          if "pow(" in kinetics or "**" in kinetics:        
+          #tpye: kinetics with hill terms
+          #classification rule: if there is pow() or ** inside the kinetics, 
+          #except the pow(,-1) case as the possible Michaelis–Menten kinetics.
+          if "pow(" in kinetics and "-1)" not in kinetics:
+            print("kinetics with hill terms")
+            file.write("kinetics with hill terms")
+            rxn_hill_num_permol += 1            
+          elif "**" in kinetics:        
             print("kinetics with hill terms")
             file.write("kinetics with hill terms")
             rxn_hill_num_permol += 1
+          #type: kinetics with exponential terms
+          #classification rule: if there is exp() inside the kinetics  
           elif "exp(" in kinetics:
             print("kinetics with exponential terms")
             file.write("kinetics with exponential terms")
             rxn_exp_num_permol += 1 
+          #type: no reactants
+          #classifcation rule: if there are no reactants
           elif len(reactant_list[0]) == 0:
             print("no reactants and not above")
             file.write("no reactants and not above")
             rxn_no_rct_num_permol += 1
           else:
-            strange_func = 0 #check if there is strang func (i.e. delay) in kinetic law
+            strange_func = 0 #check if there are strang functions (i.e. delay) in kinetics
             species_in_kinetic_law = []
             parameters_in_kinetic_law = []
             others_in_kinetic_law = []
@@ -217,7 +232,10 @@ for idx, item in enumerate(iterator):
             # print("parameters")
             # print(parameters_in_kinetic_law)
 
-            kinetics = reaction.kinetic_law.formula       
+            kinetics = reaction.kinetic_law.formula  
+            #type: uni-term including uni-directional mass reaction and uni-term with moderator
+            #classification rule: there is only * inside the kinetics without /,+,-.
+            #for uni-directional mass reaction: the species inside the kinetics are only reactants     
             if "/" not in kinetics and "+" not in kinetics and "-" not in kinetics:
               if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]):
                 print("uni-directional mass reaction")
@@ -227,7 +245,10 @@ for idx, item in enumerate(iterator):
                 print("uni-term with moderator")
                 file.write("uni-term with moderator")
                 rxn_uni_mod_num_permol += 1 
-
+            #type: bi-term including bi-directional mass reaction and bi-term with moderator
+            #classification rule: there is only *,- inside the kinetics without /,+.
+            #for the bi-directional mass reaction: the first term before - includes all the reactants,
+            #while the second term after - includes all the products.
             elif "/" not in kinetics and "+" not in kinetics and "-" in kinetics:
               terms = kinetics.split("-")
               if len(terms) == 2:
@@ -269,24 +290,30 @@ for idx, item in enumerate(iterator):
                 strange_func = 1
 
               try: #check if there is strange func (i.e. delay) in kinetic law
-                expr_stat = "expr = " + reaction.kinetic_law.formula
+                kinetics = reaction.kinetic_law.formula
+                expr_stat = "expr = " + kinetics
                 exec(expr_stat)
               except:
                 strange_func = 1
- 
               if strange_func == 0:
-                #double check hill/uni/bi after simplifying the kinetics
+                #double check hill/uni/bi after simplifying and expanding the kinetics
+                #following the rules stated above
                 kinetics = reaction.kinetic_law.formula
                 try:
-                  sim_kinetics = str(simplify(kinetics))
+                  kinetics = str(simplify(kinetics))
                 except:
-                  sim_kinetics = kinetics
+                  kinetics = kinetics
                 
-                if "**" in sim_kinetics:        
+                try: #for hill terms
+                  kinetics = str(expand(kinetics))
+                except:
+                  kinetics = kinetics
+ 
+                if "**" in kinetics:        
                   print("kinetics with hill terms")
                   file.write("kinetics with hill terms")
                   rxn_hill_num_permol += 1
-                elif "/" not in sim_kinetics and "+" not in sim_kinetics and "-" not in sim_kinetics:
+                elif "/" not in kinetics and "+" not in kinetics and "-" not in kinetics:
                   if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]):
                     print("uni-directional mass reaction")
                     file.write("uni-directional mass reaction")
@@ -296,7 +323,7 @@ for idx, item in enumerate(iterator):
                     file.write("uni-term with moderator")
                     rxn_uni_mod_num_permol += 1 
 
-                elif "/" not in sim_kinetics and "+" not in sim_kinetics and "-" in sim_kinetics:
+                elif "/" not in kinetics and "+" not in kinetics and "-" in kinetics:
                   terms = kinetics.split("-")
                   if len(terms) == 2:
                     term1 = terms[0]
@@ -315,6 +342,9 @@ for idx, item in enumerate(iterator):
                       file.write("bi-terms with moderator")
                       rxn_bi_mod_num_permol += 1
                 else:
+                  #Michaelis–Menten kinetics(inreversible)
+                  #classification rule:assuming there are one/two/three parameters in the numerator,
+                  #use "simplify" equals to
                   flag_mm = 0
                   if (len(reactant_list[0])==1 and len(species_in_kinetic_law)==1):
                     if (len(parameters_in_kinetic_law) >= 2):                    
@@ -378,6 +408,9 @@ for idx, item in enumerate(iterator):
                     rxn_mm_num_permol += 1  
                   
                   else:
+                    #Michaelis–Menten kinetics(catalyzed)
+                    #classification rule:assuming there are no/one/two parameters in the numerator,
+                    #use "simplify" equals to
                     flag_mm_cat = 0
                     if (len(reactant_list[0])==1 and len(species_in_kinetic_law)==2):
                       if (len(parameters_in_kinetic_law) != 0):                    
@@ -437,6 +470,10 @@ for idx, item in enumerate(iterator):
                       file.write("Michaelis-Menten Kinetics-catalyzed")
                       rxn_mm_cat_num_permol += 1 
                     else:
+                      #Michaelis–Menten kinetics(reversible)
+                      #classification rule:assuming there no/one/two catalyzation terms,
+                      #only considering one parameter in the numerator,
+                      #use "simplify" equals to
                       flag_mm_rev = 0
                       if (len(reactant_list[0])==1 and len(product_list[0])==1):
                         if (len(species_in_kinetic_law) == 2): #w/o cat
@@ -548,6 +585,8 @@ for idx, item in enumerate(iterator):
                         rxn_mm_rev_num_permol += 1
 
                       elif len(product_list[0]) == 0:
+                        #type: no products and not above
+                        #classification rule: if there are no products
                         print("no products and not above")
                         file.write("no products and not above")
                         rxn_no_prd_num_permol += 1
@@ -560,6 +599,7 @@ for idx, item in enumerate(iterator):
                       #      reaction.kinetic_law.formula))
                       #  print("\n\n")
               else:
+                #make up the no products case which have been ignored due to strange functions.
                 if len(product_list[0]) == 0:
                   print("no products and not above")
                   file.write("no products and not above")
