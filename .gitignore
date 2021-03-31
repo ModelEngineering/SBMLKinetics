@@ -1,5 +1,6 @@
 # Added ignores
 *.swp
+*.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

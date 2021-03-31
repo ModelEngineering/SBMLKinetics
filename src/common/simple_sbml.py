@@ -3,6 +3,7 @@
 from src.common import constants as cn
 from src.common.kinetic_law import KineticLaw
 from src.common.reaction import Reaction
+from src.common.function_definition import FunctionDefinition
 from src.common import util
 
 import collections
@@ -54,6 +55,20 @@ class SimpleSBML(object):
         for nn in range(self.model.getNumSpecies())]
     self.parameters = [self.model.getParameter(nn)
         for nn in range(self.model.getNumParameters())]
+    self.function_definitions = self.getFunctionDefinitions()
+
+  def getFunctionDefinitions(self):
+    """
+    Returns all function definitions in the model.py
+
+    Returns
+    -------
+    list-libsbml.FunctionDefinition
+    """
+    sbml_definitions =[self.model.getFunctionDefinition(n) for n 
+        in range(self.model.getNumFunctionDefinitions())]
+    function_definitions = [FunctionDefinition(s) for s in sbml_definitions]
+    return function_definitions
 
   def getReaction(self, an_id):
     """

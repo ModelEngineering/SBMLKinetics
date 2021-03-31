@@ -13,6 +13,7 @@ import unittest
 
 
 IGNORE_TEST = False
+IS_PLOT = False
 
 
 #############################
@@ -37,18 +38,36 @@ class TestKineticLaw(unittest.TestCase):
     self.assertTrue(all(trues))
 
   def testSymbol(self):
+    if IGNORE_TEST:
+      return
     def checkSubset(subset,superset):
       true = set(subset).issubset(set(superset))
       self.assertTrue(true)
-
     # const only
     checkSubset(['kappa'],law[0].symbols)
-
     # simple kinetic law k*A
     checkSubset(['k6','u'],law[1].symbols)
-
     # complex kinetic law with function pow()
     checkSubset(['z','u','k4','k4prime'],law[2].symbols)
+
+  def testExpandFormula(self):
+    if IGNORE_TEST:
+      return
+    simple = helpers.getSimple_BIOMD56()
+    kinetic_law = None
+    for fd in simple.function_definitions:
+      for reaction in simple.reactions:
+        if fd.id in reaction.kinetic_law.formula:
+          kinetic_law = reaction.kinetic_law
+          break
+      if kinetic_law is not None:
+        break
+    if kinetic_law is None:
+      raise RuntimeError("Did not find an embedded function.")
+    kinetic_law_arguments = ["Vaiep", "Jaiep", "1", "IE"]
+    expansion = kinetic_law.expandFormula(simple.function_definitions)
+    for argument in kinetic_law_arguments:
+      self.assertTrue(argument in expansion)
 
 
 if __name__ == '__main__':

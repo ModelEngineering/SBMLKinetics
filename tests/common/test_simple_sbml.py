@@ -40,6 +40,8 @@ class TestSimpleSBML(unittest.TestCase):
     test(self.simple.parameters, libsbml.Parameter)
     self.assertTrue(isinstance(self.simple.model,
         libsbml.Model))
+    simple = helpers.getSimple_BIOMD56()
+    self.assertGreater(len(simple.function_definitions), 0)
 
   def testGet(self):
     if IGNORE_TEST:
