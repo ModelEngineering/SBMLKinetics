@@ -10,6 +10,8 @@ import collections
 import numpy as np
 import re
 
+MAX_RECURSION = 5
+
 
 class KineticLaw(object):
 
@@ -22,14 +24,11 @@ class KineticLaw(object):
     # String version of chemical formula
     self.formula = self.libsbml_kinetics.getFormula()
     # Parameters and chemical species
-    # FIXME: Why doesn't this work
-    try:
-        self.symbols = self._getSymbols()
-    except Exception:
-        msgs.warn("Could not acquire symbols.")
-        self.symbols = None
+    self.symbols = self._getSymbols()
     # Reaction for the kinetics law
     self.reaction = reaction
+    # Expanded kinetic formula (remove embedded functions)
+    self.expanded_formula = None
 
   def __repr__(self):
     return self.formula
@@ -42,25 +41,50 @@ class KineticLaw(object):
     Parameters
     ----------
     function_definitions: list-FunctionDefinition
+    """
+    self.expanded_formula = self._expandFormula(self.formula, function_definitions)
+
+  @staticmethod
+  def _expandFormula(expansion, function_definitions,
+        num_recursion=0):
+    """
+    Expands the kinetics formula, replacing function definitions
+    with their body.
+
+    Parameters
+    ----------
+    expansion: str
+        expansion of the kinetic law
+    function_definitions: list-FunctionDefinition
+    num_recursion: int
     
     Returns
     -------
     str
     """
-    expansion = str(self.formula)
+    if num_recursion > MAX_RECURSION:
+      return expansion
+    done = True
     for fd in function_definitions:
       # Find the function calls
-      calls = re.findall(r'{}\(.*?\)'.format(fd.id), self.formula)
+      calls = re.findall(r'{}\(.*?\)'.format(fd.id), expansion)
+      if len(calls) == 0:
+        continue
+      done = False
       for call in calls:
         # Find argument call. Ex: '(a, b)'
         call_arguments = re.findall(r'\(.*?\)', call)[0]
         call_arguments = call_arguments.strip()
         call_arguments = call_arguments[1:-1]  # Eliminate parentheses
         arguments = call_arguments.split(',')
+        arguments = [a.strip() for a in arguments]
         body = str(fd.body)
         for formal_arg, call_arg in zip(fd.argument_names, arguments):
           body = body.replace(formal_arg, call_arg)
         expansion = expansion.replace(call, body)
+    if not done:
+      return KineticLaw._expandFormula(expansion, function_definitions,
+          num_recursion=num_recursion+1)
     return expansion
  
 

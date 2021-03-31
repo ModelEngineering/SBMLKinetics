@@ -27,3 +27,8 @@ class Reaction(object):
 
   def getId(self):
     return self.id
+
+  def __repr__(self):
+    reactant_str = " + ".join([r.getSpecies() for r in self.reactants])
+    product_str = " + ".join([p.getSpecies() for p in self.products])
+    return "%s -> %s" % (reactant_str, product_str)

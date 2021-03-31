@@ -81,51 +81,52 @@ for idx, item in enumerate(iterator):
 #d      var_list.append(var_list_per_func)
 #d      func_list.append(libsbml.formulaToL3String(fd.getBody()))
 
-      for reaction in simple.reactions:    
-        #check if there are functions in the certain reaction
-        possible_functions = []
-        for fd in simple.function_definitions:
-          if fd.id in reaction.kinetic_law.formula:
-            possible_functions.append(fd)
-        if len(possible_functions) == 0:
-          continue
-        # Search by descending size to avoid substrings
-        possible_functions = sorted(possible_functions, 
-            key=lambda f: len(f.id), reverse=True)
-        # Do the function expansions
-        for _ in range(MAX_ITERATION):
-          cur_fd = possible_functions[0]
-          #to obtain the function name, removing the error when there is only part of the 
-          #function name in the kinetics    
-          if False:
-            # Not sure what this is about
-            func_len = len(cur_fd.id)
-            KL_func_id = possible_functions[0]
-            for i in range(1,len(possible_functions)):
-              if len(possible_functions[i]) > func_len:
-                KL_func_id = possible_functions[i]
-                func_len = len(possible_functions[i])
-          #do the function expansion for the certain kinetics
-          for i in range(model.getNumFunctionDefinitions()):
-            if func_id_list[i] == KL_func_id:
-              #search for the "func_id(variables)" and obtain the list of variables
-              bw_bracket = re.findall(r'{}\(.*?\)'.format(KL_func_id), reaction.kinetic_law.formula)
-              if len(bw_bracket) > 0:
-                bw_bracket = re.findall(r'\(.*?\)', bw_bracket[0])
-                if len(bw_bracket) > 0:
-                  KL_var_list_per_func = bw_bracket[0][1:-1].split(',')
-                  #exchange any variables shown differently from the functions in the 
-                  #front of the sbml file.
-                  if (len(var_list[i]) == len(KL_var_list_per_func)):
-                    temp = func_list[i].replace(var_list[i][0],KL_var_list_per_func[0])
-                    for j in range(1,len(var_list[i])):
-                      temp = temp.replace(var_list[i][j],KL_var_list_per_func[j][1:])
-                    KL_func_full = KL_func_id+bw_bracket[0]
-                    reaction.kinetic_law.formula = reaction.kinetic_law.formula.replace(KL_func_full,temp)
-          possible_functions = []
-          for i in range(model.getNumFunctionDefinitions()):
-            if func_id_list[i] in reaction.kinetic_law.formula:
-              possible_functions.append(func_id_list[i])        
+      for reaction in simple.reactions:
+        reaction.kinetic_law.expandFormula(simple.function_definitions)
+#d      #check if there are functions in the certain reaction
+#d      possible_functions = []
+#d      for fd in simple.function_definitions:
+#d        if fd.id in reaction.kinetic_law.formula:
+#d          possible_functions.append(fd)
+#d      if len(possible_functions) == 0:
+#d        continue
+#d      # Search by descending size to avoid substrings
+#d      possible_functions = sorted(possible_functions, 
+#d          key=lambda f: len(f.id), reverse=True)
+#d      # Do the function expansions
+#d      for _ in range(MAX_ITERATION):
+#d        cur_fd = possible_functions[0]
+#d        #to obtain the function name, removing the error when there is only part of the 
+#d        #function name in the kinetics    
+#d        if False:
+#d          # Not sure what this is about
+#d          func_len = len(cur_fd.id)
+#d          KL_func_id = possible_functions[0]
+#d          for i in range(1,len(possible_functions)):
+#d            if len(possible_functions[i]) > func_len:
+#d              KL_func_id = possible_functions[i]
+#d              func_len = len(possible_functions[i])
+#d        #do the function expansion for the certain kinetics
+#d        for i in range(model.getNumFunctionDefinitions()):
+#d          if func_id_list[i] == KL_func_id:
+#d            #search for the "func_id(variables)" and obtain the list of variables
+#d            bw_bracket = re.findall(r'{}\(.*?\)'.format(KL_func_id), reaction.kinetic_law.formula)
+#d            if len(bw_bracket) > 0:
+#d              bw_bracket = re.findall(r'\(.*?\)', bw_bracket[0])
+#d              if len(bw_bracket) > 0:
+#d                KL_var_list_per_func = bw_bracket[0][1:-1].split(',')
+#d                #exchange any variables shown differently from the functions in the 
+#d                #front of the sbml file.
+#d                if (len(var_list[i]) == len(KL_var_list_per_func)):
+#d                  temp = func_list[i].replace(var_list[i][0],KL_var_list_per_func[0])
+#d                  for j in range(1,len(var_list[i])):
+#d                    temp = temp.replace(var_list[i][j],KL_var_list_per_func[j][1:])
+#d                  KL_func_full = KL_func_id+bw_bracket[0]
+#d                  reaction.kinetic_law.formula = reaction.kinetic_law.formula.replace(KL_func_full,temp)
+#d        possible_functions = []
+#d        for i in range(model.getNumFunctionDefinitions()):
+#d          if func_id_list[i] in reaction.kinetic_law.formula:
+#d            possible_functions.append(func_id_list[i])        
 
     #do the statistics per model
     rxn_num_permol = len(simple.reactions)
@@ -146,7 +147,9 @@ for idx, item in enumerate(iterator):
       rxn_no_prd_num_permol = 0
       for reaction in simple.reactions:
         #change for the exponential from ^ to **
-        reaction.kinetic_law.formula = reaction.kinetic_law.formula.replace('^','**')
+        if reaction.kinetic_law.expanded_formula is None:
+          reaction.kinetic_law.expandFormula(simple.function_definitions)
+        reaction.kinetic_law.expanded_formula.replace('^','**')
         file.write("%s \t" % name[10:])
         rxn_num += 1
         file.write("%s \t" % reaction.getId())
@@ -162,13 +165,13 @@ for idx, item in enumerate(iterator):
 
         print("%s -> %s; %s" % (
           reactant_stg, product_stg,
-          reaction.kinetic_law.formula))
+          reaction.kinetic_law.expanded_formula))
 
 
         file.write("%s -> %s \t" % (
           reactant_stg, product_stg))
 
-        file.write("%s \t" % (reaction.kinetic_law.formula))
+        file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
 
         species_num = model.getNumSpecies()
         parameter_num = model.getNumParameters()
@@ -195,7 +198,7 @@ for idx, item in enumerate(iterator):
           rxn_zero_num_permol += 1
 
         else:
-          kinetics = reaction.kinetic_law.formula
+          kinetics = reaction.kinetic_law.expanded_formula
           #tpye: kinetics with hill terms
           #classification rule: if there is pow() or ** inside the kinetics, 
           #except the pow(,-1) case as the possible Michaelis–Menten kinetics.
@@ -239,7 +242,7 @@ for idx, item in enumerate(iterator):
             # print("parameters")
             # print(parameters_in_kinetic_law)
 
-            kinetics = reaction.kinetic_law.formula  
+            kinetics = reaction.kinetic_law.expanded_formula  
             #type: uni-term including uni-directional mass reaction and uni-term with moderator
             #classification rule: there is only * inside the kinetics without /,+,-.
             #for uni-directional mass reaction: the species inside the kinetics are only reactants     
@@ -297,7 +300,7 @@ for idx, item in enumerate(iterator):
                 strange_func = 1
 
               try: #check if there is strange func (i.e. delay) in kinetic law
-                kinetics = reaction.kinetic_law.formula
+                kinetics = reaction.kinetic_law.expanded_formula
                 expr_stat = "expr = " + kinetics
                 exec(expr_stat)
               except:
@@ -305,7 +308,7 @@ for idx, item in enumerate(iterator):
               if strange_func == 0:
                 #double check hill/uni/bi after simplifying and expanding the kinetics
                 #following the rules stated above
-                kinetics = reaction.kinetic_law.formula
+                kinetics = reaction.kinetic_law.expanded_formula
                 try:
                   kinetics = str(simplify(kinetics))
                 except:
@@ -603,7 +606,7 @@ for idx, item in enumerate(iterator):
                       #  print("not classified")
                       #  print("%s -> %s; %s" % (
                       #      reactant_stg, product_stg,
-                      #      reaction.kinetic_law.formula))
+                      #      reaction.kinetic_law.expanded_formula))
                       #  print("\n\n")
               else:
                 #make up the no products case which have been ignored due to strange functions.
