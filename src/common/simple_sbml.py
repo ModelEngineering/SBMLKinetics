@@ -49,13 +49,14 @@ class SimpleSBML(object):
       util.checkSBMLDocument(document, model_reference=model_reference)
       self.model = document.getModel()
     # Do the initializations
-    self.reactions = [Reaction(self.model.getReaction(nn))
-        for nn in range(self.model.getNumReactions())]
     self.species = [self.model.getSpecies(nn)
         for nn in range(self.model.getNumSpecies())]
     self.parameters = [self.model.getParameter(nn)
         for nn in range(self.model.getNumParameters())]
     self.function_definitions = self.getFunctionDefinitions()
+    self.reactions = [Reaction(self.model.getReaction(nn), 
+        function_definitions=self.function_definitions)
+        for nn in range(self.model.getNumReactions())]
 
   def getFunctionDefinitions(self):
     """

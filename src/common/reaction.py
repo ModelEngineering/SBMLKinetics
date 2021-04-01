@@ -10,9 +10,10 @@ import libsbml
 
 class Reaction(object):
 
-  def __init__(self, libsbml_reaction):
+  def __init__(self, libsbml_reaction, function_definitions=None):
     """
     :param libsbml.Reaction libsbml_reaction:
+    :param function_definitions list-FunctionDefinition:
     """
     self.reaction = libsbml_reaction
     # List of species reference
@@ -22,7 +23,7 @@ class Reaction(object):
     self.products =  [self.reaction.getProduct(n)
         for n in range(self.reaction.getNumProducts())]
     self.kinetic_law = KineticLaw(
-        self.reaction.getKineticLaw(), self)
+        self.reaction.getKineticLaw(), self, function_definitions=None)
     self.id = self.reaction.getId()
 
   def getId(self):
@@ -31,4 +32,8 @@ class Reaction(object):
   def __repr__(self):
     reactant_str = " + ".join([r.getSpecies() for r in self.reactants])
     product_str = " + ".join([p.getSpecies() for p in self.products])
-    return "%s -> %s" % (reactant_str, product_str)
+    if self.kinetic_law.expanded_formula is not None:
+      kinetic_str = self.kinetic_law.expanded_formula
+    else:
+      kinetic_str = self.kinetic_law.formula
+    return "%s -> %s; %s" % (reactant_str, product_str, kinetic_str)

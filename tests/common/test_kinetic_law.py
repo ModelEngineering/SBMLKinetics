@@ -70,12 +70,14 @@ class TestKineticLaw(unittest.TestCase):
     for fd in simple.function_definitions:
       for reaction in simple.reactions:
         if fd.id in reaction.kinetic_law.formula:
-          kinetic_law = reaction.kinetic_law
+          kinetic_law = KineticLaw(reaction.kinetic_law.libsbml_kinetics,
+              reaction, function_definitions=simple.function_definitions)
           break
       if kinetic_law is not None:
         break
     if kinetic_law is None:
       raise RuntimeError("Did not find an embedded function.")
+    self.assertIsNotNone(kinetic_law.expanded_formula)
     kinetic_law_arguments = ["Vaiep", "Jaiep", "1", "IE"]
     kinetic_law.expandFormula(simple.function_definitions)
     for argument in kinetic_law_arguments:

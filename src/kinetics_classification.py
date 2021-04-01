@@ -153,23 +153,26 @@ for idx, item in enumerate(iterator):
         file.write("%s \t" % name[10:])
         rxn_num += 1
         file.write("%s \t" % reaction.getId())
-        reactant_list = []
-        product_list = []
+        # QUESTION: Why is this a list of lists?
+        reactant_list = [[r.getSpecies() for r in reaction.reactants]]
+        product_list = [[p.getSpecies() for p in reaction.products]]
 
-        reactant_stg = " + ".join(
-          [r.getSpecies() for r in reaction.reactants])
-        reactant_list.append([r.getSpecies() for r in reaction.reactants])
-        product_stg = " + ".join(
-          [p.getSpecies() for p in reaction.products])
-        product_list.append([p.getSpecies() for p in reaction.products])
+#d      reactant_stg = " + ".join(
+#d        [r.getSpecies() for r in reaction.reactants])
+#d      reactant_list.append([r.getSpecies() for r in reaction.reactants])
+#d      product_stg = " + ".join(
+#d        [p.getSpecies() for p in reaction.products])
+#d      product_list.append([p.getSpecies() for p in reaction.products])
 
-        print("%s -> %s; %s" % (
-          reactant_stg, product_stg,
-          reaction.kinetic_law.expanded_formula))
+#d      print("%s -> %s; %s" % (
+#d        reactant_stg, product_stg,
+#d        reaction.kinetic_law.expanded_formula))
+        print(str(reaction))
+        file.write(str(reaction))
 
 
-        file.write("%s -> %s \t" % (
-          reactant_stg, product_stg))
+#d      file.write("%s -> %s \t" % (
+#d        reactant_stg, product_stg))
 
         file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
 

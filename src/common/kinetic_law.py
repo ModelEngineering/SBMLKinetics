@@ -15,9 +15,10 @@ MAX_RECURSION = 5
 
 class KineticLaw(object):
 
-  def __init__(self, libsbml_kinetics, reaction):
+  def __init__(self, libsbml_kinetics, reaction, function_definitions=None):
     """
     :param libsbml.KineticLaw libsbml_kinetics:
+    :param function_definitions list-FunctionDefinition:
     """
     # libsbml object for kinetics
     self.libsbml_kinetics = libsbml_kinetics
@@ -28,7 +29,10 @@ class KineticLaw(object):
     # Reaction for the kinetics law
     self.reaction = reaction
     # Expanded kinetic formula (remove embedded functions)
-    self.expanded_formula = None
+    if function_definitions is None:
+      self.expanded_formula = None
+    else:
+      self.expandFormula(function_definitions)
 
   def __repr__(self):
     return self.formula
