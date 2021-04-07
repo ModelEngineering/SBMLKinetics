@@ -12,8 +12,8 @@ import numpy as np
 import unittest
 
 
-IGNORE_TEST = False
-IS_PLOT = False
+IGNORE_TEST = True
+IS_PLOT = True
 
 
 #############################
@@ -39,8 +39,7 @@ class TestReaction(unittest.TestCase):
         libsbml.SpeciesReference)
 
   def testRepr(self):
-    if IGNORE_TEST:
-      return
+    # TESTING
     reaction_str = str(self.reaction)
     for item in ["T2R", "->", "R", "k1c", "*"]:
       self.assertTrue(item in reaction_str)

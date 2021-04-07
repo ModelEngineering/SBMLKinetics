@@ -33,6 +33,7 @@ class KineticLaw(object):
       self.expanded_formula = None
     else:
       self.expandFormula(function_definitions)
+    self.expression_formula = None  # valid symPy expression string
 
   def __repr__(self):
     return self.formula
@@ -47,6 +48,23 @@ class KineticLaw(object):
     function_definitions: list-FunctionDefinition
     """
     self.expanded_formula = self._expandFormula(self.formula, function_definitions)
+
+  def mkSymbolExpression(self, function_definitions):
+    """
+    Creates a string that can be processed by pySym.
+    
+    Parameters
+    -------
+    function_definitions: list-FunctionDefinition
+    
+    Returns
+    -------
+    str
+    """
+    if self.expanded_formula is None:
+      self.expandFormula(function_definitions)
+    self.expression_formula = str(self.expanded_formula)
+    self.expression_formual.replace('^','**')
 
   @staticmethod
   def _expandFormula(expansion, function_definitions,
