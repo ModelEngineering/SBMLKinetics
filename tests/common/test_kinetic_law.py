@@ -2,6 +2,7 @@
 Tests for Kinetic Law
 """
 from src.common import constants as cn
+from src.common import kinetic_law
 from src.common.simple_sbml import SimpleSBML
 from src.common.kinetic_law import KineticLaw
 from tests.common import helpers
@@ -135,6 +136,26 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law.expandFormula(function_definitions)
     self.assertEqual(kinetic_law.expanded_formula, "kl + cc + bb + 1 + 2")
 
+  def testMkSymbolExpression(self):
+    # Test replace '^' with '**'
+    if IGNORE_TEST:
+      return
+    function_definitions = [
+        MockFunctionDefinition("aa", ["x"], "x^3")
+        ]
+    kinetic_law = self.mkKineticLawWithFormula("aa(2) + 4^2")
+    kinetic_law.mkSymbolExpression(function_definitions)
+    self.assertEqual(kinetic_law.expanded_formula, "2**3 + 4**2")   
+
+  def testIsZerothOrder(self):
+    # Test ZerothOrder
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.mkKineticLawWithFormula("k1*k2")
+    ids_list = ["k1", "k2"]
+    species_list = ["S1", "S2"]
+    test = kinetic_law.isZerothOrder(ids_list, species_list)
+    self.assertTrue(test) 
 
 if __name__ == '__main__':
   unittest.main()

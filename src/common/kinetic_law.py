@@ -63,8 +63,26 @@ class KineticLaw(object):
     """
     if self.expanded_formula is None:
       self.expandFormula(function_definitions)
-    self.expression_formula = str(self.expanded_formula)
-    self.expression_formual.replace('^','**')
+      self.expression_formula = str(self.expanded_formula)
+      self.expanded_formula = self.expression_formula.replace("^","**")
+
+  def isZerothOrder(self, ids_list, species_list):
+    """
+    Check the kinetic law belongs to the type of ZerothOrder or not
+    
+    Parameters
+    -------
+    ids_list: list-ids_in_reaction_kinetics
+    species_list: list-species_in_the_model 
+    
+    Returns
+    -------
+    True or False
+    """
+    if all(s not in ids_list for s in species_list):
+      return True
+    else:
+      return False
 
   @staticmethod
   def _expandFormula(expansion, function_definitions,

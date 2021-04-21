@@ -91,9 +91,9 @@ for idx, item in enumerate(iterator):
       rxn_no_prd_num_permol = 0
       for reaction in simple.reactions:
         #change for the exponential from ^ to **
-#d      if reaction.kinetic_law.expanded_formula is None:
-#d        reaction.kinetic_law.expandFormula(simple.function_definitions)
-#d      reaction.kinetic_law.expanded_formula.replace('^','**')
+#d        if reaction.kinetic_law.expanded_formula is None:
+#d          reaction.kinetic_law.expandFormula(simple.function_definitions)
+#d          reaction.kinetic_law.expanded_formula.replace('^','**')
         reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
         file.write("%s \t" % name[10:])
         rxn_num += 1
@@ -140,8 +140,8 @@ for idx, item in enumerate(iterator):
 
         #type: zeroth order
         #classification rule: if there are no species in the kinetics
-#d      if all(s not in ids_list for s in species_list):
-        if reaction.kinetic_law.isZerothOrder():
+#d        if all(s not in ids_list for s in species_list):
+        if reaction.kinetic_law.isZerothOrder(ids_list, species_list):
           print("zeroth order")
           file.write("zeroth order")
           rxn_zero_num_permol += 1
