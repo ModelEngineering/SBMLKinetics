@@ -66,19 +66,20 @@ class KineticLaw(object):
       self.expression_formula = str(self.expanded_formula)
       self.expanded_formula = self.expression_formula.replace("^","**")
 
-  def isZerothOrder(self, ids_list, species_list):
+  def isZerothOrder(self, species_list):
     """
     Check the kinetic law belongs to the type of ZerothOrder or not
     
     Parameters
     -------
-    ids_list: list-ids_in_reaction_kinetics
     species_list: list-species_in_the_model 
     
     Returns
     -------
     True or False
     """
+
+    ids_list = list(dict.fromkeys(self.symbols))
     if all(s not in ids_list for s in species_list):
       return True
     else:
@@ -136,6 +137,7 @@ class KineticLaw(object):
     kinetics expression.
     :return list-str:
     """
+    #print(self)
     global cur_depth
     MAX_DEPTH = 20
     cur_depth = 0

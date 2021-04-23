@@ -26,9 +26,9 @@ start_time = time.time()
 
 MAX_ITERATION = 5  # Maximum number for iteration function expansions
 
-initial = 55
+initial = 5
 
-iterator = simple_sbml.modelIterator(initial=initial, final=57)
+iterator = simple_sbml.modelIterator(initial=initial, final=6)
 
 #do statistics for different types of reactions and non-classified reactions
 rxn_num = 0        #total number of reactions deals
@@ -141,7 +141,7 @@ for idx, item in enumerate(iterator):
         #type: zeroth order
         #classification rule: if there are no species in the kinetics
 #d        if all(s not in ids_list for s in species_list):
-        if reaction.kinetic_law.isZerothOrder(ids_list, species_list):
+        if reaction.kinetic_law.isZerothOrder(species_list):
           print("zeroth order")
           file.write("zeroth order")
           rxn_zero_num_permol += 1
@@ -186,10 +186,10 @@ for idx, item in enumerate(iterator):
                 others_in_kinetic_law.append(ids_list[i])
             
             parameters_in_kinetic_law = parameters_in_kinetic_law + others_in_kinetic_law
-            # print("species")
-            # print(species_in_kinetic_law)
-            # print("parameters")
-            # print(parameters_in_kinetic_law)
+            #print("species")
+            #print(species_in_kinetic_law)
+            #print("parameters")
+            #print(parameters_in_kinetic_law)
 
             kinetics = reaction.kinetic_law.expanded_formula  
             #type: uni-term including uni-directional mass reaction and uni-term with moderator

@@ -147,15 +147,25 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law.mkSymbolExpression(function_definitions)
     self.assertEqual(kinetic_law.expanded_formula, "2**3 + 4**2")   
 
-  def testIsZerothOrder(self):
-    # Test ZerothOrder
+  def testIsZerothOrder1(self):
+    # Test ZerothOrder success case
+    if IGNORE_TEST:
+      return    
+    #kinetic_law: "kappa"
+    kinetic_law = self.laws[0]
+    species_list = ['EmptySet', 'u', 'z', 'v']
+    test = kinetic_law.isZerothOrder(species_list)
+    self.assertTrue(test) 
+
+  def testIsZerothOrder2(self):
+    # Test ZerothOrder Failure case
     if IGNORE_TEST:
       return
-    kinetic_law = self.mkKineticLawWithFormula("k1*k2")
-    ids_list = ["k1", "k2"]
-    species_list = ["S1", "S2"]
-    test = kinetic_law.isZerothOrder(ids_list, species_list)
-    self.assertTrue(test) 
+    #kinetic_law: "k6 * u"
+    kinetic_law = self.laws[1]
+    species_list = ['EmptySet', 'u', 'z', 'v']
+    test = kinetic_law.isZerothOrder(species_list)
+    self.assertFalse(test)
 
 if __name__ == '__main__':
   unittest.main()
