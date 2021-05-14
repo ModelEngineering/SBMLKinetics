@@ -24,9 +24,9 @@ import re # Extract substrings between brackets
 import time
 start_time = time.time()
 
-initial = 0
+initial = 11
 
-iterator = simple_sbml.modelIterator(initial=initial, final= 850)
+iterator = simple_sbml.modelIterator(initial=initial, final= 12)
 
 #do statistics for different types of reactions and non-classified reactions
 rxn_num = 0        #total number of reactions deals

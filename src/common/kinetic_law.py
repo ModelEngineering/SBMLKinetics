@@ -24,10 +24,14 @@ class KineticLaw(object):
     self.libsbml_kinetics = libsbml_kinetics
     # String version of chemical formula
     self.formula = self.libsbml_kinetics.getFormula()
-    # Parameters and chemical species
-    self.symbols = self._getSymbols()
     # Reaction for the kinetics law
     self.reaction = reaction
+    # Parameters and chemical species
+    # self.symbols = self._getSymbols()
+    try:
+        self.symbols = self._getSymbols()
+    except Exception:
+        self.symbols = []
     # Expanded kinetic formula (remove embedded functions)
     if function_definitions is None:
       self.expanded_formula = None
@@ -61,10 +65,11 @@ class KineticLaw(object):
     -------
     str
     """
-    if self.expanded_formula is None:
-      self.expandFormula(function_definitions)
-      self.expression_formula = str(self.expanded_formula)
-      self.expanded_formula = self.expression_formula.replace("^","**")
+    #if self.expanded_formula is/is not?? None:
+    self.expandFormula(function_definitions)
+    self.expression_formula = str(self.expanded_formula)
+    self.expanded_formula = self.expression_formula.replace("^","**")
+    return self.expanded_formula
 
   def isZerothOrder(self, species_list):
     """
@@ -144,7 +149,9 @@ class KineticLaw(object):
     def augment(ast_node, result):
       global cur_depth
       cur_depth += 1
+      #This step is necessary to avoid memory leaking
       if cur_depth > MAX_DEPTH:
+        #self.reaction.id is the reason for "try"
         raise exceptions.BadKineticsMath(self.reaction.id)
       for idx in range(ast_node.getNumChildren()):
         child_node = ast_node.getChild(idx)
