@@ -40,7 +40,7 @@ class SimpleSBML(object):
     self.reactions = []  # Python wrapper for Reaction
     self.species = []  # libsbml Species
     # Read the model
-    if "Roadrunner" in str(type(model_reference)):
+    if "RoadRunner" in str(type(model_reference)):
       model_reference = model_reference.getSBML()
     if util.isSBMLModel(model_reference):
       self.model = model_reference
