@@ -7,4 +7,5 @@ pylint
 python-libsbml
 pip>20
 sympy
+tellurium
 urllib3
