@@ -13,10 +13,12 @@ import numpy as np
 import os
 import libsbml
 import unittest
+import tellurium as te
 import zipfile
 
 
 IGNORE_TEST = False
+IS_PLOT = False
 NO_NAME = "dummy"
 
 
@@ -54,6 +56,14 @@ class TestSimpleSBML(unittest.TestCase):
     test(self.simple.getReaction, self.simple.reactions)
     test(self.simple.getSpecies, self.simple.species)
     test(self.simple.getParameter, self.simple.parameters)
+
+  def testConstructWithRoadrunner(self):
+    if IGNORE_TEST:
+      return
+    model = te.loadSBMLModel(helpers.TEST_PATH)
+    simple = helpers.getSimple()
+    self.assertGreater(len(simple.reactions), 0)
+    
 
 
 class TestFunctions(unittest.TestCase):

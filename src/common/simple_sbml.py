@@ -33,13 +33,15 @@ class SimpleSBML(object):
   def __init__(self, model_reference):
     """
     Initializes instance variables
-    :param str model_reference: string or SBML file
+    :param str model_reference: string or SBML file or Roadrunner object
     """
     ##### PUBLIC #####
     self.model = None  # libsbml object
     self.reactions = []  # Python wrapper for Reaction
     self.species = []  # libsbml Species
     # Read the model
+    if "Roadrunner" in str(type(model_reference)):
+      model_reference = model_reference.getSBML()
     if util.isSBMLModel(model_reference):
       self.model = model_reference
     else:

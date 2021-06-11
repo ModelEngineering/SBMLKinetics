@@ -51,7 +51,7 @@ class KineticLaw(object):
 
   def mkSymbolExpression(self, function_definitions):
     """
-    Creates a string that can be processed by pySym.
+    Creates a string that can be processed by sympy.
     
     Parameters
     -------
