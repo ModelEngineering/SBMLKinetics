@@ -5,6 +5,7 @@ from src.common import constants as cn
 from src.common import util
 from src.common import exceptions
 from src.common import msgs
+from sympy import *
 
 import collections
 import numpy as np
@@ -71,24 +72,607 @@ class KineticLaw(object):
     self.expanded_formula = self.expression_formula.replace("^","**")
     return self.expanded_formula
 
-  def isZerothOrder(self, species_list):
+
+  def isZerothOrder(self, species_in_kinetic_law):
     """
-    Check the kinetic law belongs to the type of ZerothOrder or not
+    Check whether the reaction with a kinetic law belongs to the type of Zeroth Order 
     
     Parameters
     -------
-    species_list: list-species_in_the_model 
+    species_in_kinetic_law: list-species in the kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._numSpeciesInKinetics(species_in_kinetic_law) == 0  
+
+  def isHillTerms(self, kinetics, kinetics_sim):
+    """
+    Check whether the reaction with a kinetic law belongs to the type of Kinetics with Hill terms
+    
+    Parameters
+    -------
+    kinetics: string-kinetics
+    kinetics: string-simplified kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._powerInKinetics(kinetics, kinetics_sim) 
+
+  def isNoPrds(self, product_list):
+    """
+    Tests whether the reaction belongs to the type of No Products
+    
+    Parameters
+    -------
+    product_list: list-products of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._numOfPrds(product_list) == 0
+
+  def isNoRcts(self, reactant_list):
+    """
+    Tests whether the reaction belongs to the type of No Reactants
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._numOfRcts(reactant_list) == 0
+
+  def isSingleRct(self, reactant_list):
+    """
+    Tests whether the reaction belongs to the type of Single Reactant
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._numOfRcts(reactant_list) == 1
+
+  def isMulRcts(self, reactant_list):
+    """
+    Tests whether the reaction belongs to the type of Multiple Reactants
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    return self._numOfRcts(reactant_list) > 1
+
+
+  def isUNDR(self,reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
+    """
+    Tests whether the reaction belongs to the type of uni-directional mass reaction
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    species_in_kinetic_law: list-species in the kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    flag = True
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+      flag = False
+    if self._numOfRcts(reactant_list) == 0:
+      flag = False
+    if self._isSingleProductOfTerms(kinetics,kinetics_sim) == False:
+      flag = False
+    if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == False:
+      flag = False
+
+    return flag
+
+  def isUNMO(self,reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
+    """
+    Tests whether the reaction belongs to the type of uni-term with moderator
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    species_in_kinetic_law: list-species in the kinetics
     
     Returns
     -------
     True or False
     """
 
-    ids_list = list(dict.fromkeys(self.symbols))
-    if all(s not in ids_list for s in species_list):
+    flag = True
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+      flag = False
+    if self._isSingleProductOfTerms(kinetics,kinetics_sim) == False:
+      flag = False
+    if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == True:
+      flag = False
+    
+    return flag
+
+  def isBIDR(self,reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
+    """
+    Tests whether the reaction belongs to the type of bi-directional mass reaction
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    product_list: list-products of the reaction
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    species_in_kinetic_law: list-species in the kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    flag = True
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+      flag = False
+    if self._numOfPrds(product_list) == 0:
+      flag = False
+    if self._numOfRcts(reactant_list) == 0:
+      flag = False
+    if self._isDiffOfTwoProductsOfTerms(kinetics,kinetics_sim) == False:
+      flag = False
+    if self._ProductOfTermsWithAllRctsOrPrds(kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list) == False:
+      flag = False
+    
+    return flag
+
+  def isBIMO(self,reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
+    """
+    Tests whether the reaction belongs to the type of bi-terms with moderator
+    
+    Parameters
+    -------
+    reactant_list: list-reactants of the reaction
+    product_list: list-products of the reaction
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    species_in_kinetic_law: list-species in the kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    flag = True
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+      flag = False
+    if self._isDiffOfTwoProductsOfTerms(kinetics,kinetics_sim) == False:
+      flag = False
+    if self._ProductOfTermsWithAllRctsOrPrds(kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list) == True:
+      flag = False
+
+    return flag
+
+  def isMM(self,kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
+
+    """
+    Tests whether the reaction belongs to the type of Michaelis-Menten Kinetics
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
+    parameters_in_kinetic_law: list-parameters in the kinetics  
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+
+    flag = False
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 1 and self._numOfRcts(reactant_list) == 1:
+      if self._MMSingleSpecInNumerator(kinetics,ids_list,parameters_in_kinetic_law,reactant_list) == True:
+        flag = True
+
+    return flag
+
+
+  def isMMcat(self,kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
+    """
+    Tests whether the reaction belongs to the type of Michaelis-Menten Kinetics-catalyzed
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
+    parameters_in_kinetic_law: list-parameters in the kinetics
+    reactant_list: list-reactants of the reaction
+
+    Returns
+    -------
+    True or False
+    """
+
+    flag = False
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 2 and self._numOfRcts(reactant_list) == 1:
+      if self._MMTwoSpecInNumerator(kinetics,ids_list, parameters_in_kinetic_law,species_in_kinetic_law,reactant_list) == True:  
+        flag = True
+      
+    return flag
+
+  def _numSpeciesInKinetics(self, species_in_kinetic_law):
+    """
+    Tests whether there is no species in the kinetic law
+    
+    Parameters
+    -------
+    species_in_kinetic_law: list-species in the kinetics
+
+    Returns
+    -------
+    Integer
+    """
+    return len(species_in_kinetic_law)
+
+  def _powerInKinetics(self, kinetics, kinetics_sim):
+    """
+    Tests whether there is power term in the kinetic law: **, "pow", but not "pow(,-1)"
+    
+    Parameters
+    ----    
+    kinetics: string-kineticse
+    kinetics_sim: string-simplified kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    if "pow(" in kinetics and "-1)" not in kinetics:
+      return True
+    elif "**" in kinetics: 
+      return True
+    elif "**" in kinetics_sim:
+      return True
+    else:
+      False
+  
+  def _numOfPrds(self, product_list):
+    """
+    Tests for the number of prds in the reaction
+    
+    Parameters
+    ----    
+    product_list: list-products of the reaction
+    
+    Returns
+    -------
+    Integer
+    """
+    return len(product_list[0])
+
+  def _numOfRcts(self, reactant_list):
+    """
+    Tests for the number of rcts in the reaction
+    
+    Parameters
+    ----    
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    Integer
+    """
+    return len(reactant_list[0])
+
+  def _isSingleProductOfTerms(self,kinetics,kinetics_sim):
+    """
+    Tests whether the kinetics is a single product of terms
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    if "/" not in kinetics and "+" not in kinetics and "-" not in kinetics:
+      return True
+    elif "/" not in kinetics_sim and "+" not in kinetics_sim and "-" not in kinetics_sim:
+      return True
+    else:
+      return False 
+
+  def _SpecsInKineticsAllRcts(self, species_in_kinetic_law, reactant_list):
+    """
+    Tests whether all species in kinetics are reactants
+    
+    Parameters
+    ----    
+    species_in_kinetic_law: list-species in the kinetics
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    return collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0])
+
+  def _isDiffOfTwoProductsOfTerms(self,kinetics,kinetics_sim):
+    """
+    Tests whether the kinetics is the difference between two product of terms
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+    if "/" not in kinetics and "+" not in kinetics and "exp(-" not in kinetics and "-" in kinetics:
+      return True
+    elif "/" not in kinetics_sim and "+" not in kinetics_sim and "exp(-" not in kinetics_sim and "-" in kinetics_sim:     
       return True
     else:
       return False
+
+  def _ProductOfTermsWithAllRctsOrPrds(self,kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list):
+    """
+    Tests whether the kinetics with one/the other product terms with all reactants/products
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    species_in_kinetic_law: list-species in the kinetics
+    reactant_list: list-reactants of the reaction
+    product_list: list-products of the reaction
+
+    Returns
+    -------
+    True or False
+    """
+
+    flag_kinetics = 1
+    flag_kinetics_sim = 1
+    terms = kinetics.split("-") 
+    if len(terms) == 2:
+      term1 = terms[0]
+      term2 = terms[1]
+      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
+        if all(ele in term1 for ele in reactant_list[0]) and all(ele in term2 for ele in product_list[0]):
+          flag_kinetics = 0
+
+    terms = kinetics_sim.split("-") 
+    if len(terms) == 2:
+      term1 = terms[0]
+      term2 = terms[1]
+      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
+        if all(ele in term1 for ele in reactant_list[0]) and all(ele in term2 for ele in product_list[0]):
+          flag_kinetics_sim = 0
+
+    if flag_kinetics*flag_kinetics_sim == 0:
+      return True
+    else:
+      return False
+
+
+  def _MMSingleSpecInNumerator(self,kinetics,ids_list, parameters_in_kinetic_law,reactant_list):
+    """
+    Tests whether kinetics is in the MM functional form with a single species in the numerator
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    parameters_in_kinetic_law: list-parameters in the kinetics  
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+
+    strange_func = 0
+    flag = 0
+    pre_symbols = ''
+    for i in range(len(ids_list)):
+      pre_symbols += ids_list[i]
+      pre_symbols += ' '
+    pre_symbols = pre_symbols[:-1] #remove the space at the end
+    pre_symbols_comma = pre_symbols.replace(" ",",")
+    stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
+    try: #sometimes there is "invalid syntax error"
+      exec(stmt)
+    except: 
+      strange_func = 1
+
+    try: #check if there is strange func (i.e. delay) in kinetic law
+      expr_stat = "expr = " + kinetics
+      exec(expr_stat)
+    except:
+      strange_func = 1
+
+    if strange_func == 0:
+      if (len(parameters_in_kinetic_law) >= 2):                    
+        for j in range(len(parameters_in_kinetic_law)):
+          for k in range(len(parameters_in_kinetic_law)):
+            for l in range(len(parameters_in_kinetic_law)):
+              for m in range(len(parameters_in_kinetic_law)):
+                # assuming there is one parameter in the numerator
+                if k != j:
+                  pre_n = reactant_list[0][0]
+                  pre_d = ' ( '
+                  pre_d += reactant_list[0][0] 
+                  pre_n += ' * '
+                  pre_d += ' + '
+                  pre_n += parameters_in_kinetic_law[j]
+                  pre_d += parameters_in_kinetic_law[k]
+                  pre_d += ' ) '
+                  pre = pre_n
+                  pre += ' / '
+                  pre += pre_d          
+                  expr1_stat = "expr1 =" + pre
+                  exec(expr1_stat)
+                  if simplify(expr1) == simplify(expr):
+                    flag = 1
+                    break
+                  # assuming there are two parameters in the numerator
+                  if len(parameters_in_kinetic_law) >= 3:
+                    if l != j and l != k:
+                      pre_n += ' * '
+                      pre_n += parameters_in_kinetic_law[l]
+                      pre = pre_n
+                      pre += ' / '
+                      pre += pre_d           
+                      expr1_stat = "expr1 =" + pre
+                      exec(expr1_stat) 
+                      #exec() does not work in python function?
+                      if simplify(expr1) == simplify(expr):
+                        flag = 1
+                        break
+                      # assuming there are three parameters in the numerator
+                      if len(parameters_in_kinetic_law) >= 4:
+                        if m != j and m != k and m != l:
+                          pre_n += ' * '
+                          pre_n += parameters_in_kinetic_law[m]
+                          pre = pre_n
+                          pre += ' / '
+                          pre += pre_d       
+                          expr1_stat = "expr1 =" + pre
+                          exec(expr1_stat)
+                          if simplify(expr1) == simplify(expr):
+                            flag = 1
+                            break
+              if flag == 1:
+                break
+            if flag == 1:
+              break
+          if flag == 1:
+            break
+    
+    if flag == 1:
+      return True
+    else: 
+      return False
+
+  def _MMTwoSpecInNumerator(self,kinetics,ids_list, parameters_in_kinetic_law,species_in_kinetic_law,reactant_list):
+    """
+    Tests whether kinetics is in the MM functional with a reactant and 2nd species as a product in the numerator
+    
+    Parameters
+    ----    
+    kinetics: string-kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    parameters_in_kinetic_law: list-parameters in the kinetics 
+    species_in_kinetic_law: list-species in the kinetics
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+
+    strange_func = 0
+    flag = 0
+    pre_symbols = ''
+    for i in range(len(ids_list)):
+      pre_symbols += ids_list[i]
+      pre_symbols += ' '
+    pre_symbols = pre_symbols[:-1] #remove the space at the end
+    pre_symbols_comma = pre_symbols.replace(" ",",")
+    stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
+    try: #sometimes there is "invalid syntax error"
+      exec(stmt)
+    except: 
+      strange_func = 1
+
+    try: #check if there is strange func (i.e. delay) in kinetic law
+      expr_stat = "expr = " + kinetics
+      exec(expr_stat)
+    except:
+      strange_func = 1
+
+    if strange_func == 0:
+      if (len(parameters_in_kinetic_law) != 0):                    
+        for j in range(len(parameters_in_kinetic_law)):
+          for k in range(len(parameters_in_kinetic_law)):
+            for l in range(len(parameters_in_kinetic_law)):
+              #no parameter in the numerator
+              pre_n = reactant_list[0][0]
+              cat = [item for item in species_in_kinetic_law if item not in reactant_list[0]][0]
+              pre_n += ' * '
+              pre_n += cat
+              pre_d = ' ( '
+              pre_d += reactant_list[0][0] 
+              pre_d += ' + '
+              pre_d += parameters_in_kinetic_law[k]
+              pre_d += ' ) '
+              pre = pre_n
+              pre += ' / '
+              pre += pre_d           
+              expr1_stat = "expr1 =" + pre
+              exec(expr1_stat)
+              if simplify(expr1) == simplify(expr):
+                flag = 1
+                break
+              # assuming there is one parameter in the numerator
+              if len(parameters_in_kinetic_law) >= 2:
+                if k != j:
+                  pre_n += ' * '
+                  pre_n += parameters_in_kinetic_law[j]
+                  pre = pre_n
+                  pre += ' / '
+                  pre += pre_d           
+                  expr1_stat = "expr1 =" + pre
+                  exec(expr1_stat)
+                  if simplify(expr1) == simplify(expr):
+                    flag = 1
+                    break
+                  # assuming there are two parameters in the numerator
+                  if len(parameters_in_kinetic_law) >= 3:
+                    if l != j and l != k:
+                      pre_n += ' * '
+                      pre_n += parameters_in_kinetic_law[l]
+                      pre = pre_n
+                      pre += ' / '
+                      pre += pre_d
+                      expr1_stat = "expr1 =" + pre
+                      exec(expr1_stat)
+                      if simplify(expr1) == simplify(expr):
+                        flag = 1
+                        break
+            if flag == 1:
+              break
+          if flag == 1:
+            break        
+    
+    if flag == 1:
+      return True
+    else: 
+      return False
+
 
   @staticmethod
   def _expandFormula(expansion, function_definitions,
