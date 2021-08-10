@@ -47,20 +47,20 @@ rxn_mm_cat_num = 0 #reaction number for Michaelis-Menton-catalyzed kinetics
 rxn_non_num = 0    #reaction number does not fall in any types above
 
 file = open("classification.txt", "w+")
-file.write("SBML id \tReaction id \tReaction \tKinetic law \
-           \tZeroth order \tKinetics with Hill terms \
-           \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
-           \tUni-directional mass reaction \tUni-term with moderator \
-           \tBi-directional mass reaction \tBi-terms with moderator \
-           \tMichaelis-Menten kinetics \tMichaelis-Menten kinetics-catalyzed \
-           \tNA \tClassifications \n")
-# file.write("SBML id \tReaction id  \tClassifications \tReaction \tKinetic law \
+# file.write("SBML id \tReaction id \tReaction \tKinetic law \
 #            \tZeroth order \tKinetics with Hill terms \
 #            \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
 #            \tUni-directional mass reaction \tUni-term with moderator \
 #            \tBi-directional mass reaction \tBi-terms with moderator \
 #            \tMichaelis-Menten kinetics \tMichaelis-Menten kinetics-catalyzed \
-#            \tNA\n")
+#            \tNA \tClassifications \n")
+file.write("SBML id \tReaction id  \tClassifications \tReaction \tKinetic law \
+           \tZeroth order \tKinetics with Hill terms \
+           \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
+           \tUni-directional mass reaction \tUni-term with moderator \
+           \tBi-directional mass reaction \tBi-terms with moderator \
+           \tMichaelis-Menten kinetics \tMichaelis-Menten kinetics-catalyzed \
+           \tNA\n")
 
 file_mol_stat = open("statistics_per_model.txt", "w+")
 file_mol_stat.write("SBMLid \tReaction# \tZeroth \tHill \tno_prd \tNo_rct \tSig_rct \tMul_rct \
@@ -73,8 +73,8 @@ for idx, item in enumerate(iterator):
     print("File %d has an error." % (file_num))
   else:
     name = item.filename
-    #print(name)
-    print(name[10:])
+    print(name)
+    #print(name[10:])
     
     # Create an SBML model. We'll use the model
     # data/
@@ -113,26 +113,32 @@ for idx, item in enumerate(iterator):
       for reaction in simple.reactions:
 
         flag_zeroth = 0
-        #flag_hill = 0
+        flag_hill = 0
         flag_no_prd = 0
         flag_no_rct = 0
         flag_sig_rct = 0
-        #flag_mul_rct = 0
-        #flag_UNDR = 0
-        #flag_UNMO = 0
-        #flag_BIDR = 0
-        #flag_BIMO = 0
-        #flag_MM = 0
-        #flag_MMCAT = 0
+        flag_mul_rct = 0
+        flag_UNDR = 0
+        flag_UNMO = 0
+        flag_BIDR = 0
+        flag_BIMO = 0
+        flag_MM = 0
+        flag_MMCAT = 0
         flag_non = 1
         classification_list = []
         reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
-        file.write("%s \t" % name[10:])
+        #file.write("%s \t" % name[10:])
+        file.write("%s \t" % name)
         #rxn_num += 1
         file.write("%s \t" % reaction.getId())
         # QUESTION: Why is this a list of lists?
         reactant_list = [[r.getSpecies() for r in reaction.reactants]]
         product_list = [[p.getSpecies() for p in reaction.products]]
+
+        #print("reactant_list")
+        #print(reactant_list[0])
+        #print("product_list")
+        #print(product_list[0])
 
         reactant_stg = " + ".join(
           [r.getSpecies() for r in reaction.reactants])
@@ -143,10 +149,10 @@ for idx, item in enumerate(iterator):
         print(str(reaction))
 
         reaction_str = reactant_stg + "->" + product_stg
-        file.write(str(reaction_str))
-        file.write("\t")
+        #file.write(str(reaction_str))
+        #file.write("\t")
 
-        file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
+        #file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
 
         species_num = model.getNumSpecies()
         parameter_num = model.getNumParameters()
@@ -187,99 +193,71 @@ for idx, item in enumerate(iterator):
             others_in_kinetic_law.append(ids_list[i])
         
         parameters_in_kinetic_law = parameters_in_kinetic_law + others_in_kinetic_law
-        #print("species")
-        #print(species_in_kinetic_law)
-        #print("parameters")
-        #print(parameters_in_kinetic_law)
+        # print("species")
+        # print(species_in_kinetic_law)
+        # print("parameters")
+        # print(parameters_in_kinetic_law)
 
     
         if reaction.kinetic_law.isZerothOrder(species_in_kinetic_law):
-          print("Zeroth order")
-          file.write("x \t")
           rxn_zero_num_permol += 1
-          flag_non = 0
           flag_zeroth = 1
+          flag_non = 0
           classification_list.append("ZERO")
-        else:
-          file.write("\t")
 
         #tpye: kinetics with hill terms
         #classification rule: if there is pow() or ** inside the kinetics, 
         #except the pow(,-1) case as the possible Michaelis–Menten kinetics.
-        if reaction.kinetic_law.isHillTerms(kinetics,kinetics_sim):
-          print("Kinetics with Hill terms")
-          file.write("x \t")
-          rxn_hill_num_permol += 1
-          flag_non = 0            
+        if reaction.kinetic_law.isHillTerms(kinetics, kinetics_sim):
+          rxn_hill_num_permol += 1  
+          flag_hill = 1         
+          flag_non = 0 
           classification_list.append("HILL")
-        else:
-          file.write("\t")
-
 
         #type: no products
         #classification rule; if there are no products
         if reaction.kinetic_law.isNoPrds(product_list):
-          print("No products")
-          file.write("x \t")
           rxn_no_prd_num_permol += 1
           flag_no_prd = 1
           flag_non = 0
           classification_list.append("P=0")
-        else:
-          file.write("\t")
+
           
         #type: no reactants
         #classifcation rule: if there are no reactants
         if reaction.kinetic_law.isNoRcts(reactant_list):
-          print("No reactants")
-          file.write("x \t")
           rxn_no_rct_num_permol += 1
           flag_no_rct = 1
           flag_non = 0
           classification_list.append("R=0")
-        else:
-          file.write("\t")
 
         if reaction.kinetic_law.isSingleRct(reactant_list):
-          print("One reactant")
-          file.write("x \t")
           rxn_sig_rct_num_permol += 1
           flag_sig_rct = 1
           flag_non = 0
           classification_list.append("R=1")
-        else:
-          file.write("\t")
 
         if reaction.kinetic_law.isMulRcts(reactant_list):
-          print("Multiple reactants")
-          file.write("x \t")
           rxn_mul_rct_num_permol += 1
+          flag_mul_rct = 1
           flag_non = 0
           classification_list.append("R>1")
-        else:
-          file.write("\t")
-
 
         #type: uni-term including uni-directional mass reaction and uni-term with moderator
         #classification rule: there is only * inside the kinetics without /,+,-.
         #for uni-directional mass reaction: the species inside the kinetics are only reactants     
-        if reaction.kinetic_law.isUNDR(reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
-            print("Uni-directional mass reaction")
-            file.write("x \t")
+        if reaction.kinetic_law.isUNDR(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
             rxn_uni_num_permol += 1
+            flag_UNDR = 1
             flag_non = 0
-            classification_list.append("UNIDR")
-        else:
-            file.write("\t")
+            classification_list.append("UNDR")
 
-        if reaction.kinetic_law.isUNMO(reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
-            print("Uni-term with moderator")
-            file.write("x \t")
+        if reaction.kinetic_law.isUNMO(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
             rxn_uni_mod_num_permol += 1
+            flag_UNMO = 1
             flag_non = 0
-            classification_list.append("UNIMO")
-        else: 
-            file.write("\t") 
+            classification_list.append("UNMO")
+              
 
         #type: bi-term including bi-directional mass reaction and bi-term with moderator
         #classification rule: there is only *,- inside the kinetics without /,+.
@@ -287,23 +265,18 @@ for idx, item in enumerate(iterator):
         #while the second term after - includes all the products. 
         #(Is there a better and more accurate way for this?)
         
-        if reaction.kinetic_law.isBIDR(reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
-          print("Bi-directional mass reaction")
-          file.write("x \t")
+        if reaction.kinetic_law.isBIDR(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
           rxn_bi_num_permol += 1
+          flag_BIDR = 1
           flag_non = 0
           classification_list.append("BIDR")
-        else:
-          file.write("\t")
+
         
-        if reaction.kinetic_law.isBIMO(reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
-          print("Bi-terms with moderator")
-          file.write("x \t")
+        if reaction.kinetic_law.isBIMO(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
           rxn_bi_mod_num_permol += 1
+          flag_BIMO = 1
           flag_non = 0
-          classification_list.append("BIMO") 
-        else:
-          file.write("\t")
+          classification_list.append("BIMO")
 
 
         if len(reactant_list[0]) != 0:
@@ -314,193 +287,110 @@ for idx, item in enumerate(iterator):
       
         ids_list = list(dict.fromkeys(ids_list))
 
-        pre_symbols = ''
-        for i in range(len(ids_list)):
-          pre_symbols += ids_list[i]
-          pre_symbols += ' '
-        pre_symbols = pre_symbols[:-1] #remove the space at the end
-        pre_symbols_comma = pre_symbols.replace(" ",",")
-        stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
-        try: #sometimes there is "invalid syntax error"
-          exec(stmt)
-        except: 
-          strange_func = 1
+        #print("ids_list:", ids_list)
 
-        try: #check if there is strange func (i.e. delay) in kinetic law
-          expr_stat = "expr = " + kinetics
-          exec(expr_stat)
-        except:
-          strange_func = 1
+        if reaction.kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                      
+          rxn_mm_num_permol += 1
+          flag_MM = 1
+          flag_non = 0
+          classification_list.append("MM") 
 
-        if strange_func == 0:
-        
-          # Michaelis–Menten kinetics(inreversible)
-          # classification rule:assuming there are one/two/three parameters in the numerator,
-          # use "simplify" equals to
-          flag_mm = 0
-          if (flag_sig_rct==1 and len(species_in_kinetic_law)==1):
-            if (len(parameters_in_kinetic_law) >= 2):                    
-              for j in range(len(parameters_in_kinetic_law)):
-                for k in range(len(parameters_in_kinetic_law)):
-                  for l in range(len(parameters_in_kinetic_law)):
-                    for m in range(len(parameters_in_kinetic_law)):
-                      # assuming there is one parameter in the numerator
-                      if k != j:
-                        pre_n = reactant_list[0][0]
-                        pre_d = ' ( '
-                        pre_d += reactant_list[0][0] 
-                        pre_n += ' * '
-                        pre_d += ' + '
-                        pre_n += parameters_in_kinetic_law[j]
-                        pre_d += parameters_in_kinetic_law[k]
-                        pre_d += ' ) '
-                        pre = pre_n
-                        pre += ' / '
-                        pre += pre_d           
-                        expr1_stat = "expr1 =" + pre
-                        exec(expr1_stat)
-                        if simplify(expr1) == simplify(expr):
-                          flag_mm = 1
-                          break
-                        # assuming there are two parameters in the numerator
-                        if len(parameters_in_kinetic_law) >= 3:
-                          if l != j and l != k:
-                            pre_n += ' * '
-                            pre_n += parameters_in_kinetic_law[l]
-                            pre = pre_n
-                            pre += ' / '
-                            pre += pre_d           
-                            expr1_stat = "expr1 =" + pre
-                            exec(expr1_stat)
-                            if simplify(expr1) == simplify(expr):
-                              flag_mm = 1
-                              break
-                            # assuming there are three parameters in the numerator
-                            if len(parameters_in_kinetic_law) >= 4:
-                              if m != j and m != k and m != l:
-                                pre_n += ' * '
-                                pre_n += parameters_in_kinetic_law[m]
-                                pre = pre_n
-                                pre += ' / '
-                                pre += pre_d           
-                                expr1_stat = "expr1 =" + pre
-                                exec(expr1_stat)
-                                if simplify(expr1) == simplify(expr):
-                                  flag_mm = 1
-                                  break
-                    if flag_mm == 1:
-                      break
-                  if flag_mm == 1:
-                    break
-                if flag_mm == 1:
-                  break
-          if flag_mm == 1:                      
-            print("Michaelis-Menten Kinetics")
-            file.write("x \t")
-            rxn_mm_num_permol += 1
-            flag_non = 0
-            classification_list.append("MM")
-          else:
-            file.write("\t")
-            
-          # Michaelis–Menten kinetics(catalyzed)
-          # classification rule:assuming there are no/one/two parameters in the numerator,
-          # use "simplify" equals to
-          flag_mm_cat = 0 
-          if (flag_sig_rct==1 and len(species_in_kinetic_law)==2):
-            if (len(parameters_in_kinetic_law) != 0):                    
-              for j in range(len(parameters_in_kinetic_law)):
-                for k in range(len(parameters_in_kinetic_law)):
-                  for l in range(len(parameters_in_kinetic_law)):
-                    #no parameter in the numerator
-                    pre_n = reactant_list[0][0]
-                    cat = [item for item in species_in_kinetic_law if item not in reactant_list[0]][0]
-                    pre_n += ' * '
-                    pre_n += cat
-                    pre_d = ' ( '
-                    pre_d += reactant_list[0][0] 
-                    pre_d += ' + '
-                    pre_d += parameters_in_kinetic_law[k]
-                    pre_d += ' ) '
-                    pre = pre_n
-                    pre += ' / '
-                    pre += pre_d           
-                    expr1_stat = "expr1 =" + pre
-                    exec(expr1_stat)
-                    if simplify(expr1) == simplify(expr):
-                      flag_mm_cat = 1
-                      break
-                    # assuming there is one parameter in the numerator
-                    if len(parameters_in_kinetic_law) >= 2:
-                      if k != j:
-                        pre_n += ' * '
-                        pre_n += parameters_in_kinetic_law[j]
-                        pre = pre_n
-                        pre += ' / '
-                        pre += pre_d           
-                        expr1_stat = "expr1 =" + pre
-                        exec(expr1_stat)
-                        if simplify(expr1) == simplify(expr):
-                          flag_mm_cat = 1
-                          break
-                        # assuming there are two parameters in the numerator
-                        if len(parameters_in_kinetic_law) >= 3:
-                          if l != j and l != k:
-                            pre_n += ' * '
-                            pre_n += parameters_in_kinetic_law[l]
-                            pre = pre_n
-                            pre += ' / '
-                            pre += pre_d
-                            expr1_stat = "expr1 =" + pre
-                            exec(expr1_stat)
-                            if simplify(expr1) == simplify(expr):
-                              flag_mm_cat = 1
-                              break
-                  if flag_mm_cat == 1:
-                    break
-                if flag_mm_cat == 1:
-                  break        
-          if flag_mm_cat == 1:                     
-            print("Michaelis-Menten Kinetics-catalyzed")
-            file.write("x \t")
-            rxn_mm_cat_num_permol += 1
-            flag_non = 0
-            classification_list.append("MMCAT")
-          else:
-            file.write("\t")
-
-        else: 
-          file.write("\t\t")
-
-
-        # if reaction.kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                      
-        #   print("Michaelis-Menten Kinetics")
-        #   file.write("x \t")
-        #   rxn_mm_num_permol += 1
-        #   flag_non = 0
-        #   classification_list.append("MM")
-        # else:
-        #   file.write("\t")
-
-        # if reaction.kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                     
-        #     print("Michaelis-Menten Kinetics-catalyzed")
-        #     file.write("x \t")
-        #     rxn_mm_cat_num_permol += 1
-        #     flag_non = 0
-        #     classification_list.append("MMCAT")
-        # else:
-        #   file.write("\t")
-        
-        if flag_non == 1:
-          rxn_non_num_permol += 1
-          file.write("x \t")
-        else:
-          file.write("\t") 
+        if reaction.kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                     
+          rxn_mm_cat_num_permol += 1
+          flag_MMCAT = 1
+          flag_non = 0
+          classification_list.append("MMCAT")
         
         #print(classification_list)
         classification_str = ','.join([str(elem) for elem in classification_list])
         file.write(classification_str)
-        file.write("\n")
+        file.write("\t")
+
+        file.write(str(reaction_str))
+        file.write("\t")
+        file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
+
+        if flag_zeroth == 1:
+          print("Zeroth order")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+
+        if flag_hill == 1:
+          print("Kinetics with Hill terms")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+
+        if flag_no_prd == 1:
+          print("No products")
+          file.write("x \t")
+        else:
+          file.write("\t")
+          
+        
+        if flag_no_rct == 1:
+          print("No reactants")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+        if flag_sig_rct == 1:
+          print("One reactant")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+        if flag_mul_rct == 1:
+          print("Multiple reactants")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+     
+        if flag_UNDR == 1:
+            print("Uni-directional mass reaction")
+            file.write("x \t")
+        else:
+            file.write("\t")
+
+        if flag_UNMO == 1:
+            print("Uni-term with moderator")
+            file.write("x \t")
+        else: 
+            file.write("\t") 
+        
+        if flag_BIDR == 1:
+          print("Bi-directional mass reaction")
+          file.write("x \t")
+        else:
+          file.write("\t")
+        
+        if flag_BIMO == 1:
+          print("Bi-terms with moderator")
+          file.write("x \t") 
+        else:
+          file.write("\t")
+
+        if flag_MM == 1:                      
+          print("Michaelis-Menten Kinetics")
+          file.write("x \t")
+        else:
+          file.write("\t")
+
+        if flag_MMCAT == 1:                     
+            print("Michaelis-Menten Kinetics-catalyzed")
+            file.write("x \t")
+        else:
+          file.write("\t")
+        
+        if flag_non == 1:
+          rxn_non_num_permol += 1
+          file.write("x \n")
+        else:
+          file.write("\n") 
 
       rxn_zero_num    += rxn_zero_num_permol
       rxn_hill_num    += rxn_hill_num_permol
