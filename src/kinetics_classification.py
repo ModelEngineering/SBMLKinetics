@@ -47,13 +47,7 @@ rxn_mm_cat_num = 0 #reaction number for Michaelis-Menton-catalyzed kinetics
 rxn_non_num = 0    #reaction number does not fall in any types above
 
 file = open("classification.txt", "w+")
-# file.write("SBML id \tReaction id \tReaction \tKinetic law \
-#            \tZeroth order \tKinetics with Hill terms \
-#            \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
-#            \tUni-directional mass reaction \tUni-term with moderator \
-#            \tBi-directional mass reaction \tBi-terms with moderator \
-#            \tMichaelis-Menten kinetics \tMichaelis-Menten kinetics-catalyzed \
-#            \tNA \tClassifications \n")
+
 file.write("SBML id \tReaction id  \tClassifications \tReaction \tKinetic law \
            \tZeroth order \tKinetics with Hill terms \
            \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
@@ -127,9 +121,7 @@ for idx, item in enumerate(iterator):
         flag_non = 1
         classification_list = []
         reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
-        #file.write("%s \t" % name[10:])
         file.write("%s \t" % name)
-        #rxn_num += 1
         file.write("%s \t" % reaction.getId())
         # QUESTION: Why is this a list of lists?
         reactant_list = [[r.getSpecies() for r in reaction.reactants]]
@@ -149,10 +141,6 @@ for idx, item in enumerate(iterator):
         print(str(reaction))
 
         reaction_str = reactant_stg + "->" + product_stg
-        #file.write(str(reaction_str))
-        #file.write("\t")
-
-        #file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
 
         species_num = model.getNumSpecies()
         parameter_num = model.getNumParameters()
@@ -198,7 +186,8 @@ for idx, item in enumerate(iterator):
         # print("parameters")
         # print(parameters_in_kinetic_law)
 
-    
+        #type: zeroth order
+        #classification rule: if there are no species in the kinetics
         if reaction.kinetic_law.isZerothOrder(species_in_kinetic_law):
           rxn_zero_num_permol += 1
           flag_zeroth = 1
@@ -222,7 +211,6 @@ for idx, item in enumerate(iterator):
           flag_non = 0
           classification_list.append("P=0")
 
-          
         #type: no reactants
         #classifcation rule: if there are no reactants
         if reaction.kinetic_law.isNoRcts(reactant_list):
@@ -231,12 +219,16 @@ for idx, item in enumerate(iterator):
           flag_non = 0
           classification_list.append("R=0")
 
+        #type: single reactant
+        #classification rule: if there is only one reactant
         if reaction.kinetic_law.isSingleRct(reactant_list):
           rxn_sig_rct_num_permol += 1
           flag_sig_rct = 1
           flag_non = 0
           classification_list.append("R=1")
 
+        #type: multiple reactants
+        #classification rule: if there are multiple reactants
         if reaction.kinetic_law.isMulRcts(reactant_list):
           rxn_mul_rct_num_permol += 1
           flag_mul_rct = 1
@@ -286,22 +278,25 @@ for idx, item in enumerate(iterator):
           ids_list += product_list[0]
       
         ids_list = list(dict.fromkeys(ids_list))
-
-        #print("ids_list:", ids_list)
-
+        
+        # Michaelis–Menten kinetics(inreversible)
+        # classification rule:assuming there are one/two/three parameters in the numerator,
+        # use "simplify" equals to
         if reaction.kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                      
           rxn_mm_num_permol += 1
           flag_MM = 1
           flag_non = 0
           classification_list.append("MM") 
 
+        #type: Michaelis–Menten kinetics(catalyzed)
+        #classification rule:assuming there are no/one/two parameters in the numerator,
+        #use "simplify" equals to
         if reaction.kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):                     
           rxn_mm_cat_num_permol += 1
           flag_MMCAT = 1
           flag_non = 0
           classification_list.append("MMCAT")
         
-        #print(classification_list)
         classification_str = ','.join([str(elem) for elem in classification_list])
         file.write(classification_str)
         file.write("\t")
