@@ -6,6 +6,7 @@ from src.common import kinetic_law
 from src.common.simple_sbml import SimpleSBML
 from src.common.kinetic_law import KineticLaw
 from tests.common import helpers
+from sympy import *
 
 import copy
 import libsbml
@@ -16,6 +17,9 @@ import unittest
 IGNORE_TEST = False
 IS_PLOT = False
 NUM_LAW = 3
+NUM_LAW_2 = 17
+NUM_LAW_3 = 7
+NUM_LAW_43 = 7
 
 
 class MockFunctionDefinition():
@@ -40,6 +44,15 @@ class TestKineticLaw(unittest.TestCase):
   def setUp(self):
     self.simple = helpers.getSimple_BIOMD6()
     self.laws = [self.simple.reactions[i].kinetic_law for i in range(NUM_LAW)]
+
+    self.simple_2 = helpers.getSimple_BIOMD2()
+    self.laws_2 = [self.simple_2.reactions[i].kinetic_law for i in range(NUM_LAW_2)]
+
+    self.simple_3 = helpers.getSimple_BIOMD3()
+    self.laws_3 = [self.simple_3.reactions[i].kinetic_law for i in range(NUM_LAW_3)]
+
+    self.simple_43 = helpers.getSimple_BIOMD43()
+    self.laws_43 = [self.simple_43.reactions[i].kinetic_law for i in range(NUM_LAW_43)]
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -151,20 +164,316 @@ class TestKineticLaw(unittest.TestCase):
     # Test ZerothOrder success case
     if IGNORE_TEST:
       return    
-    #kinetic_law: "kappa"
     kinetic_law = self.laws[0]
-    species_list = ['EmptySet', 'u', 'z', 'v']
-    test = kinetic_law.isZerothOrder(species_list)
+    #kinetic_law: "kappa"
+    species_in_kinetic_law = []
+    test = kinetic_law.isZerothOrder(species_in_kinetic_law)
     self.assertTrue(test) 
 
   def testIsZerothOrder2(self):
     # Test ZerothOrder Failure case
     if IGNORE_TEST:
       return
-    #kinetic_law: "k6 * u"
     kinetic_law = self.laws[1]
-    species_list = ['EmptySet', 'u', 'z', 'v']
-    test = kinetic_law.isZerothOrder(species_list)
+    #kinetic_law: "k6 * u"
+    species_in_kinetic_law = ['u']
+    test = kinetic_law.isZerothOrder(species_in_kinetic_law)
+    self.assertFalse(test)
+
+  def testIsHillTerms1(self):
+    # Test Kinetics with Hill terms success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws[2]
+    #kinetic_law: "k4 * z * (k4prime / k4 + pow(u, 2))"
+    kinetics =  "k4 * z * (k4prime / k4 + pow(u, 2))"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    test = kinetic_law.isHillTerms(kinetics, kinetics_sim)
+    self.assertTrue(test) 
+
+  def testIsHillTerms2(self):
+    # Test Kinetics with Hill terms Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws[1]
+    #kinetic_law: "k6 * u"
+    kinetics = "k6 * u"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    test = kinetic_law.isHillTerms(kinetics, kinetics_sim)
+    self.assertFalse(test)
+
+  def testIsNoPrds1(self):
+    # Test No products success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[1]
+    #reaction: "C->"
+    product_list = [[]]
+    test = kinetic_law.isNoPrds(product_list)
+    self.assertTrue(test) 
+
+  def testIsNoPrds2(self):
+    # Test No products Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    product_list = [['C']]
+    test = kinetic_law.isNoPrds(product_list)
+    self.assertFalse(test)
+
+  def testIsNoRcts1(self):
+    # Test No reactants success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    reactant_list = [[]]
+    test = kinetic_law.isNoPrds(reactant_list)
+    self.assertTrue(test) 
+
+  def testIsNoRcts2(self):
+    # Test No reactants Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[1]
+    #reaction: "C->"
+    reactant_list = [['C']]
+    test = kinetic_law.isNoPrds(reactant_list)
+    self.assertFalse(test)
+
+  def testIsSingleRct1(self):
+    # Test Single reactant success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[1]
+    #reaction: "C->"
+    reactant_list = [['C']]
+    test = kinetic_law.isSingleRct(reactant_list)
+    self.assertTrue(test) 
+
+  def testIsSingleRct2(self):
+    # Test Single reactant Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    reactant_list = [[]]
+    test = kinetic_law.isSingleRct(reactant_list)
+    self.assertFalse(test)
+
+  def testIsMulRcts1(self):
+    # Test multiple reactants success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_2[0]
+    #reaction: "B + L->BL"
+    reactant_list = [['B', 'L']]
+    test = kinetic_law.isMulRcts(reactant_list)
+    self.assertTrue(test)
+
+  def testIsMulRcts2(self):
+    # Test multiple reactants Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_2[3]
+    #reaction: "BLL->ALL"
+    reactant_list = [['BLL']]
+    test = kinetic_law.isMulRcts(reactant_list)
+    self.assertFalse(test)
+
+  def testIsUNDR1(self):
+    # Test Uni-directional mass reaction success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_43[3]
+    #"Y->Z; cytosol * Kf * Y "
+    reactant_list = [['Y']]
+    kinetics =  "cytosol * Kf * Y"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Y']
+    test = kinetic_law.isUNDR(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertTrue(test) 
+
+  def testIsUNDR2(self):
+    # Test Uni-directional mass reaction Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_43[0]
+    #"EC->Z; cytosol * (v0 + v1 * beta)"
+    reactant_list = [['EC']]
+    kinetics =  "cytosol * (v0 + v1 * beta) "
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = []
+    test = kinetic_law.isUNDR(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertFalse(test)
+  
+  def testIsUNMO1(self):
+    # Test Uni-term with moderator success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_43[5]
+    #"Rho->Fraction_Inactive_Channels; cytosol * Kd * pow(Z, 4) * Rho"
+    reactant_list = [['Rho']]
+    kinetics =  "cytosol * Kd * pow(Z, 4) * Rho"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Z','Rho']
+    test = kinetic_law.isUNMO(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertTrue(test) 
+
+  def testIsUNMO2(self):
+    # Test Uni-term with moderator Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_43[3]
+    #"Y->Z; cytosol * Kf * Y "
+    reactant_list = [['Y']]
+    kinetics =  "cytosol * Kf * Y "
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Y']
+    test = kinetic_law.isUNMO(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertFalse(test)
+
+  def testIsBIDR1(self):
+    # Test Bi-directional mass reaction success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_2[0]
+    #"B + L->BL; comp1 * (kf_0 * B * L - kr_0 * BL)"
+    reactant_list = [['B','L']]
+    product_list = [['BL']]
+    kinetics =  "comp1 * (kf_0 * B * L - kr_0 * BL)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['B','L','BL']
+    test = kinetic_law.isBIDR(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertTrue(test) 
+
+  def testIsBIDR2(self):
+    # Test Bi-directional mass reaction Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_43[6]
+    #"Fraction_Inactive_Channels->Rho; cytosol * Kr * (1 - Rho)"
+    reactant_list = [['Fraction_Inactive_Channels']]
+    product_list = [['Rho']]
+    kinetics =  "cytosol * Kr * (1 - Rho)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Rho']
+    test = kinetic_law.isBIDR(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertFalse(test)
+
+  def testIsBIMO1(self):
+    # Test Bi-terms with moderator success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_43[6]
+    #"Fraction_Inactive_Channels->Rho; cytosol * Kr * (1 - Rho)"
+    reactant_list = [['Fraction_Inactive_Channels']]
+    product_list = [['Rho']]
+    kinetics =  "cytosol * Kr * (1 - Rho)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Rho']
+    test = kinetic_law.isBIMO(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertTrue(test) 
+
+  def testIsBIMO2(self):
+    # Test Bi-terms with moderator Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_2[0]
+    #"B + L->BL; comp1 * (kf_0 * B * L - kr_0 * BL)"
+    reactant_list = [['B','L']]
+    product_list = [['BL']]
+    kinetics =  "comp1 * (kf_0 * B * L - kr_0 * BL)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['B','L','BL']
+    test = kinetic_law.isBIMO(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    self.assertFalse(test)
+
+  def testIsMM1(self):
+    # Test Michaelis-Menten Kinetics success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[4]
+    #"M->; cell * M * V2 * pow(K2 + M, -1) "
+    kinetics =  "cell * M * V2 * pow(K2 + M, -1)"
+    ids_list = ['cell', 'M', 'V2', 'K2']
+    species_in_kinetic_law = ['M']
+    parameters_in_kinetic_law = ['cell', 'V2', 'K2']
+    reactant_list = [['M']]
+    test = kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    self.assertTrue(test) 
+
+  def testIsMM2(self):
+    # Test Michaelis-Menten Kinetics Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[2]
+    #"C->; C * cell * vd * X * pow(C + Kd, -1)"
+    kinetics =  "C * cell * vd * X * pow(C + Kd, -1)"
+    ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
+    species_in_kinetic_law = ['C', 'X']
+    parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
+    reactant_list = [['C']]
+    test = kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    self.assertFalse(test)
+
+  def testIsMMcat1(self):
+    # Test Michaelis-Menten Kinetics-catalyzed success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[2]
+    #"C->; C * cell * vd * X * pow(C + Kd, -1)"
+    kinetics =  "C * cell * vd * X * pow(C + Kd, -1)"
+    ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
+    species_in_kinetic_law = ['C', 'X']
+    parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
+    reactant_list = [['C']]
+    test = kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    self.assertTrue(test) 
+
+  def testIsMMcat2(self):
+    # Test Michaelis-Menten Kinetics-catalyzed Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[4]
+    #"M->; cell * M * V2 * pow(K2 + M, -1) "
+    kinetics =  "cell * M * V2 * pow(K2 + M, -1)"
+    ids_list = ['cell', 'M', 'V2', 'K2']
+    species_in_kinetic_law = ['M']
+    parameters_in_kinetic_law = ['cell', 'V2', 'K2']
+    reactant_list = [['M']]
+    test = kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
     self.assertFalse(test)
 
 if __name__ == '__main__':
