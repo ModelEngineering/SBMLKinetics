@@ -159,7 +159,7 @@ class KineticLaw(object):
     return self._numOfRcts(reactant_list) > 1
 
 
-  def isUNDR(self,reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
+  def isUNDR(self, reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
     """
     Tests whether the reaction belongs to the type of uni-directional mass reaction
     
@@ -175,18 +175,16 @@ class KineticLaw(object):
     True or False
     """
     flag = True
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
-      flag = False
-    if self._numOfRcts(reactant_list) == 0:
-      flag = False
-    if self._isSingleProductOfTerms(kinetics,kinetics_sim) == False:
+    # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+    #   flag = False
+    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == False:
       flag = False
     if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == False:
       flag = False
 
     return flag
 
-  def isUNMO(self,reactant_list,kinetics,kinetics_sim,species_in_kinetic_law):
+  def isUNMO(self, reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
     """
     Tests whether the reaction belongs to the type of uni-term with moderator
     
@@ -205,14 +203,14 @@ class KineticLaw(object):
     flag = True
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
       flag = False
-    if self._isSingleProductOfTerms(kinetics,kinetics_sim) == False:
+    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == False:
       flag = False
     if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == True:
       flag = False
     
     return flag
 
-  def isBIDR(self,reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
+  def isBIDR(self, reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
     """
     Tests whether the reaction belongs to the type of bi-directional mass reaction
     
@@ -229,20 +227,16 @@ class KineticLaw(object):
     True or False
     """
     flag = True
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+    # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+    #   flag = False
+    if self._isDiffOfTwoProductsOfTerms(kinetics, kinetics_sim) == False:
       flag = False
-    if self._numOfPrds(product_list) == 0:
-      flag = False
-    if self._numOfRcts(reactant_list) == 0:
-      flag = False
-    if self._isDiffOfTwoProductsOfTerms(kinetics,kinetics_sim) == False:
-      flag = False
-    if self._ProductOfTermsWithAllRctsOrPrds(kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list) == False:
+    if self._ProductOfTermsWithAllRctsOrPrds(kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list) == False:
       flag = False
     
     return flag
 
-  def isBIMO(self,reactant_list,product_list,kinetics,kinetics_sim,species_in_kinetic_law):
+  def isBIMO(self, reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
     """
     Tests whether the reaction belongs to the type of bi-terms with moderator
     
@@ -261,9 +255,9 @@ class KineticLaw(object):
     flag = True
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
       flag = False
-    if self._isDiffOfTwoProductsOfTerms(kinetics,kinetics_sim) == False:
+    if self._isDiffOfTwoProductsOfTerms(kinetics, kinetics_sim) == False:
       flag = False
-    if self._ProductOfTermsWithAllRctsOrPrds(kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list) == True:
+    if self._ProductOfTermsWithAllRctsOrPrds(kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list) == True:
       flag = False
 
     return flag
@@ -288,13 +282,13 @@ class KineticLaw(object):
 
     flag = False
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 1 and self._numOfRcts(reactant_list) == 1:
-      if self._MMSingleSpecInNumerator(kinetics,ids_list,parameters_in_kinetic_law,reactant_list) == True:
+      if self._MMSingleSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, reactant_list) == True:
         flag = True
 
     return flag
 
 
-  def isMMcat(self,kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
+  def isMMcat(self, kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
     """
     Tests whether the reaction belongs to the type of Michaelis-Menten Kinetics-catalyzed
     
@@ -313,7 +307,7 @@ class KineticLaw(object):
 
     flag = False
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 2 and self._numOfRcts(reactant_list) == 1:
-      if self._MMTwoSpecInNumerator(kinetics,ids_list, parameters_in_kinetic_law,species_in_kinetic_law,reactant_list) == True:  
+      if self._MMTwoSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, species_in_kinetic_law, reactant_list) == True:  
         flag = True
       
     return flag
@@ -382,7 +376,7 @@ class KineticLaw(object):
     """
     return len(reactant_list[0])
 
-  def _isSingleProductOfTerms(self,kinetics,kinetics_sim):
+  def _isSingleProductOfTerms(self, kinetics, kinetics_sim):
     """
     Tests whether the kinetics is a single product of terms
     
@@ -415,9 +409,12 @@ class KineticLaw(object):
     -------
     True or False
     """
-    return collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0])
+    if len(reactant_list[0]) > 0 and collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]):
+      return True
+    else:
+      return False
 
-  def _isDiffOfTwoProductsOfTerms(self,kinetics,kinetics_sim):
+  def _isDiffOfTwoProductsOfTerms(self, kinetics, kinetics_sim):
     """
     Tests whether the kinetics is the difference between two product of terms
     
@@ -437,7 +434,7 @@ class KineticLaw(object):
     else:
       return False
 
-  def _ProductOfTermsWithAllRctsOrPrds(self,kinetics,kinetics_sim,species_in_kinetic_law,reactant_list,product_list):
+  def _ProductOfTermsWithAllRctsOrPrds(self, kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list):
     """
     Tests whether the kinetics with one/the other product terms with all reactants/products
     
@@ -457,7 +454,7 @@ class KineticLaw(object):
     flag_kinetics = 1
     flag_kinetics_sim = 1
     terms = kinetics.split("-") 
-    if len(terms) == 2:
+    if len(terms) == 2 and len(reactant_list[0]) > 0 and len(product_list[0]) > 0:
       term1 = terms[0]
       term2 = terms[1]
       if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
@@ -465,7 +462,7 @@ class KineticLaw(object):
           flag_kinetics = 0
 
     terms = kinetics_sim.split("-") 
-    if len(terms) == 2:
+    if len(terms) == 2 and len(reactant_list[0]) > 0 and len(product_list[0]) > 0:
       term1 = terms[0]
       term2 = terms[1]
       if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
@@ -478,7 +475,7 @@ class KineticLaw(object):
       return False
 
 
-  def _MMSingleSpecInNumerator(self,kinetics,ids_list, parameters_in_kinetic_law,reactant_list):
+  def _MMSingleSpecInNumerator(self, kinetics, ids_list, parameters_in_kinetic_law, reactant_list):
     """
     Tests whether kinetics is in the MM functional form with a single species in the numerator
     
@@ -504,13 +501,13 @@ class KineticLaw(object):
     pre_symbols_comma = pre_symbols.replace(" ",",")
     stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
     try: #sometimes there is "invalid syntax error"
-      exec(stmt)
+      exec(stmt,globals())
     except: 
       strange_func = 1
 
     try: #check if there is strange func (i.e. delay) in kinetic law
       expr_stat = "expr = " + kinetics
-      exec(expr_stat)
+      exec(expr_stat,globals())
     except:
       strange_func = 1
 
@@ -534,7 +531,7 @@ class KineticLaw(object):
                   pre += ' / '
                   pre += pre_d          
                   expr1_stat = "expr1 =" + pre
-                  exec(expr1_stat)
+                  exec(expr1_stat,globals())
                   if simplify(expr1) == simplify(expr):
                     flag = 1
                     break
@@ -547,7 +544,7 @@ class KineticLaw(object):
                       pre += ' / '
                       pre += pre_d           
                       expr1_stat = "expr1 =" + pre
-                      exec(expr1_stat) 
+                      exec(expr1_stat,globals()) 
                       #exec() does not work in python function?
                       if simplify(expr1) == simplify(expr):
                         flag = 1
@@ -561,7 +558,7 @@ class KineticLaw(object):
                           pre += ' / '
                           pre += pre_d       
                           expr1_stat = "expr1 =" + pre
-                          exec(expr1_stat)
+                          exec(expr1_stat,globals())
                           if simplify(expr1) == simplify(expr):
                             flag = 1
                             break
@@ -577,7 +574,7 @@ class KineticLaw(object):
     else: 
       return False
 
-  def _MMTwoSpecInNumerator(self,kinetics,ids_list, parameters_in_kinetic_law,species_in_kinetic_law,reactant_list):
+  def _MMTwoSpecInNumerator(self, kinetics, ids_list, parameters_in_kinetic_law, species_in_kinetic_law, reactant_list):
     """
     Tests whether kinetics is in the MM functional with a reactant and 2nd species as a product in the numerator
     
@@ -604,13 +601,13 @@ class KineticLaw(object):
     pre_symbols_comma = pre_symbols.replace(" ",",")
     stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
     try: #sometimes there is "invalid syntax error"
-      exec(stmt)
+      exec(stmt,globals())
     except: 
       strange_func = 1
 
     try: #check if there is strange func (i.e. delay) in kinetic law
       expr_stat = "expr = " + kinetics
-      exec(expr_stat)
+      exec(expr_stat,globals())
     except:
       strange_func = 1
 
@@ -633,7 +630,7 @@ class KineticLaw(object):
               pre += ' / '
               pre += pre_d           
               expr1_stat = "expr1 =" + pre
-              exec(expr1_stat)
+              exec(expr1_stat,globals())
               if simplify(expr1) == simplify(expr):
                 flag = 1
                 break
@@ -646,7 +643,7 @@ class KineticLaw(object):
                   pre += ' / '
                   pre += pre_d           
                   expr1_stat = "expr1 =" + pre
-                  exec(expr1_stat)
+                  exec(expr1_stat,globals())
                   if simplify(expr1) == simplify(expr):
                     flag = 1
                     break
@@ -659,7 +656,7 @@ class KineticLaw(object):
                       pre += ' / '
                       pre += pre_d
                       expr1_stat = "expr1 =" + pre
-                      exec(expr1_stat)
+                      exec(expr1_stat,globals())
                       if simplify(expr1) == simplify(expr):
                         flag = 1
                         break
