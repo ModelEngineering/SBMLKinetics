@@ -73,7 +73,7 @@ class KineticLaw(object):
     return self.expanded_formula
 
 
-  def isZerothOrder(self, species_in_kinetic_law):
+  def isZerothOrder(self, species_in_kinetic_law=species_in_kinetc_law, **kwargs):
     """
     Check whether the reaction with a kinetic law belongs to the type of Zeroth Order 
     
@@ -87,7 +87,7 @@ class KineticLaw(object):
     """
     return self._numSpeciesInKinetics(species_in_kinetic_law) == 0  
 
-  def isHillTerms(self, kinetics, kinetics_sim):
+  def isHillTerms(self, kinetics=kinetics, kinetics_sim=kinetics_sim):
     """
     Check whether the reaction with a kinetic law belongs to the type of Kinetics with Hill terms
     
