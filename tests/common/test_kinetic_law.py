@@ -167,7 +167,8 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws[0]
     #kinetic_law: "kappa"
     species_in_kinetic_law = []
-    test = kinetic_law.isZerothOrder(species_in_kinetic_law)
+    kwargs = {"species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isZerothOrder(**kwargs)
     self.assertTrue(test) 
 
   def testIsZerothOrder2(self):
@@ -177,7 +178,8 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws[1]
     #kinetic_law: "k6 * u"
     species_in_kinetic_law = ['u']
-    test = kinetic_law.isZerothOrder(species_in_kinetic_law)
+    kwargs = {"species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isZerothOrder(**kwargs)
     self.assertFalse(test)
 
   def testIsHillTerms1(self):
@@ -191,7 +193,8 @@ class TestKineticLaw(unittest.TestCase):
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
-    test = kinetic_law.isHillTerms(kinetics, kinetics_sim)
+    kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim}
+    test = kinetic_law.isHillTerms(**kwargs)
     self.assertTrue(test) 
 
   def testIsHillTerms2(self):
@@ -205,7 +208,8 @@ class TestKineticLaw(unittest.TestCase):
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
-    test = kinetic_law.isHillTerms(kinetics, kinetics_sim)
+    kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim}
+    test = kinetic_law.isHillTerms(**kwargs)
     self.assertFalse(test)
 
   def testIsNoPrds1(self):
@@ -214,8 +218,9 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_3[1]
     #reaction: "C->"
-    product_list = [[]]
-    test = kinetic_law.isNoPrds(product_list)
+    product_list = []
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isNoPrds(**kwargs)
     self.assertTrue(test) 
 
   def testIsNoPrds2(self):
@@ -224,8 +229,9 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_3[0]
     #reaction: "->C"
-    product_list = [['C']]
-    test = kinetic_law.isNoPrds(product_list)
+    product_list = ['C']
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isNoPrds(**kwargs)
     self.assertFalse(test)
 
   def testIsNoRcts1(self):
@@ -234,8 +240,9 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_3[0]
     #reaction: "->C"
-    reactant_list = [[]]
-    test = kinetic_law.isNoPrds(reactant_list)
+    reactant_list = []
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isNoRcts(**kwargs)
     self.assertTrue(test) 
 
   def testIsNoRcts2(self):
@@ -244,8 +251,9 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_3[1]
     #reaction: "C->"
-    reactant_list = [['C']]
-    test = kinetic_law.isNoPrds(reactant_list)
+    reactant_list = ['C']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isNoRcts(**kwargs)
     self.assertFalse(test)
 
   def testIsSingleRct1(self):
@@ -254,8 +262,9 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_3[1]
     #reaction: "C->"
-    reactant_list = [['C']]
-    test = kinetic_law.isSingleRct(reactant_list)
+    reactant_list = ['C']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isSingleRct(**kwargs)
     self.assertTrue(test) 
 
   def testIsSingleRct2(self):
@@ -264,8 +273,9 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_3[0]
     #reaction: "->C"
-    reactant_list = [[]]
-    test = kinetic_law.isSingleRct(reactant_list)
+    reactant_list = []
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isSingleRct(**kwargs)
     self.assertFalse(test)
 
   def testIsMulRcts1(self):
@@ -274,8 +284,9 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_2[0]
     #reaction: "B + L->BL"
-    reactant_list = [['B', 'L']]
-    test = kinetic_law.isMulRcts(reactant_list)
+    reactant_list = ['B', 'L']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isMulRcts(**kwargs)
     self.assertTrue(test)
 
   def testIsMulRcts2(self):
@@ -284,8 +295,9 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_2[3]
     #reaction: "BLL->ALL"
-    reactant_list = [['BLL']]
-    test = kinetic_law.isMulRcts(reactant_list)
+    reactant_list = ['BLL']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isMulRcts(**kwargs)
     self.assertFalse(test)
 
   def testIsUNDR1(self):
@@ -294,14 +306,16 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_43[3]
     #"Y->Z; cytosol * Kf * Y "
-    reactant_list = [['Y']]
+    reactant_list = ['Y']
     kinetics =  "cytosol * Kf * Y"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['Y']
-    test = kinetic_law.isUNDR(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+             "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isUNDR(**kwargs)
     self.assertTrue(test) 
 
   def testIsUNDR2(self):
@@ -310,14 +324,16 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_43[0]
     #"EC->Z; cytosol * (v0 + v1 * beta)"
-    reactant_list = [['EC']]
+    reactant_list = ['EC']
     kinetics =  "cytosol * (v0 + v1 * beta) "
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = []
-    test = kinetic_law.isUNDR(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+             "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isUNDR(**kwargs)
     self.assertFalse(test)
   
   def testIsUNMO1(self):
@@ -326,14 +342,16 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_43[5]
     #"Rho->Fraction_Inactive_Channels; cytosol * Kd * pow(Z, 4) * Rho"
-    reactant_list = [['Rho']]
+    reactant_list = ['Rho']
     kinetics =  "cytosol * Kd * pow(Z, 4) * Rho"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['Z','Rho']
-    test = kinetic_law.isUNMO(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+             "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isUNMO(**kwargs)
     self.assertTrue(test) 
 
   def testIsUNMO2(self):
@@ -342,14 +360,16 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_43[3]
     #"Y->Z; cytosol * Kf * Y "
-    reactant_list = [['Y']]
+    reactant_list = ['Y']
     kinetics =  "cytosol * Kf * Y "
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['Y']
-    test = kinetic_law.isUNMO(reactant_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+             "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isUNMO(**kwargs)
     self.assertFalse(test)
 
   def testIsBIDR1(self):
@@ -358,15 +378,18 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_2[0]
     #"B + L->BL; comp1 * (kf_0 * B * L - kr_0 * BL)"
-    reactant_list = [['B','L']]
-    product_list = [['BL']]
+    reactant_list = ['B','L']
+    product_list = ['BL']
     kinetics =  "comp1 * (kf_0 * B * L - kr_0 * BL)"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['B','L','BL']
-    test = kinetic_law.isBIDR(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "product_list": product_list, \
+              "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isBIDR(**kwargs)
     self.assertTrue(test) 
 
   def testIsBIDR2(self):
@@ -375,15 +398,18 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_43[6]
     #"Fraction_Inactive_Channels->Rho; cytosol * Kr * (1 - Rho)"
-    reactant_list = [['Fraction_Inactive_Channels']]
-    product_list = [['Rho']]
+    reactant_list = ['Fraction_Inactive_Channels']
+    product_list = ['Rho']
     kinetics =  "cytosol * Kr * (1 - Rho)"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['Rho']
-    test = kinetic_law.isBIDR(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "product_list": product_list, \
+              "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isBIDR(**kwargs)
     self.assertFalse(test)
 
   def testIsBIMO1(self):
@@ -392,15 +418,18 @@ class TestKineticLaw(unittest.TestCase):
       return    
     kinetic_law = self.laws_43[6]
     #"Fraction_Inactive_Channels->Rho; cytosol * Kr * (1 - Rho)"
-    reactant_list = [['Fraction_Inactive_Channels']]
-    product_list = [['Rho']]
+    reactant_list = ['Fraction_Inactive_Channels']
+    product_list = ['Rho']
     kinetics =  "cytosol * Kr * (1 - Rho)"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['Rho']
-    test = kinetic_law.isBIMO(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "product_list": product_list, \
+              "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isBIMO(**kwargs)
     self.assertTrue(test) 
 
   def testIsBIMO2(self):
@@ -409,15 +438,18 @@ class TestKineticLaw(unittest.TestCase):
       return
     kinetic_law = self.laws_2[0]
     #"B + L->BL; comp1 * (kf_0 * B * L - kr_0 * BL)"
-    reactant_list = [['B','L']]
-    product_list = [['BL']]
+    reactant_list = ['B','L']
+    product_list = ['BL']
     kinetics =  "comp1 * (kf_0 * B * L - kr_0 * BL)"
     try:
       kinetics_sim = str(simplify(kinetics))
     except:
       kinetics_sim = kinetics
     species_in_kinetic_law = ['B','L','BL']
-    test = kinetic_law.isBIMO(reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law)
+    kwargs = {"reactant_list": reactant_list, "product_list": product_list, \
+              "kinetics": kinetics, "kinetics_sim": kinetics_sim, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isBIMO(**kwargs)
     self.assertFalse(test)
 
   def testIsMM1(self):
@@ -430,8 +462,11 @@ class TestKineticLaw(unittest.TestCase):
     ids_list = ['cell', 'M', 'V2', 'K2']
     species_in_kinetic_law = ['M']
     parameters_in_kinetic_law = ['cell', 'V2', 'K2']
-    reactant_list = [['M']]
-    test = kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    reactant_list = ['M']
+    kwargs = {"reactant_list": reactant_list, \
+              "kinetics": kinetics, "ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    test = kinetic_law.isMM(**kwargs)
     self.assertTrue(test) 
 
   def testIsMM2(self):
@@ -444,8 +479,11 @@ class TestKineticLaw(unittest.TestCase):
     ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
     species_in_kinetic_law = ['C', 'X']
     parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
-    reactant_list = [['C']]
-    test = kinetic_law.isMM(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    reactant_list = ['C']
+    kwargs = {"reactant_list": reactant_list, \
+              "kinetics": kinetics, "ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    test = kinetic_law.isMM(**kwargs)
     self.assertFalse(test)
 
   def testIsMMcat1(self):
@@ -458,8 +496,11 @@ class TestKineticLaw(unittest.TestCase):
     ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
     species_in_kinetic_law = ['C', 'X']
     parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
-    reactant_list = [['C']]
-    test = kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    reactant_list = ['C']
+    kwargs = {"reactant_list": reactant_list, \
+              "kinetics": kinetics, "ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    test = kinetic_law.isMMcat(**kwargs)
     self.assertTrue(test) 
 
   def testIsMMcat2(self):
@@ -472,8 +513,11 @@ class TestKineticLaw(unittest.TestCase):
     ids_list = ['cell', 'M', 'V2', 'K2']
     species_in_kinetic_law = ['M']
     parameters_in_kinetic_law = ['cell', 'V2', 'K2']
-    reactant_list = [['M']]
-    test = kinetic_law.isMMcat(kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list)
+    reactant_list = ['M']
+    kwargs = {"reactant_list": reactant_list, \
+              "kinetics": kinetics, "ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    test = kinetic_law.isMMcat(**kwargs)
     self.assertFalse(test)
 
 if __name__ == '__main__':
