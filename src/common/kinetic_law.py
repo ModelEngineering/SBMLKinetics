@@ -7,11 +7,11 @@ from src.common import exceptions
 from src.common import msgs
 from sympy import *
 
-import collections
+import collections #use set to compare two lists
 import numpy as np
-import re
+import re # Extract substrings between brackets
 
-MAX_RECURSION = 5
+MAX_RECURSION = 5 # Maximum number for iteration function expansions
 
 
 class KineticLaw(object):
@@ -73,9 +73,11 @@ class KineticLaw(object):
     return self.expanded_formula
 
 
-  def isZerothOrder(self, species_in_kinetic_law=species_in_kinetc_law, **kwargs):
+
+  def isZerothOrder(self, **kwargs):
     """
     Check whether the reaction with a kinetic law belongs to the type of Zeroth Order 
+    Zeroth order classification rule: if there are no species in the kinetics
     
     Parameters
     -------
@@ -85,86 +87,109 @@ class KineticLaw(object):
     -------
     True or False
     """
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
     return self._numSpeciesInKinetics(species_in_kinetic_law) == 0  
+  
 
-  def isHillTerms(self, kinetics=kinetics, kinetics_sim=kinetics_sim):
+  def isHillTerms(self, **kwargs):
     """
     Check whether the reaction with a kinetic law belongs to the type of Kinetics with Hill terms
-    
+    Kinetics with hill terms classification rule: if there is pow() or ** inside the kinetics, 
+    except the pow(,-1) case as the possible Michaelis–Menten kinetics
+
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     kinetics: string-kinetics
-    kinetics: string-simplified kinetics
+    kinetics_sim: string-simplified kinetics
     
     Returns
     -------
     True or False
     """
+    kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
     return self._powerInKinetics(kinetics, kinetics_sim) 
 
-  def isNoPrds(self, product_list):
+  def isNoPrds(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of No Products
-    
+    No products classification rule: if there are no products
+
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     product_list: list-products of the reaction
     
     Returns
     -------
     True or False
     """
+    product_list = kwargs["product_list"]
     return self._numOfPrds(product_list) == 0
 
-  def isNoRcts(self, reactant_list):
+  def isNoRcts(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of No Reactants
-    
+    No reactants classifcation rule: if there are no reactants
+
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     
     Returns
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"]
     return self._numOfRcts(reactant_list) == 0
 
-  def isSingleRct(self, reactant_list):
+  def isSingleRct(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of Single Reactant
+    Single reactant classification rule: if there is only one reactant
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     
     Returns
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"]
     return self._numOfRcts(reactant_list) == 1
 
-  def isMulRcts(self, reactant_list):
+  def isMulRcts(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of Multiple Reactants
+    Multiple reactants classification rule: if there are multiple reactants
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     
     Returns
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"] 
     return self._numOfRcts(reactant_list) > 1
 
 
-  def isUNDR(self, reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
+  def isUNDR(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of uni-directional mass reaction
+    Uni-directional mass reaction classification rule: 
+    1) There is only * inside the kinetics without /,+,-.
+    2) The species inside the kinetics are only reactants
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
@@ -174,6 +199,11 @@ class KineticLaw(object):
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"]
+    kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
     flag = True
     # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
     #   flag = False
@@ -184,12 +214,16 @@ class KineticLaw(object):
 
     return flag
 
-  def isUNMO(self, reactant_list, kinetics, kinetics_sim, species_in_kinetic_law):
+  def isUNMO(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of uni-term with moderator
+    Uni-term with moderator classification rule: 
+    1) There is only * inside the kinetics without /,+,-.
+    2) The species inside the kinetics are not only reactants
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
@@ -199,6 +233,11 @@ class KineticLaw(object):
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"]
+    kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
 
     flag = True
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
@@ -210,12 +249,18 @@ class KineticLaw(object):
     
     return flag
 
-  def isBIDR(self, reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
+  def isBIDR(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of bi-directional mass reaction
+    Bi-directional mass reactionclassification rule: 
+    1) There is only *,- inside the kinetics without /,+.
+    2) The first term before - includes all the reactants,
+       while the second term after - includes all the products. 
+      (Is there a better and more accurate way for this?)
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     product_list: list-products of the reaction
     kinetics: string-kinetics
@@ -226,6 +271,13 @@ class KineticLaw(object):
     -------
     True or False
     """
+
+    reactant_list = kwargs["reactant_list"]
+    product_list = kwargs["product_list"]
+    kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
     flag = True
     # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
     #   flag = False
@@ -236,12 +288,18 @@ class KineticLaw(object):
     
     return flag
 
-  def isBIMO(self, reactant_list, product_list, kinetics, kinetics_sim, species_in_kinetic_law):
+  def isBIMO(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of bi-terms with moderator
+    Bi-terms with moderator classification rule: 
+    1) There is only *,- inside the kinetics without /,+.
+    2) The first term before - does not include all the reactants,
+       while the second term after - does not include all the products. 
+      (Is there a better and more accurate way for this?)
     
     Parameters
     -------
+    **kwargs: dictionary-keyword arguments
     reactant_list: list-reactants of the reaction
     product_list: list-products of the reaction
     kinetics: string-kinetics
@@ -252,6 +310,12 @@ class KineticLaw(object):
     -------
     True or False
     """
+    reactant_list = kwargs["reactant_list"]
+    product_list = kwargs["product_list"]
+    kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
     flag = True
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
       flag = False
@@ -262,13 +326,16 @@ class KineticLaw(object):
 
     return flag
 
-  def isMM(self,kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
+  def isMM(self, **kwargs):
 
     """
     Tests whether the reaction belongs to the type of Michaelis-Menten Kinetics
+    Michaelis–Menten kinetics(inreversible) classification rule:
+    assuming there are one/two/three parameters in the numerator, using "simplify" equals to
     
     Parameters
-    ----    
+    ---- 
+    **kwargs: dictionary-keyword arguments 
     kinetics: string-kinetics
     ids_list: list-id list including all the ids in kinetics, reactants and products
     species_in_kinetic_law: list-species in the kinetics
@@ -279,6 +346,12 @@ class KineticLaw(object):
     -------
     True or False
     """
+  
+    kinetics = kwargs["kinetics"]
+    ids_list = kwargs["ids_list"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    parameters_in_kinetic_law = kwargs["parameters_in_kinetic_law"]
+    reactant_list = kwargs["reactant_list"]
 
     flag = False
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 1 and self._numOfRcts(reactant_list) == 1:
@@ -288,12 +361,15 @@ class KineticLaw(object):
     return flag
 
 
-  def isMMcat(self, kinetics, ids_list, species_in_kinetic_law, parameters_in_kinetic_law, reactant_list):
+  def isMMcat(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of Michaelis-Menten Kinetics-catalyzed
+    Michaelis–Menten kinetics(catalyzed) classification rule:
+    Assuming there are no/one/two parameters in the numerator, using "simplify" equals to
     
     Parameters
-    ----    
+    ----  
+    **kwargs: dictionary-keyword arguments  
     kinetics: string-kinetics
     ids_list: list-id list including all the ids in kinetics, reactants and products
     species_in_kinetic_law: list-species in the kinetics
@@ -304,6 +380,12 @@ class KineticLaw(object):
     -------
     True or False
     """
+
+    kinetics = kwargs["kinetics"]
+    ids_list = kwargs["ids_list"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    parameters_in_kinetic_law = kwargs["parameters_in_kinetic_law"]
+    reactant_list = kwargs["reactant_list"]
 
     flag = False
     if self._numSpeciesInKinetics(species_in_kinetic_law) == 2 and self._numOfRcts(reactant_list) == 1:
@@ -360,7 +442,7 @@ class KineticLaw(object):
     -------
     Integer
     """
-    return len(product_list[0])
+    return len(product_list)
 
   def _numOfRcts(self, reactant_list):
     """
@@ -374,7 +456,7 @@ class KineticLaw(object):
     -------
     Integer
     """
-    return len(reactant_list[0])
+    return len(reactant_list)
 
   def _isSingleProductOfTerms(self, kinetics, kinetics_sim):
     """
@@ -409,7 +491,7 @@ class KineticLaw(object):
     -------
     True or False
     """
-    if len(reactant_list[0]) > 0 and collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]):
+    if len(reactant_list) > 0 and collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list):
       return True
     else:
       return False
@@ -454,19 +536,19 @@ class KineticLaw(object):
     flag_kinetics = 1
     flag_kinetics_sim = 1
     terms = kinetics.split("-") 
-    if len(terms) == 2 and len(reactant_list[0]) > 0 and len(product_list[0]) > 0:
+    if len(terms) == 2 and len(reactant_list) > 0 and len(product_list) > 0:
       term1 = terms[0]
       term2 = terms[1]
-      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
-        if all(ele in term1 for ele in reactant_list[0]) and all(ele in term2 for ele in product_list[0]):
+      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list+product_list):
+        if all(ele in term1 for ele in reactant_list) and all(ele in term2 for ele in product_list):
           flag_kinetics = 0
 
     terms = kinetics_sim.split("-") 
-    if len(terms) == 2 and len(reactant_list[0]) > 0 and len(product_list[0]) > 0:
+    if len(terms) == 2 and len(reactant_list) > 0 and len(product_list) > 0:
       term1 = terms[0]
       term2 = terms[1]
-      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list[0]+product_list[0]):
-        if all(ele in term1 for ele in reactant_list[0]) and all(ele in term2 for ele in product_list[0]):
+      if collections.Counter(species_in_kinetic_law) == collections.Counter(reactant_list+product_list):
+        if all(ele in term1 for ele in reactant_list) and all(ele in term2 for ele in product_list):
           flag_kinetics_sim = 0
 
     if flag_kinetics*flag_kinetics_sim == 0:
@@ -491,7 +573,7 @@ class KineticLaw(object):
     True or False
     """
 
-    strange_func = 0
+    strange_func = 0 #check if there are strang functions (i.e. delay) in kinetics
     flag = 0
     pre_symbols = ''
     for i in range(len(ids_list)):
@@ -519,9 +601,9 @@ class KineticLaw(object):
               for m in range(len(parameters_in_kinetic_law)):
                 # assuming there is one parameter in the numerator
                 if k != j:
-                  pre_n = reactant_list[0][0]
+                  pre_n = reactant_list[0]
                   pre_d = ' ( '
-                  pre_d += reactant_list[0][0] 
+                  pre_d += reactant_list[0]
                   pre_n += ' * '
                   pre_d += ' + '
                   pre_n += parameters_in_kinetic_law[j]
@@ -591,7 +673,7 @@ class KineticLaw(object):
     True or False
     """
 
-    strange_func = 0
+    strange_func = 0 #check if there are strang functions (i.e. delay) in kinetics
     flag = 0
     pre_symbols = ''
     for i in range(len(ids_list)):
@@ -617,12 +699,12 @@ class KineticLaw(object):
           for k in range(len(parameters_in_kinetic_law)):
             for l in range(len(parameters_in_kinetic_law)):
               #no parameter in the numerator
-              pre_n = reactant_list[0][0]
-              cat = [item for item in species_in_kinetic_law if item not in reactant_list[0]][0]
+              pre_n = reactant_list[0]
+              cat = [item for item in species_in_kinetic_law if item not in reactant_list][0]
               pre_n += ' * '
               pre_n += cat
               pre_d = ' ( '
-              pre_d += reactant_list[0][0] 
+              pre_d += reactant_list[0]
               pre_d += ' + '
               pre_d += parameters_in_kinetic_law[k]
               pre_d += ' ) '
