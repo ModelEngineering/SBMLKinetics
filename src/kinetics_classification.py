@@ -19,13 +19,27 @@ from sympy import *
 from libsbml import * # access functions in SBML
 import time
 
+import pandas as pd
 
 
 def main(initial_model_indx, final_model_indx): 
+  """
+  Process the classification of kinetics for BioModel dataset
+  
+  input
+  -------
+  initial_model_indx: int-the intial BioModel to process
+  final_model_indx: int-the final BioModel to process
+  
+  Returns
+  -------
+  (DataFrame)
+  """
   iterator = simple_sbml.modelIterator(initial=initial_model_indx, final=final_model_indx)
 
   #do statistics for different types of reactions and non-classified reactions
   rxn_num = 0        #total number of reactions deals
+  #all the lists are following the same order of kinetics classifications
   types_name = ["Zeroth Order", "Kinetics with Hill terms", "No products", \
     "No reactants", "Single reactant", "Multiple reactants", \
     "Uni-directional mass reaction", "Uni-term with moderator", \
@@ -158,29 +172,29 @@ def main(initial_model_indx, final_model_indx):
             "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law, \
             "ids_list": ids_list}
 
-          ZERO_cp = reaction.kinetic_law.isZerothOrder(**kwargs)
-          HILL_cp = reaction.kinetic_law.isHillTerms(**kwargs)
-          NO_P_cp = reaction.kinetic_law.isNoPrds(**kwargs)
-          NO_R_cp = reaction.kinetic_law.isNoRcts(**kwargs)
-          SIG_R_cp = reaction.kinetic_law.isSingleRct(**kwargs)
-          MUL_R_cp = reaction.kinetic_law.isMulRcts(**kwargs)
-          UNDR_cp = reaction.kinetic_law.isUNDR(**kwargs)
-          UNMO_cp = reaction.kinetic_law.isUNMO(**kwargs)
-          BIDR_cp = reaction.kinetic_law.isBIDR(**kwargs)
-          BIMO_cp = reaction.kinetic_law.isBIMO(**kwargs)
-          MM_cp = reaction.kinetic_law.isMM(**kwargs)
-          MMCAT_cp = reaction.kinetic_law.isMMcat(**kwargs)
-          classification_func = [ZERO_cp, HILL_cp, NO_P_cp, NO_R_cp, SIG_R_cp, MUL_R_cp, \
-                                UNDR_cp, UNMO_cp, BIDR_cp, BIMO_cp, MM_cp, MMCAT_cp]
+          classification_cp = [
+            reaction.kinetic_law.isZerothOrder(**kwargs),
+            reaction.kinetic_law.isHillTerms(**kwargs),
+            reaction.kinetic_law.isNoPrds(**kwargs),
+            reaction.kinetic_law.isNoRcts(**kwargs),
+            reaction.kinetic_law.isSingleRct(**kwargs),
+            reaction.kinetic_law.isMulRcts(**kwargs),
+            reaction.kinetic_law.isUNDR(**kwargs),
+            reaction.kinetic_law.isUNMO(**kwargs),
+            reaction.kinetic_law.isBIDR(**kwargs),
+            reaction.kinetic_law.isBIMO(**kwargs),
+            reaction.kinetic_law.isMM(**kwargs),
+            reaction.kinetic_law.isMMcat(**kwargs),
+          ]
 
           for i in range(num_type_classification):
-            if classification_func[i]:
+            if classification_cp[i]:
               rxn_classification_num_permol[i] += 1
               flag_classification[i] = 1
               flag_non = 0
               classification_list.append(types_simplified_name[i])
 
-          classification_str = ','.join([str(elem) for elem in classification_list])
+          classification_str = ','.join([str(e) for e in classification_list])
           file.write(classification_str)
           file.write("\t")
 
