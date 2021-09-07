@@ -33,7 +33,9 @@ def main(initial_model_indx, final_model_indx):
   
   Returns
   -------
-  (DataFrame)
+  df_classification: DataFrame-the kinetics classification for each reaction
+  df_gen_stat: DataFrame-the general statistics for all the BioModels
+  df_mol_stat: DataFrame-the statistics for each BioModel
   """
   iterator = simple_sbml.modelIterator(initial=initial_model_indx, final=final_model_indx)
 
@@ -51,17 +53,16 @@ def main(initial_model_indx, final_model_indx):
   num_type_classification = len(types_name) - 1  #types_name includes not classified cases
   rxn_classification_num = [0]*(num_type_classification+1)
 
-  file = open("classification.txt", "w+")
-  file.write("SBML id \tReaction id  \tClassifications \tReaction \tKinetic law \
-            \tZeroth order \tKinetics with Hill terms \
-            \tNo products \tNo reactants \tSingle reactant \tMultiple reactants \
-            \tUni-directional mass reaction \tUni-term with moderator \
-            \tBi-directional mass reaction \tBi-terms with moderator \
-            \tMichaelis-Menten kinetics \tMichaelis-Menten kinetics-catalyzed \
-            \tNA\n")
-  file_mol_stat = open("statistics_per_model.txt", "w+")
-  file_mol_stat.write("SBMLid \tReaction# \tZeroth \tHill \tno_prd \tNo_rct \tSig_rct \tMul_rct \
-                        \tuni \tuni_mod \tbi \tbi_mod \tMM \tMM_cat \tNA \n") 
+  df_classification = pd.DataFrame(columns = ['SBML id', 'Reaction id',  'Classifications', 'Reaction', \
+            'Kinetic law', 'Zeroth order', 'Kinetics with Hill terms', \
+            'No products', 'No reactants', 'Single reactant', 'Multiple reactants', \
+            'Uni-directional mass reaction', 'Uni-term with moderator', \
+            'Bi-directional mass reaction', 'Bi-terms with moderator', \
+            'Michaelis-Menten kinetics', 'Michaelis-Menten kinetics-catalyzed', 'NA'])
+  df_classification_row = 0
+  df_mol_stat = pd.DataFrame(columns=['SBMLid', 'Reaction#', 'Zeroth', 'Hill', 'no_prd', 'No_rct',\
+   'Sig_rct', 'Mul_rct', 'uni', 'uni_mod', 'bi', 'bi_mod', 'MM', 'MM_cat', 'NA'])
+  df_mol_stat_row = 0
 
   for idx, item in enumerate(iterator):
     if item is None:
@@ -69,8 +70,6 @@ def main(initial_model_indx, final_model_indx):
       print("File %d has an error." % (file_num))
     else:
       name = item.filename
-      print(name)
-      #print(name[10:])
 
       # Create an SBML model. We'll use the model
       # data/
@@ -90,8 +89,9 @@ def main(initial_model_indx, final_model_indx):
       #do the statistics per model
       rxn_num_permol = len(simple.reactions)
       if rxn_num_permol != 0:
-        file_mol_stat.write("%s \t" % name[10:])
-        file_mol_stat.write("%s \t" % rxn_num_permol)
+        list_mol_stat = []
+        list_mol_stat.append(name)
+        list_mol_stat.append(rxn_num_permol)
         rxn_classification_num_permol = [0]*(num_type_classification+1)
 
         for reaction in simple.reactions:          
@@ -99,8 +99,9 @@ def main(initial_model_indx, final_model_indx):
           flag_non = 1
           classification_list = []
           reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
-          file.write("%s \t" % name)
-          file.write("%s \t" % reaction.getId())
+          list_file = []
+          list_file.append(name)
+          list_file.append(reaction.getId())
           reactant_list = [r.getSpecies() for r in reaction.reactants]
           product_list = [p.getSpecies() for p in reaction.products]
 
@@ -114,7 +115,6 @@ def main(initial_model_indx, final_model_indx):
           product_stg = " + ".join(
             [p.getSpecies() for p in reaction.products])
 
-          print(str(reaction))
           reaction_str = reactant_stg + "->" + product_stg
 
           species_num = model.getNumSpecies()
@@ -195,25 +195,24 @@ def main(initial_model_indx, final_model_indx):
               classification_list.append(types_simplified_name[i])
 
           classification_str = ','.join([str(e) for e in classification_list])
-          file.write(classification_str)
-          file.write("\t")
-
-          file.write(str(reaction_str))
-          file.write("\t")
-          file.write("%s \t" % (reaction.kinetic_law.expanded_formula))
+          list_file.append(classification_str)
+          list_file.append(str(reaction_str))
+          list_file.append(reaction.kinetic_law.expanded_formula)
 
           for i in range(num_type_classification): 
             if flag_classification[i] == 1:
-              print(types_name[i])
-              file.write("x \t")
+              list_file.append('x')
             else:
-              file.write("\t")
+              list_file.append('')
 
           if flag_non == 1:
             rxn_classification_num_permol[num_type_classification] += 1
-            file.write("x \n")
+            list_file.append('x')
           else:
-            file.write("\n") 
+            list_file.append('')
+
+          df_classification.loc[df_classification_row] = list_file
+          df_classification_row += 1
 
         for i in range(num_type_classification+1):
           rxn_classification_num[i] += rxn_classification_num_permol[i] 
@@ -221,33 +220,46 @@ def main(initial_model_indx, final_model_indx):
         rxn_num += rxn_num_permol
 
         for i in range(num_type_classification):
-          file_mol_stat.write("%f \t" % float(rxn_classification_num_permol[i]/rxn_num_permol))
-        file_mol_stat.write("%f \n" % float(rxn_classification_num_permol[num_type_classification]/rxn_num_permol))
+          list_mol_stat.append(float(rxn_classification_num_permol[i]/rxn_num_permol))
+        list_mol_stat.append(float(rxn_classification_num_permol[num_type_classification]/rxn_num_permol))
+        df_mol_stat.loc[df_mol_stat_row] = list_mol_stat
+        df_mol_stat_row += 1
 
-  file_mol_stat.close()
-  file.close()
+  # This part is the same as the printed part in main section
   if(rxn_num != 0):
-    file_gen_stat = open("general_statistics.txt", "w+")
-    file_gen_stat.write("brief classified reaction statistics:\n")
-    file_gen_stat.write("Reaction number: %d \n" % rxn_num)
+    df_gen_stat = pd.DataFrame(columns=['Classification Names', 'Percentage'])
     for i in range(num_type_classification+1):
-      file_gen_stat.write(types_name[i] + ": %f \n" % float(rxn_classification_num[i]/rxn_num))
-    file_gen_stat.close()
+      df_gen_stat.loc[i] = [types_name[i], float(rxn_classification_num[i]/rxn_num)]
 
-  return (types_name, rxn_classification_num, rxn_num)
+  return (df_classification, df_gen_stat, df_mol_stat)
 
 
 if __name__ == '__main__':
   start_time = time.time()
   initial_model_indx = 0
-  final_model_indx = 10
-  (types_name, rxn_classification_num, rxn_num) = main(initial_model_indx, final_model_indx)
+  final_model_indx = 2
+  (df_classification, df_gen_stat, df_mol_stat) = main(initial_model_indx, final_model_indx)
+  rxn_num = len(df_classification)
+  
+  SBML_id_list = []
+  for i in range(len(df_classification)):
+    SBML_id = df_classification.iloc[i]['SBML id']
+    if SBML_id not in SBML_id_list:
+      print(SBML_id)
+      SBML_id_list.append(SBML_id)
+    print(df_classification.iloc[i]['Reaction'] + ";" + df_classification.iloc[i]['Kinetic law'])
+    print(df_classification.iloc[i]['Classifications'])
+
   if(rxn_num != 0):
     print("\n\n")
     print("brief classified reaction statistics:")
     print("Reaction number:", rxn_num)
-    for i in range(len(types_name)):
-      print(types_name[i] + ":", float(rxn_classification_num[i]/rxn_num))
+    for i in range(len(df_gen_stat)):
+      print(df_gen_stat.iloc[i]['Classification Names'] + ":" + str(df_gen_stat.iloc[i]['Percentage']))
   else:
     print("There are no reactions.")
+
+  df_classification.to_csv("classification.csv", index=False)
+  df_gen_stat.to_csv("general_statistics.csv", index=False)
+  df_mol_stat.to_csv("statistics_per_model.csv", index=False)
   print("--- %s seconds ---" % (time.time() - start_time))
