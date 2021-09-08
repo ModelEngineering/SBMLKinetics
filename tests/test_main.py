@@ -37,6 +37,11 @@ class TestKineticsClassification(unittest.TestCase):
       list_classification += df_classification.iloc[:,i].tolist()
     test = all(isinstance(item, str) for item in list_classification)
     self.assertTrue(test)
+    COLUMN_NAMES = ["classification name"]
+    trues = [c in df_classification.columns c in COLUMN_NAMES]
+    self.assertTrue(all(trues))
+    # Check that dataframe has no nan values
+    # Check that dataframe has at least 1 row
 
   # def testClassification2(self):
   #   # Test all the elements of df_classification are lists of strings
