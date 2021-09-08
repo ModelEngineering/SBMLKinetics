@@ -21,6 +21,9 @@ import time
 
 import pandas as pd
 
+# Column names
+CLASSIFICATION_NAME = "classification name"
+
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -227,7 +230,7 @@ def main(initial_model_indx, final_model_indx):
 
   # This part is the same as the printed part in main section
   if(rxn_num != 0):
-    df_gen_stat = pd.DataFrame(columns=['Classification Names', 'Percentage'])
+    df_gen_stat = pd.DataFrame(columns=[CLASSIFICATION_NAME, 'Percentage'])
     for i in range(num_type_classification+1):
       df_gen_stat.loc[i] = [types_name[i], float(rxn_classification_num[i]/rxn_num)]
 
