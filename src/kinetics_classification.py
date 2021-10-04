@@ -22,8 +22,15 @@ import time
 import pandas as pd
 
 # Column names
-CLASSIFICATION_NAME = "classification name"
-
+COLUMN_NAME_df_classification = ['SBML id', 'Reaction id', 'Classifications', 'Reaction', \
+          'Kinetic law', 'Zeroth order', 'Kinetics with Hill terms', \
+          'No products', 'No reactants', 'Single reactant', 'Multiple reactants', \
+          'Uni-directional mass reaction', 'Uni-term with moderator', \
+          'Bi-directional mass reaction', 'Bi-terms with moderator', \
+          'Michaelis-Menten kinetics', 'Michaelis-Menten kinetics-catalyzed', 'NA']
+COLUMN_NAME_df_gen_stat = ['Classification names', 'Percentage']
+COLUMN_NAME_df_mol_stat = ['SBMLid', 'Reaction#', 'Zeroth', 'Hill', 'No_prd', 'No_rct',\
+  'Sig_rct', 'Mul_rct', 'Uni', 'Uni_mod', 'Bi', 'Bi_mod', 'MM', 'MM_cat', 'NA']
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -56,15 +63,9 @@ def main(initial_model_indx, final_model_indx):
   num_type_classification = len(types_name) - 1  #types_name includes not classified cases
   rxn_classification_num = [0]*(num_type_classification+1)
 
-  df_classification = pd.DataFrame(columns = ['SBML id', 'Reaction id',  'Classifications', 'Reaction', \
-            'Kinetic law', 'Zeroth order', 'Kinetics with Hill terms', \
-            'No products', 'No reactants', 'Single reactant', 'Multiple reactants', \
-            'Uni-directional mass reaction', 'Uni-term with moderator', \
-            'Bi-directional mass reaction', 'Bi-terms with moderator', \
-            'Michaelis-Menten kinetics', 'Michaelis-Menten kinetics-catalyzed', 'NA'])
+  df_classification = pd.DataFrame(columns = COLUMN_NAME_df_classification)
   df_classification_row = 0
-  df_mol_stat = pd.DataFrame(columns=['SBMLid', 'Reaction#', 'Zeroth', 'Hill', 'no_prd', 'No_rct',\
-   'Sig_rct', 'Mul_rct', 'uni', 'uni_mod', 'bi', 'bi_mod', 'MM', 'MM_cat', 'NA'])
+  df_mol_stat = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
   df_mol_stat_row = 0
 
   for idx, item in enumerate(iterator):
@@ -230,7 +231,7 @@ def main(initial_model_indx, final_model_indx):
 
   # This part is the same as the printed part in main section
   if(rxn_num != 0):
-    df_gen_stat = pd.DataFrame(columns=[CLASSIFICATION_NAME, 'Percentage'])
+    df_gen_stat = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
     for i in range(num_type_classification+1):
       df_gen_stat.loc[i] = [types_name[i], float(rxn_classification_num[i]/rxn_num)]
 
@@ -246,19 +247,19 @@ if __name__ == '__main__':
   
   SBML_id_list = []
   for i in range(len(df_classification)):
-    SBML_id = df_classification.iloc[i]['SBML id']
+    SBML_id = df_classification.iloc[i][COLUMN_NAME_df_classification[0]]
     if SBML_id not in SBML_id_list:
       print(SBML_id)
       SBML_id_list.append(SBML_id)
-    print(df_classification.iloc[i]['Reaction'] + ";" + df_classification.iloc[i]['Kinetic law'])
-    print(df_classification.iloc[i]['Classifications'])
+    print(df_classification.iloc[i][COLUMN_NAME_df_classification[3]] + ";" + df_classification.iloc[i][COLUMN_NAME_df_classification[4]])
+    print(df_classification.iloc[i][COLUMN_NAME_df_classification[2]])
 
   if(rxn_num != 0):
     print("\n\n")
     print("brief classified reaction statistics:")
     print("Reaction number:", rxn_num)
     for i in range(len(df_gen_stat)):
-      print(df_gen_stat.iloc[i]['Classification Names'] + ":" + str(df_gen_stat.iloc[i]['Percentage']))
+      print(df_gen_stat.iloc[i][COLUMN_NAME_df_gen_stat[0]] + ":" + str(df_gen_stat.iloc[i][COLUMN_NAME_df_gen_stat[1]]))
   else:
     print("There are no reactions.")
 
