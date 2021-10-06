@@ -22,7 +22,9 @@ import time
 import pandas as pd
 
 # Column names
-COLUMN_NAME_df_classification = ['SBML id', 'Reaction id', 'Classifications', 'Reaction', \
+SBMLID = "SBML id"
+REACTIONID = "Reaction id"
+COLUMN_NAME_df_classification = [SBMLID, REACTIONID, 'Classifications', 'Reaction', \
           'Kinetic law', 'Zeroth order', 'Kinetics with Hill terms', \
           'No products', 'No reactants', 'Single reactant', 'Multiple reactants', \
           'Uni-directional mass reaction', 'Uni-term with moderator', \
@@ -93,7 +95,8 @@ def main(initial_model_indx, final_model_indx):
       #do the statistics per model
       rxn_num_permol = len(simple.reactions)
       if rxn_num_permol != 0:
-        list_mol_stat = []
+        
+mol_stat = []
         list_mol_stat.append(name)
         list_mol_stat.append(rxn_num_permol)
         rxn_classification_num_permol = [0]*(num_type_classification+1)
@@ -103,9 +106,12 @@ def main(initial_model_indx, final_model_indx):
           flag_non = 1
           classification_list = []
           reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
+          row_dct = {k: [] for k in COLUMN_NAME_df_classification]
           list_file = []
+          row_dct[SBMLID] = row_dct[SBMLID].append(name)
           list_file.append(name)
           list_file.append(reaction.getId())
+          row_dct[REACTIONID] = row_dct[REACTIONID].append(reaction.getId())
           reactant_list = [r.getSpecies() for r in reaction.reactants]
           product_list = [p.getSpecies() for p in reaction.products]
 
@@ -215,9 +221,10 @@ def main(initial_model_indx, final_model_indx):
           else:
             list_file.append('')
 
-          df_classification.loc[df_classification_row] = list_file
-          df_classification_row += 1
+          #df_classification.loc[df_classification_row] = list_file
+          #df_classification_row += 1
 
+        df_classification = pd.DataFrame(row_dct)
         for i in range(num_type_classification+1):
           rxn_classification_num[i] += rxn_classification_num_permol[i] 
 
