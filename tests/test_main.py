@@ -25,26 +25,24 @@ IGNORE_TEST = False
 # Tests
 #############################
 class TestKineticsClassification(unittest.TestCase):
+  
+  def setUp(self):
+    initial_model_indx = 5
+    final_model_indx = 6
+    self.df_classification, self.df_gen_stat, self.df_mol_stat = kinetics_classification.main(initial_model_indx, final_model_indx)
+    
   def testClassification1(self):
     # Test all the column names
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (df_classification, _, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    test = all(item in df_classification.columns for item in kinetics_classification.COLUMN_NAME_df_classification)
+    test = all(item in self.df_classification.columns for item in kinetics_classification.COLUMN_NAME_df_classification)
     self.assertTrue(test)
 
   def testClassification2(self):
     # Test whether there is at least one row
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (df_classification, _, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    self.assertTrue(len(df_classification.index)>0) 
+    self.assertTrue(len(self.df_classification.index)>0) 
 
   def testClassification3(self):
     # Test all the elements of df_classification are lists of strings
