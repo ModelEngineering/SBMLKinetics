@@ -22,17 +22,31 @@ import time
 import pandas as pd
 
 # Column names
-SBMLID = "SBML id"
+SBMLID = "SBMLid"
 REACTIONID = "Reaction id"
-COLUMN_NAME_df_classification = [SBMLID, REACTIONID, 'Classifications', 'Reaction', \
-          'Kinetic law', 'Zeroth order', 'Kinetics with Hill terms', \
-          'No products', 'No reactants', 'Single reactant', 'Multiple reactants', \
-          'Uni-directional mass reaction', 'Uni-term with moderator', \
-          'Bi-directional mass reaction', 'Bi-terms with moderator', \
-          'Michaelis-Menten kinetics', 'Michaelis-Menten kinetics-catalyzed', 'NA']
-COLUMN_NAME_df_gen_stat = ['Classification names', 'Percentage']
-COLUMN_NAME_df_mol_stat = ['SBMLid', 'Reaction#', 'Zeroth', 'Hill', 'No_prd', 'No_rct',\
-  'Sig_rct', 'Mul_rct', 'Uni', 'Uni_mod', 'Bi', 'Bi_mod', 'MM', 'MM_cat', 'NA']
+CLASSIFICATIONS = 'Classifications'
+REACTION = 'Reaction'
+KINETICLAW = 'kinetic law'
+ZEROTH = 'Zeroth order'
+HILL = 'Kinetics with Hill terms'
+NOPRD = 'No products'
+NORCT = 'No reactants'
+SIGRCT = 'Single reactant'
+MULRCT = 'Multiple reactants'
+UNI = 'Uni-directional mass reaction'
+UNIMOD = 'Uni-term with moderator'
+BI = 'Bi-directional mass reaction'
+BIMOD = 'Bi-terms with moderator'
+MM = 'Michaelis-Menten kinetics'
+MMCAT = 'Michaelis-Menten kinetics-catalyzed'
+NA = 'NA'
+PERCENTAGE = 'Percentage'
+REACTIONNUM = 'Reaction#'
+COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
+                ZEROTH, HILL, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, NA]
+COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE]
+COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, HILL, NOPRD, NORCT,\
+  SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, NA]
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -66,9 +80,7 @@ def main(initial_model_indx, final_model_indx):
   rxn_classification_num = [0]*(num_type_classification+1)
 
   df_classification = pd.DataFrame(columns = COLUMN_NAME_df_classification)
-  df_classification_row = 0
   df_mol_stat = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
-  df_mol_stat_row = 0
 
   for idx, item in enumerate(iterator):
     if item is None:
@@ -95,30 +107,22 @@ def main(initial_model_indx, final_model_indx):
       #do the statistics per model
       rxn_num_permol = len(simple.reactions)
       if rxn_num_permol != 0:
-        
-mol_stat = []
-        list_mol_stat.append(name)
-        list_mol_stat.append(rxn_num_permol)
+        mol_stat_row_dct = {k:[] for k in COLUMN_NAME_df_mol_stat}
+        mol_stat_row_dct[SBMLID].append(name)
+        mol_stat_row_dct[REACTIONNUM].append(rxn_num_permol)
+
         rxn_classification_num_permol = [0]*(num_type_classification+1)
 
         for reaction in simple.reactions:          
           flag_classification = [0]*num_type_classification
           flag_non = 1
           classification_list = []
-          reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)
-          row_dct = {k: [] for k in COLUMN_NAME_df_classification]
-          list_file = []
-          row_dct[SBMLID] = row_dct[SBMLID].append(name)
-          list_file.append(name)
-          list_file.append(reaction.getId())
-          row_dct[REACTIONID] = row_dct[REACTIONID].append(reaction.getId())
+          reaction.kinetic_law.mkSymbolExpression(simple.function_definitions)   
+          classification_row_dct = {k:[] for k in COLUMN_NAME_df_classification}
+          classification_row_dct[SBMLID].append(name)
+          classification_row_dct[REACTIONID].append(reaction.getId())
           reactant_list = [r.getSpecies() for r in reaction.reactants]
           product_list = [p.getSpecies() for p in reaction.products]
-
-          #print("reactant_list")
-          #print(reactant_list)
-          #print("product_list")
-          #print(product_list)
 
           reactant_stg = " + ".join(
             [r.getSpecies() for r in reaction.reactants])
@@ -205,72 +209,81 @@ mol_stat = []
               classification_list.append(types_simplified_name[i])
 
           classification_str = ','.join([str(e) for e in classification_list])
-          list_file.append(classification_str)
-          list_file.append(str(reaction_str))
-          list_file.append(reaction.kinetic_law.expanded_formula)
+          classification_row_dct[CLASSIFICATIONS].append(classification_str)
+          classification_row_dct[REACTION].append(reaction_str)
+          classification_row_dct[KINETICLAW].append(reaction.kinetic_law.expanded_formula)
 
           for i in range(num_type_classification): 
             if flag_classification[i] == 1:
-              list_file.append('x')
+              classification_row_dct[COLUMN_NAME_df_classification[5+i]].append('x')
             else:
-              list_file.append('')
+              classification_row_dct[COLUMN_NAME_df_classification[5+i]].append('')
 
           if flag_non == 1:
             rxn_classification_num_permol[num_type_classification] += 1
-            list_file.append('x')
+            classification_row_dct[NA].append('x')
           else:
-            list_file.append('')
+            classification_row_dct[NA].append('')
+          
+          for i in range(len(COLUMN_NAME_df_classification)):
+            classification_row_dct[COLUMN_NAME_df_classification[i]] = classification_row_dct[COLUMN_NAME_df_classification[i]][0]
+          df_classification = df_classification.append(classification_row_dct, ignore_index=True)
 
-          #df_classification.loc[df_classification_row] = list_file
-          #df_classification_row += 1
-
-        df_classification = pd.DataFrame(row_dct)
         for i in range(num_type_classification+1):
           rxn_classification_num[i] += rxn_classification_num_permol[i] 
 
         rxn_num += rxn_num_permol
 
         for i in range(num_type_classification):
-          list_mol_stat.append(float(rxn_classification_num_permol[i]/rxn_num_permol))
-        list_mol_stat.append(float(rxn_classification_num_permol[num_type_classification]/rxn_num_permol))
-        df_mol_stat.loc[df_mol_stat_row] = list_mol_stat
-        df_mol_stat_row += 1
+          mol_stat_row_dct[COLUMN_NAME_df_mol_stat[2+i]].append(float(rxn_classification_num_permol[i]/rxn_num_permol))
+        mol_stat_row_dct[NA].append(float(rxn_classification_num_permol[num_type_classification]/rxn_num_permol))
+        
+        for i in range(len(COLUMN_NAME_df_mol_stat)):
+          mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
+        df_mol_stat = df_mol_stat.append(mol_stat_row_dct, ignore_index=True)
+
 
   # This part is the same as the printed part in main section
   if(rxn_num != 0):
     df_gen_stat = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
     for i in range(num_type_classification+1):
-      df_gen_stat.loc[i] = [types_name[i], float(rxn_classification_num[i]/rxn_num)]
+      gen_stat_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat}
+      gen_stat_row_dct[CLASSIFICATIONS].append(types_name[i])
+      gen_stat_row_dct[PERCENTAGE].append(float(rxn_classification_num[i]/rxn_num))
+      for j in range(len(COLUMN_NAME_df_gen_stat)):
+        gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]][0] 
+      df_gen_stat = df_gen_stat.append(gen_stat_row_dct, ignore_index=True)
 
   return (df_classification, df_gen_stat, df_mol_stat)
 
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 0
-  final_model_indx = 2
+  initial_model_indx = 5
+  final_model_indx = 6
   (df_classification, df_gen_stat, df_mol_stat) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
   
+
   SBML_id_list = []
   for i in range(len(df_classification)):
-    SBML_id = df_classification.iloc[i][COLUMN_NAME_df_classification[0]]
+    SBML_id = df_classification.iloc[i][SBMLID]
     if SBML_id not in SBML_id_list:
       print(SBML_id)
       SBML_id_list.append(SBML_id)
-    print(df_classification.iloc[i][COLUMN_NAME_df_classification[3]] + ";" + df_classification.iloc[i][COLUMN_NAME_df_classification[4]])
-    print(df_classification.iloc[i][COLUMN_NAME_df_classification[2]])
+    print(df_classification.iloc[i][REACTION] + ";" + df_classification.iloc[i][KINETICLAW])
+    print(df_classification.iloc[i][CLASSIFICATIONS])
 
   if(rxn_num != 0):
     print("\n\n")
     print("brief classified reaction statistics:")
     print("Reaction number:", rxn_num)
     for i in range(len(df_gen_stat)):
-      print(df_gen_stat.iloc[i][COLUMN_NAME_df_gen_stat[0]] + ":" + str(df_gen_stat.iloc[i][COLUMN_NAME_df_gen_stat[1]]))
+      print(df_gen_stat.iloc[i][CLASSIFICATIONS] + ":" + str(df_gen_stat.iloc[i][PERCENTAGE]))
   else:
     print("There are no reactions.")
 
-  df_classification.to_csv("classification.csv", index=False)
-  df_gen_stat.to_csv("general_statistics.csv", index=False)
-  df_mol_stat.to_csv("statistics_per_model.csv", index=False)
+  # df_classification.to_csv("classification.csv", index=False)
+  # df_gen_stat.to_csv("general_statistics.csv", index=False)
+  # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
   print("--- %s seconds ---" % (time.time() - start_time))
