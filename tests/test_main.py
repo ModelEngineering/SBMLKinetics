@@ -27,6 +27,7 @@ IGNORE_TEST = False
 class TestKineticsClassification(unittest.TestCase):
   
   def setUp(self):
+    #check for biomodel6
     initial_model_indx = 5
     final_model_indx = 6
     self.df_classification, self.df_gen_stat, self.df_mol_stat = kinetics_classification.main(initial_model_indx, final_model_indx)
@@ -48,13 +49,9 @@ class TestKineticsClassification(unittest.TestCase):
     # Test all the elements of df_classification are lists of strings
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (df_classification, _, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
     list_classification = []
-    for i in range(len(df_classification.columns)):
-      list_classification += df_classification.iloc[:,i].tolist()
+    for i in range(len(self.df_classification.columns)):
+      list_classification += self.df_classification.iloc[:,i].tolist()
     test = all(isinstance(item, str) for item in list_classification)
     self.assertTrue(test)
 
@@ -62,32 +59,20 @@ class TestKineticsClassification(unittest.TestCase):
     # Test all the column names
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, df_gen_stat, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    test = all(item in df_gen_stat.columns for item in kinetics_classification.COLUMN_NAME_df_gen_stat)
+    test = all(item in self.df_gen_stat.columns for item in kinetics_classification.COLUMN_NAME_df_gen_stat)
     self.assertTrue(test)
 
   def testGenStat2(self):
     # Test whether there is at least one row
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, df_gen_stat, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    self.assertTrue(len(df_gen_stat.index)>0) 
+    self.assertTrue(len(self.df_gen_stat.index)>0) 
 
   def testGenStat3(self):
     # Test column 'Classification Names' of df_gen_stat is a list of string
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, df_gen_stat, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    list_gen_stat_classification = df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[0]].tolist()
+    list_gen_stat_classification = self.df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[0]].tolist()
     test = all(isinstance(item, str) for item in list_gen_stat_classification)
     self.assertTrue(test) 
 
@@ -95,11 +80,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test column 'Percentage' of df_gen_stat is a list of floating numbers
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, df_gen_stat, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    list_gen_stat_percentage = df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
+    list_gen_stat_percentage = self.df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
     test = all(isinstance(item, float) for item in list_gen_stat_percentage)
     self.assertTrue(test) 
 
@@ -107,11 +88,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test column 'Percentage' of df_gen_stat does not have nan values
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, df_gen_stat, _) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    list_gen_stat_percentage = df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
+    list_gen_stat_percentage = self.df_gen_stat[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
     test = any(math.isnan(item) for item in list_gen_stat_percentage)
     self.assertFalse(test)
 
@@ -119,32 +96,20 @@ class TestKineticsClassification(unittest.TestCase):
     # Test all the column names
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _ , df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    test = all(item in df_mol_stat.columns for item in kinetics_classification.COLUMN_NAME_df_mol_stat)
+    test = all(item in self.df_mol_stat.columns for item in kinetics_classification.COLUMN_NAME_df_mol_stat)
     self.assertTrue(test)
  
   def testMolStat2(self):
     # Test whether there is at least one row
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    self.assertTrue(len(df_mol_stat.index)>0) 
+    self.assertTrue(len(self.df_mol_stat.index)>0) 
 
   def testMolStat3(self):
     # Test column 'SBMLid' of df_mol_stat is a list of string
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    list_gen_stat_classification = df_mol_stat[kinetics_classification.COLUMN_NAME_df_mol_stat[0]].tolist()
+    list_gen_stat_classification = self.df_mol_stat[kinetics_classification.COLUMN_NAME_df_mol_stat[0]].tolist()
     test = all(isinstance(item, str) for item in list_gen_stat_classification)
     self.assertTrue(test)
 
@@ -152,11 +117,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test column 'Reaction#' of df_mol_stat is a list of integers
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
-    list_gen_stat_classification = df_mol_stat[kinetics_classification.COLUMN_NAME_df_mol_stat[1]].tolist()
+    list_gen_stat_classification = self.df_mol_stat[kinetics_classification.COLUMN_NAME_df_mol_stat[1]].tolist()
     test = all(isinstance(item, int) for item in list_gen_stat_classification)
     self.assertTrue(test)
 
@@ -164,13 +125,9 @@ class TestKineticsClassification(unittest.TestCase):
     # Test columns other than 'SBMLid' and 'Reaction#' of df_mol_stat are lists of floating numbers
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
     list_gen_stat_others = []
-    for i in range(2,len(df_mol_stat.columns)):
-      list_gen_stat_others += df_mol_stat.iloc[:,i].tolist()
+    for i in range(2,len(self.df_mol_stat.columns)):
+      list_gen_stat_others += self.df_mol_stat.iloc[:,i].tolist()
     test = all(isinstance(item, float) for item in list_gen_stat_others)
     self.assertTrue(test)
 
@@ -178,13 +135,9 @@ class TestKineticsClassification(unittest.TestCase):
     # Test whether all the numbers are not nan values
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
     list_gen_stat_others = []
-    for i in range(1,len(df_mol_stat.columns)):
-      list_gen_stat_others += df_mol_stat.iloc[:,i].tolist()
+    for i in range(1,len(self.df_mol_stat.columns)):
+      list_gen_stat_others += self.df_mol_stat.iloc[:,i].tolist()
     test = any(math.isnan(item) for item in list_gen_stat_others)
     self.assertFalse(test)
 
@@ -192,15 +145,11 @@ class TestKineticsClassification(unittest.TestCase):
     # Test the sum of percentage of all types for each model in df_mol_stat is always no less than 1
     if IGNORE_TEST:
       return    
-    initial_model_indx = 5
-    final_model_indx = 6
-    #check for biomodel6
-    (_, _, df_mol_stat) = kinetics_classification.main(initial_model_indx, final_model_indx)
     list_gen_stat_others = []
     flag = 1
-    for i in range(len(df_mol_stat)):
+    for i in range(len(self.df_mol_stat)):
       sum = 0
-      list_gen_stat_others += df_mol_stat.iloc[i,2:len(df_mol_stat.columns)].tolist()
+      list_gen_stat_others += self.df_mol_stat.iloc[i,2:len(self.df_mol_stat.columns)].tolist()
       for j in range(len(list_gen_stat_others)):
         sum += list_gen_stat_others[j]
       if sum < 1:
