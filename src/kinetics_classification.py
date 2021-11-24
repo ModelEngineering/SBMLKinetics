@@ -28,7 +28,7 @@ CLASSIFICATIONS = 'Classifications'
 REACTION = 'Reaction'
 KINETICLAW = 'kinetic law'
 ZEROTH = 'Zeroth order'
-HILL = 'Kinetics with Hill terms'
+POWER = 'Kinetics with power terms'
 NOPRD = 'No products'
 NORCT = 'No reactants'
 SIGRCT = 'Single reactant'
@@ -39,14 +39,20 @@ BI = 'Bi-directional mass reaction'
 BIMOD = 'Bi-terms with moderator'
 MM = 'Michaelis-Menten kinetics'
 MMCAT = 'Michaelis-Menten kinetics-catalyzed'
+HB = "Hyperbolic"
 NA = 'NA'
 PERCENTAGE = 'Percentage'
 REACTIONNUM = 'Reaction#'
+# COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
+#                 ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HB, NA]
 COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
-                ZEROTH, HILL, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, NA]
+                ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, HB, NA]
+
 COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE]
-COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, HILL, NOPRD, NORCT,\
-  SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, NA]
+# COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, POWER, NOPRD, NORCT,\
+#   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HB, NA]
+COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, POWER, NOPRD, NORCT,\
+  SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, HB, NA]
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -68,14 +74,23 @@ def main(initial_model_indx, final_model_indx):
   #do statistics for different types of reactions and non-classified reactions
   rxn_num = 0        #total number of reactions deals
   #all the lists are following the same order of kinetics classifications
-  types_name = ["Zeroth Order", "Kinetics with Hill terms", "No products", \
+  # types_name = ["Zeroth Order", "Kinetics with power terms", "No products", \
+  #   "No reactants", "Single reactant", "Multiple reactants", \
+  #   "Uni-directional mass reaction", "Uni-term with moderator", \
+  #   "Bi-directional mass reaction", "Bi-terms with moderator", \
+  #   "Michaelis-Menten Kinetics", "Michaelis-Menten Kinetics-catalyzed", \
+  #   "Hyperbolic function",\
+  #   "Not classified reactions"]
+  types_name = ["Zeroth Order", "Kinetics with power terms", "No products", \
     "No reactants", "Single reactant", "Multiple reactants", \
     "Uni-directional mass reaction", "Uni-term with moderator", \
     "Bi-directional mass reaction", "Bi-terms with moderator", \
-    "Michaelis-Menten Kinetics", "Michaelis-Menten Kinetics-catalyzed", \
+    "Hyperbolic function",\
     "Not classified reactions"]
-  types_simplified_name = ["ZERO", "HILL", "P=0", "R=0", "R=1", "R>1", \
-    "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT"]
+  # types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
+  #   "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "HB"]
+  types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
+    "UNDR", "UNMO", "BIDR", "BIMO", "HB"]
   num_type_classification = len(types_name) - 1  #types_name includes not classified cases
   rxn_classification_num = [0]*(num_type_classification+1)
 
@@ -173,14 +188,14 @@ def main(initial_model_indx, final_model_indx):
           # print("parameters")
           # print(parameters_in_kinetic_law)
 
-          #only for MM and MMcat
+          #only for MM, MMcat and HB
           if len(reactant_list) != 0:
             ids_list += reactant_list # some rcts/prds also needs symbols definition
           if len(product_list) != 0:
             ids_list += product_list
           ids_list = list(dict.fromkeys(ids_list))
 
-          # Define the keyword arguments
+          #Define the keyword arguments
           kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim, \
             "reactant_list": reactant_list, "product_list": product_list, \
             "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law, \
@@ -188,7 +203,7 @@ def main(initial_model_indx, final_model_indx):
 
           classification_cp = [
             reaction.kinetic_law.isZerothOrder(**kwargs),
-            reaction.kinetic_law.isHillTerms(**kwargs),
+            reaction.kinetic_law.isPowerTerms(**kwargs),
             reaction.kinetic_law.isNoPrds(**kwargs),
             reaction.kinetic_law.isNoRcts(**kwargs),
             reaction.kinetic_law.isSingleRct(**kwargs),
@@ -197,8 +212,9 @@ def main(initial_model_indx, final_model_indx):
             reaction.kinetic_law.isUNMO(**kwargs),
             reaction.kinetic_law.isBIDR(**kwargs),
             reaction.kinetic_law.isBIMO(**kwargs),
-            reaction.kinetic_law.isMM(**kwargs),
-            reaction.kinetic_law.isMMcat(**kwargs),
+            #reaction.kinetic_law.isMM(**kwargs),
+            #reaction.kinetic_law.isMMcat(**kwargs),
+            reaction.kinetic_law.isHyperbolic(**kwargs),
           ]
 
           for i in range(num_type_classification):
@@ -259,8 +275,8 @@ def main(initial_model_indx, final_model_indx):
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 5
-  final_model_indx = 6
+  initial_model_indx = 0
+  final_model_indx = 850
   (df_classification, df_gen_stat, df_mol_stat) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
   
@@ -283,7 +299,7 @@ if __name__ == '__main__':
   else:
     print("There are no reactions.")
 
-  # df_classification.to_csv("classification.csv", index=False)
-  # df_gen_stat.to_csv("general_statistics.csv", index=False)
-  # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
+  df_classification.to_csv("classification.csv", index=False)
+  df_gen_stat.to_csv("general_statistics.csv", index=False)
+  df_mol_stat.to_csv("statistics_per_model.csv", index=False)
   print("--- %s seconds ---" % (time.time() - start_time))

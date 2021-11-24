@@ -182,8 +182,8 @@ class TestKineticLaw(unittest.TestCase):
     test = kinetic_law.isZerothOrder(**kwargs)
     self.assertFalse(test)
 
-  def testIsHillTerms1(self):
-    # Test Kinetics with Hill terms success case
+  def testIsPowerTerms1(self):
+    # Test Kinetics with power terms success case
     if IGNORE_TEST:
       return    
     kinetic_law = self.laws[2]
@@ -194,11 +194,11 @@ class TestKineticLaw(unittest.TestCase):
     except:
       kinetics_sim = kinetics
     kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim}
-    test = kinetic_law.isHillTerms(**kwargs)
+    test = kinetic_law.isPowerTerms(**kwargs)
     self.assertTrue(test) 
 
-  def testIsHillTerms2(self):
-    # Test Kinetics with Hill terms Failure case
+  def testIsPowerTerms2(self):
+    # Test Kinetics with Power terms Failure case
     if IGNORE_TEST:
       return
     kinetic_law = self.laws[1]
@@ -209,7 +209,7 @@ class TestKineticLaw(unittest.TestCase):
     except:
       kinetics_sim = kinetics
     kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim}
-    test = kinetic_law.isHillTerms(**kwargs)
+    test = kinetic_law.isPowerTerms(**kwargs)
     self.assertFalse(test)
 
   def testIsNoPrds1(self):

@@ -91,10 +91,10 @@ class KineticLaw(object):
     return self._numSpeciesInKinetics(species_in_kinetic_law) == 0  
   
 
-  def isHillTerms(self, **kwargs):
+  def isPowerTerms(self, **kwargs):
     """
-    Check whether the reaction with a kinetic law belongs to the type of Kinetics with Hill terms
-    Kinetics with hill terms classification rule: if there is pow() or ** inside the kinetics, 
+    Check whether the reaction with a kinetic law belongs to the type of Kinetics with power terms
+    Kinetics with power terms classification rule: if there is pow() or ** inside the kinetics, 
     except the pow(,-1) case as the possible Michaelis–Menten kinetics
 
     Parameters
@@ -394,6 +394,39 @@ class KineticLaw(object):
       
     return flag
 
+  def isHyperbolic(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Hyperbolic function
+    Hyperbolic function classification rule:
+    Check whether it is in the form of fraction and has species in both numerator and denominator.
+    
+    Parameters
+    ----  
+    **kwargs: dictionary-keyword arguments  
+    #kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
+    reactant_list: list-reactants of the reaction
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+
+    Returns
+    -------
+    True or False
+    """
+    
+    #kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
+    reactant_list = kwargs["reactant_list"]
+    ids_list = kwargs["ids_list"]
+
+    eq = self._isFraction(kinetics_sim, ids_list)
+
+    flag = False
+    if len(reactant_list) > 0:
+      for i in range(len(reactant_list)):
+        if reactant_list[i] in eq[0] and reactant_list[i] in eq[1]:
+          flag = True
+    return flag
+    
   def _numSpeciesInKinetics(self, species_in_kinetic_law):
     """
     Tests whether there is no species in the kinetic law
@@ -752,6 +785,51 @@ class KineticLaw(object):
     else: 
       return False
 
+  def _isFraction(self, kinetics_sim, ids_list):
+    """
+    Test whether the simplified kinetics is a fraction
+    
+    Parameters
+    ----    
+    kinetics_sim: string-simplified kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+
+    Returns
+    -------
+    Type - the numerator and the denominator of the fraction
+    """
+
+    strange_func = 0 #check if there are strang functions (i.e. delay) in kinetics
+    pre_symbols = ''
+    for i in range(len(ids_list)):
+      pre_symbols += ids_list[i]
+      pre_symbols += ' '
+    pre_symbols = pre_symbols[:-1] #remove the space at the end
+    pre_symbols_comma = pre_symbols.replace(" ",",")
+    stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
+    try: #sometimes there is "invalid syntax error"
+      exec(stmt,globals())
+    except: 
+      strange_func = 1
+    
+    try: #check if there is strange func (i.e. delay) in kinetic law
+      eq_stat = "kinetics_eq = " + kinetics_sim
+      exec(eq_stat,globals())
+    except:
+      strange_func = 1
+
+    eq = ['', '']
+    if strange_func == 0:
+      try: 
+        numerator = str(kinetics_eq.as_numer_denom()[0])
+        denominator = str(kinetics_eq.as_numer_denom()[1])
+        eq[0] = numerator
+        eq[1] = denominator
+      except:
+        pass
+
+    return eq
+
 
   @staticmethod
   def _expandFormula(expansion, function_definitions,
@@ -805,7 +883,7 @@ class KineticLaw(object):
     kinetics expression.
     :return list-str:
     """
-    #print(self)
+
     global cur_depth
     MAX_DEPTH = 20
     cur_depth = 0
