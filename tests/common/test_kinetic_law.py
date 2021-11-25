@@ -520,6 +520,33 @@ class TestKineticLaw(unittest.TestCase):
     test = kinetic_law.isMMcat(**kwargs)
     self.assertFalse(test)
 
+  def testIsHyperbolic1(self):
+    # Test Hyperbolic success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_3[2]
+    #kinetic_law: "C * cell * vd * X * pow(C + Kd, -1)"
+    kinetics_sim = "C*X*cell*vd*pow(C + Kd, -1)"
+    reactant_list = ['C']
+    ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
+
+    kwargs = {"kinetics_sim": kinetics_sim, "reactant_list": reactant_list, "ids_list": ids_list}
+    test = kinetic_law.isHyperbolic(**kwargs)
+    self.assertTrue(test) 
+
+  def testIsHyperbolic2(self):
+    # Test Hyperbolic Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[0]
+    #kinetic_law: "cell * vi"
+    kinetics_sim = "cell*vi"
+    reactant_list = []
+    ids_list = ['cell', 'vi', 'C']
+    kwargs = {"kinetics_sim": kinetics_sim, "reactant_list": reactant_list, "ids_list": ids_list}
+    test = kinetic_law.isHyperbolic(**kwargs)
+    self.assertFalse(test)
+
 if __name__ == '__main__':
   unittest.main()
 

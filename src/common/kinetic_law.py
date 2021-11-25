@@ -419,7 +419,6 @@ class KineticLaw(object):
     ids_list = kwargs["ids_list"]
 
     eq = self._isFraction(kinetics_sim, ids_list)
-
     flag = False
     if len(reactant_list) > 0:
       for i in range(len(reactant_list)):
