@@ -39,20 +39,22 @@ BI = 'Bi-directional mass reaction'
 BIMOD = 'Bi-terms with moderator'
 MM = 'Michaelis-Menten kinetics'
 MMCAT = 'Michaelis-Menten kinetics-catalyzed'
-HB = "Hyperbolic"
+FR = "Fraction"
+PL = "Polynomial"
 NA = 'NA'
 PERCENTAGE = 'Percentage'
 REACTIONNUM = 'Reaction#'
 # COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
-#                 ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HB, NA]
+#                 ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
+
 COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
-                ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, HB, NA]
+                ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
 
 COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE]
 # COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, POWER, NOPRD, NORCT,\
-#   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HB, NA]
-COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, POWER, NOPRD, NORCT,\
-  SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, HB, NA]
+#   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
+
+COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -79,19 +81,18 @@ def main(initial_model_indx, final_model_indx):
   #   "Uni-directional mass reaction", "Uni-term with moderator", \
   #   "Bi-directional mass reaction", "Bi-terms with moderator", \
   #   "Michaelis-Menten Kinetics", "Michaelis-Menten Kinetics-catalyzed", \
-  #   "Hyperbolic function",\
+  #   "Fraction function", "Polynomial function"\
   #   "Not classified reactions"]
-  types_name = ["Zeroth Order", "Kinetics with power terms", "No products", \
-    "No reactants", "Single reactant", "Multiple reactants", \
+  types_name = ["Zeroth Order", \
     "Uni-directional mass reaction", "Uni-term with moderator", \
     "Bi-directional mass reaction", "Bi-terms with moderator", \
-    "Hyperbolic function",\
+    "Fraction function", \
     "Not classified reactions"]
   # types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
-  #   "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "HB"]
-  types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
-    "UNDR", "UNMO", "BIDR", "BIMO", "HB"]
-  num_type_classification = len(types_name) - 1  #types_name includes not classified cases
+  #   "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "FR", "PL"]
+  types_simplified_name = ["ZERO", \
+    "UNDR", "UNMO", "BIDR", "BIMO", "FR"]
+  num_type_classification = len(types_name) -1  #types_name includes not classified cases
   rxn_classification_num = [0]*(num_type_classification+1)
 
   df_classification = pd.DataFrame(columns = COLUMN_NAME_df_classification)
@@ -167,6 +168,8 @@ def main(initial_model_indx, final_model_indx):
             kinetics_sim = str(simplify(kinetics))
           except:
             kinetics_sim = kinetics
+         
+          #print("kinetics_sim:", kinetics_sim)
 
           ids_list = list(dict.fromkeys(reaction.kinetic_law.symbols))
 
@@ -184,16 +187,19 @@ def main(initial_model_indx, final_model_indx):
 
           parameters_in_kinetic_law = parameters_in_kinetic_law + others_in_kinetic_law
           # print("species")
-          # print(species_in_kinetic_law)
+          # print("species_in_kinetic_law:", species_in_kinetic_law)
           # print("parameters")
           # print(parameters_in_kinetic_law)
 
-          #only for MM, MMcat and HB
+          #only for MM, MMcat and FR
           if len(reactant_list) != 0:
             ids_list += reactant_list # some rcts/prds also needs symbols definition
           if len(product_list) != 0:
             ids_list += product_list
           ids_list = list(dict.fromkeys(ids_list))
+
+          # print("reactant_list:", reactant_list)
+          # print("ids_list:", ids_list)
 
           #Define the keyword arguments
           kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim, \
@@ -203,18 +209,19 @@ def main(initial_model_indx, final_model_indx):
 
           classification_cp = [
             reaction.kinetic_law.isZerothOrder(**kwargs),
-            reaction.kinetic_law.isPowerTerms(**kwargs),
-            reaction.kinetic_law.isNoPrds(**kwargs),
-            reaction.kinetic_law.isNoRcts(**kwargs),
-            reaction.kinetic_law.isSingleRct(**kwargs),
-            reaction.kinetic_law.isMulRcts(**kwargs),
+            # reaction.kinetic_law.isPowerTerms(**kwargs),
+            # reaction.kinetic_law.isNoPrds(**kwargs),
+            # reaction.kinetic_law.isNoRcts(**kwargs),
+            # reaction.kinetic_law.isSingleRct(**kwargs),
+            # reaction.kinetic_law.isMulRcts(**kwargs),
             reaction.kinetic_law.isUNDR(**kwargs),
             reaction.kinetic_law.isUNMO(**kwargs),
             reaction.kinetic_law.isBIDR(**kwargs),
             reaction.kinetic_law.isBIMO(**kwargs),
             #reaction.kinetic_law.isMM(**kwargs),
             #reaction.kinetic_law.isMMcat(**kwargs),
-            reaction.kinetic_law.isHyperbolic(**kwargs),
+            reaction.kinetic_law.isFraction(**kwargs),
+            #reaction.kinetic_law.isPolynomial(**kwargs),
           ]
 
           for i in range(num_type_classification):
@@ -275,8 +282,8 @@ def main(initial_model_indx, final_model_indx):
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 0
-  final_model_indx = 850
+  initial_model_indx = 1
+  final_model_indx = 2
   (df_classification, df_gen_stat, df_mol_stat) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
   

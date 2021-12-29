@@ -184,7 +184,7 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of uni-directional mass reaction
     Uni-directional mass reaction classification rule: 
-    1) There is only * inside the kinetics without /,+,-.
+    1) Kinetics is a single product of terms or with an additional const term
     2) The species inside the kinetics are only reactants
     
     Parameters
@@ -194,6 +194,7 @@ class KineticLaw(object):
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
     species_in_kinetic_law: list-species in the kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
     
     Returns
     -------
@@ -203,14 +204,25 @@ class KineticLaw(object):
     kinetics = kwargs["kinetics"]
     kinetics_sim = kwargs["kinetics_sim"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    ids_list = kwargs["ids_list"]
 
-    flag = True
-    # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
-    #   flag = False
-    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == False:
-      flag = False
-    if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == False:
-      flag = False
+    flag = False
+    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == True \
+      and self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == True:
+      flag = True
+    if len(species_in_kinetic_law) == 1 and species_in_kinetic_law == reactant_list:
+      if kinetics.count(species_in_kinetic_law[0]) == 1:
+        flag = True
+      elif kinetics_sim.count(species_in_kinetic_law[0]) == 1:
+        flag = True 
+    try:
+      eq = self._numeratorDenominator(kinetics_sim, ids_list)
+      if len(species_in_kinetic_law) > 0:
+        for i in range(len(species_in_kinetic_law)):
+          if species_in_kinetic_law[i] in eq[1]:
+            flag = False
+    except:
+      pass
 
     return flag
 
@@ -218,7 +230,7 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of uni-term with moderator
     Uni-term with moderator classification rule: 
-    1) There is only * inside the kinetics without /,+,-.
+    1) Kinetics is a single product of terms or with an additional const term
     2) The species inside the kinetics are not only reactants
     
     Parameters
@@ -228,6 +240,7 @@ class KineticLaw(object):
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
     species_in_kinetic_law: list-species in the kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
     
     Returns
     -------
@@ -237,15 +250,27 @@ class KineticLaw(object):
     kinetics = kwargs["kinetics"]
     kinetics_sim = kwargs["kinetics_sim"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    ids_list = kwargs["ids_list"]
 
-
-    flag = True
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
-      flag = False
-    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == False:
-      flag = False
-    if self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == True:
-      flag = False
+    flag = False
+    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == True \
+      and self._SpecsInKineticsAllRcts(species_in_kinetic_law, reactant_list) == False\
+      and self._numSpeciesInKinetics(species_in_kinetic_law) != 0:
+      flag = True
+    if len(species_in_kinetic_law) == 1 and species_in_kinetic_law != reactant_list\
+      and self._isDiffOfTwoProductsOfTerms(kinetics, kinetics_sim) == False:
+      if kinetics.count(species_in_kinetic_law[0]) == 1:
+        flag = True
+      elif kinetics_sim.count(species_in_kinetic_law[0]) == 1:
+        flag = True 
+    try:
+      eq = self._numeratorDenominator(kinetics_sim, ids_list)
+      if len(species_in_kinetic_law) > 0:
+        for i in range(len(species_in_kinetic_law)):
+          if species_in_kinetic_law[i] in eq[1]:
+            flag = False
+    except:
+      pass
     
     return flag
 
@@ -253,10 +278,9 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of bi-directional mass reaction
     Bi-directional mass reactionclassification rule: 
-    1) There is only *,- inside the kinetics without /,+.
-    2) The first term before - includes all the reactants,
-       while the second term after - includes all the products. 
-      (Is there a better and more accurate way for this?)
+    1) Kinetics is the difference of two product of terms, with species in each term
+    2) The first term before - includes all the reactants
+       while the second term after - includes all the products
     
     Parameters
     -------
@@ -266,7 +290,8 @@ class KineticLaw(object):
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
     species_in_kinetic_law: list-species in the kinetics
-    
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+
     Returns
     -------
     True or False
@@ -277,14 +302,21 @@ class KineticLaw(object):
     kinetics = kwargs["kinetics"]
     kinetics_sim = kwargs["kinetics_sim"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    ids_list = kwargs["ids_list"]
 
     flag = True
-    # if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
-    #   flag = False
     if self._isDiffOfTwoProductsOfTerms(kinetics, kinetics_sim) == False:
       flag = False
     if self._ProductOfTermsWithAllRctsOrPrds(kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list) == False:
       flag = False
+    try:
+      eq = self._numeratorDenominator(kinetics_sim, ids_list)
+      if len(species_in_kinetic_law) > 0:
+        for i in range(len(species_in_kinetic_law)):
+          if species_in_kinetic_law[i] in eq[1]:
+            flag = False
+    except:
+      pass
     
     return flag
 
@@ -292,10 +324,9 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of bi-terms with moderator
     Bi-terms with moderator classification rule: 
-    1) There is only *,- inside the kinetics without /,+.
-    2) The first term before - does not include all the reactants,
-       while the second term after - does not include all the products. 
-      (Is there a better and more accurate way for this?)
+    1) Kinetics is the difference of two product of terms, with species in each term
+    2) The first term before - does not include all the reactants
+       while the second term after - does not include all the products
     
     Parameters
     -------
@@ -305,6 +336,7 @@ class KineticLaw(object):
     kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
     species_in_kinetic_law: list-species in the kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
     
     Returns
     -------
@@ -315,14 +347,29 @@ class KineticLaw(object):
     kinetics = kwargs["kinetics"]
     kinetics_sim = kwargs["kinetics_sim"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+    ids_list = kwargs["ids_list"]
 
     flag = True
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0:
+    if self._numSpeciesInKinetics(species_in_kinetic_law) == 0: #exclude the case of ZERO
       flag = False
     if self._isDiffOfTwoProductsOfTerms(kinetics, kinetics_sim) == False:
       flag = False
     if self._ProductOfTermsWithAllRctsOrPrds(kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list) == True:
       flag = False
+    if len(species_in_kinetic_law) == 1 and species_in_kinetic_law == reactant_list: 
+    #exclude the case of UNDR
+      if kinetics.count(species_in_kinetic_law[0]) == 1:
+        flag = False
+      elif kinetics_sim.count(species_in_kinetic_law[0]) == 1:
+        flag = False 
+    try:
+      eq = self._numeratorDenominator(kinetics_sim, ids_list)
+      if len(species_in_kinetic_law) > 0:
+        for i in range(len(species_in_kinetic_law)):
+          if species_in_kinetic_law[i] in eq[1]:
+            flag = False
+    except:
+      pass
 
     return flag
 
@@ -394,35 +441,60 @@ class KineticLaw(object):
       
     return flag
 
-  def isHyperbolic(self, **kwargs):
+  def isFraction(self, **kwargs):
     """
-    Tests whether the reaction belongs to the type of Hyperbolic function
-    Hyperbolic function classification rule:
-    Check whether it is in the form of fraction and has species in both numerator and denominator.
+    Tests whether the reaction belongs to the type of Fraction function
+    Fraction function classification rule:
+    Check whether it is in the form of fraction and has species in the denominator
     
     Parameters
     ----  
     **kwargs: dictionary-keyword arguments  
-    #kinetics: string-kinetics
     kinetics_sim: string-simplified kinetics
-    reactant_list: list-reactants of the reaction
     ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
 
     Returns
     -------
     True or False
     """
-    
-    #kinetics = kwargs["kinetics"]
     kinetics_sim = kwargs["kinetics_sim"]
-    reactant_list = kwargs["reactant_list"]
     ids_list = kwargs["ids_list"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
 
-    eq = self._isFraction(kinetics_sim, ids_list)
+    eq = self._numeratorDenominator(kinetics_sim, ids_list)
     flag = False
-    if len(reactant_list) > 0:
-      for i in range(len(reactant_list)):
-        if reactant_list[i] in eq[0] and reactant_list[i] in eq[1]:
+    if len(species_in_kinetic_law) > 0:
+      for i in range(len(species_in_kinetic_law)):
+        if species_in_kinetic_law[i] in eq[1]:
+          flag = True
+    return flag
+
+  def isPolynomial(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Polynomial function
+    Polynomial function classification rule:
+    Check whether it is in the form of polynomial
+    
+    Parameters
+    ----  
+    **kwargs: dictionary-keyword arguments  
+    kinetics_sim: string-simplified kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
+
+    Returns
+    -------
+    True or False
+    """
+    kinetics_sim = kwargs["kinetics_sim"]
+    ids_list = kwargs["ids_list"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
+    flag = False
+    if self._isPolynomial(kinetics_sim, ids_list) == True and len(species_in_kinetic_law) > 0:
+      for i in range(len(species_in_kinetic_law)):
+        if species_in_kinetic_law[i] in kinetics_sim:
           flag = True
     return flag
     
@@ -503,12 +575,21 @@ class KineticLaw(object):
     -------
     True or False
     """
-    if "/" not in kinetics and "+" not in kinetics and "-" not in kinetics:
+    flag = False
+    if "+" not in kinetics and "-" not in kinetics:
+      flag = True
+    elif "+" not in kinetics_sim and "-" not in kinetics_sim:
+      flag = True
+    elif "-" in kinetics and "e-" in kinetics: 
+      flag = True
+    elif "-" in kinetics_sim and "e-" in kinetics_sim: 
+      flag = True
+    elif "-" in kinetics and "exp(-" in kinetics: 
+      flag = True
+    elif "-" in kinetics_sim and "exp(-" in kinetics_sim: 
       return True
-    elif "/" not in kinetics_sim and "+" not in kinetics_sim and "-" not in kinetics_sim:
-      return True
-    else:
-      return False 
+
+    return flag
 
   def _SpecsInKineticsAllRcts(self, species_in_kinetic_law, reactant_list):
     """
@@ -541,12 +622,13 @@ class KineticLaw(object):
     -------
     True or False
     """
-    if "/" not in kinetics and "+" not in kinetics and "exp(-" not in kinetics and "-" in kinetics:
-      return True
-    elif "/" not in kinetics_sim and "+" not in kinetics_sim and "exp(-" not in kinetics_sim and "-" in kinetics_sim:     
-      return True
-    else:
-      return False
+
+    flag = False
+    if self._isSingleProductOfTerms(kinetics, kinetics_sim) == False:
+      terms = kinetics.split("-")
+      if len(terms) == 2:
+        flag = True
+    return flag
 
   def _ProductOfTermsWithAllRctsOrPrds(self, kinetics, kinetics_sim, species_in_kinetic_law, reactant_list, product_list):
     """
@@ -784,9 +866,9 @@ class KineticLaw(object):
     else: 
       return False
 
-  def _isFraction(self, kinetics_sim, ids_list):
+  def _numeratorDenominator(self, kinetics_sim, ids_list):
     """
-    Test whether the simplified kinetics is a fraction
+    Get the numerator and denominator of a "fraction" function.
     
     Parameters
     ----    
@@ -796,6 +878,52 @@ class KineticLaw(object):
     Returns
     -------
     Type - the numerator and the denominator of the fraction
+    """
+
+    strange_func = 0 
+    pre_symbols = ''
+    for i in range(len(ids_list)):
+      pre_symbols += ids_list[i]
+      pre_symbols += ' '
+    pre_symbols = pre_symbols[:-1] #remove the space at the end
+    pre_symbols_comma = pre_symbols.replace(" ",",")
+    stmt = "%s = symbols('%s')"%(pre_symbols_comma,pre_symbols)
+    try: #sometimes there is "invalid syntax error"
+      exec(stmt,globals())
+    except: 
+      strange_func = 1
+    
+    try: #check if there is strange func (i.e. delay) in kinetic law; 
+      #sometimes ids_list is not enough for all the ids in kinetics
+      eq_stat = "kinetics_eq = " + kinetics_sim
+      exec(eq_stat,globals())
+    except:
+      strange_func = 1
+
+    eq = ['', '']
+    if strange_func == 0:
+      try: 
+        numerator = str(kinetics_eq.as_numer_denom()[0])
+        denominator = str(kinetics_eq.as_numer_denom()[1])
+        eq[0] = numerator
+        eq[1] = denominator
+      except:
+        pass
+
+    return eq
+
+  def _isPolynomial(self, kinetics_sim, ids_list):
+    """
+    Check if a function is polynomial.
+    
+    Parameters
+    ----    
+    kinetics_sim: string-simplified kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+
+    Returns
+    -------
+    Type - True or False
     """
 
     strange_func = 0 #check if there are strang functions (i.e. delay) in kinetics
@@ -817,17 +945,13 @@ class KineticLaw(object):
     except:
       strange_func = 1
 
-    eq = ['', '']
+    polynomial_flag = False
     if strange_func == 0:
-      try: 
-        numerator = str(kinetics_eq.as_numer_denom()[0])
-        denominator = str(kinetics_eq.as_numer_denom()[1])
-        eq[0] = numerator
-        eq[1] = denominator
+      try:
+        polynomial_flag = kinetics_eq.is_polynomial()
       except:
         pass
-
-    return eq
+    return polynomial_flag
 
 
   @staticmethod
