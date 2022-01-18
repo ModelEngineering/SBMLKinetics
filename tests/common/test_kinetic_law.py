@@ -19,7 +19,9 @@ IS_PLOT = False
 NUM_LAW = 3
 NUM_LAW_2 = 17
 NUM_LAW_3 = 7
+NUM_LAW_5 = 9
 NUM_LAW_43 = 7
+NUM_LAW_239 = 45
 
 
 class MockFunctionDefinition():
@@ -51,8 +53,14 @@ class TestKineticLaw(unittest.TestCase):
     self.simple_3 = helpers.getSimple_BIOMD3()
     self.laws_3 = [self.simple_3.reactions[i].kinetic_law for i in range(NUM_LAW_3)]
 
+    self.simple_5 = helpers.getSimple_BIOMD5()
+    self.laws_5 = [self.simple_5.reactions[i].kinetic_law for i in range(NUM_LAW_5)]
+
     self.simple_43 = helpers.getSimple_BIOMD43()
     self.laws_43 = [self.simple_43.reactions[i].kinetic_law for i in range(NUM_LAW_43)]
+
+    self.simple_239 = helpers.getSimple_BIOMD239()
+    self.laws_239 = [self.simple_239.reactions[i].kinetic_law for i in range(NUM_LAW_239)]
 
   def testConstructor(self):
     if IGNORE_TEST:
@@ -234,6 +242,72 @@ class TestKineticLaw(unittest.TestCase):
     test = kinetic_law.isNoPrds(**kwargs)
     self.assertFalse(test)
 
+  def testIsSinglePrd1(self):
+    # Test No products success case
+    if IGNORE_TEST:
+      return  
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    product_list = ['C']  
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isSinglePrd(**kwargs)
+    self.assertTrue(test) 
+
+  def testIsSinglePrd2(self):
+    # Test No products Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[1]
+    #reaction: "C->"
+    product_list = []
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isSinglePrd(**kwargs)
+    self.assertFalse(test)
+
+  def testIsDoublePrds1(self):
+    # Test No products success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_5[0]
+    #reaction: "M->C2 + YP"
+    product_list = ['C2','YP']
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isDoublePrds(**kwargs)
+    self.assertTrue(test) 
+
+  def testIsDoublePrds2(self):
+    # Test No products Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    product_list = ['C']
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isDoublePrds(**kwargs)
+    self.assertFalse(test)
+
+  def testIsMulPrds1(self):
+    # Test No products success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_239[12]
+    #reaction: "Pyr + CoA + NAD_p->CO2 + Acetyl_CoA + NADH"
+    product_list = ['CO2','Acetyl_CoA','NADH']
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isMulPrds(**kwargs)
+    self.assertTrue(test) 
+
+  def testIsMulPrds2(self):
+    # Test No products Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_3[0]
+    #reaction: "->C"
+    product_list = ['C']
+    kwargs = {"product_list": product_list}
+    test = kinetic_law.isMulPrds(**kwargs)
+    self.assertFalse(test)
+
   def testIsNoRcts1(self):
     # Test No reactants success case
     if IGNORE_TEST:
@@ -278,13 +352,35 @@ class TestKineticLaw(unittest.TestCase):
     test = kinetic_law.isSingleRct(**kwargs)
     self.assertFalse(test)
 
-  def testIsMulRcts1(self):
+  def testIsDoubleRcts1(self):
     # Test multiple reactants success case
     if IGNORE_TEST:
       return    
     kinetic_law = self.laws_2[0]
     #reaction: "B + L->BL"
     reactant_list = ['B', 'L']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isDoubleRcts(**kwargs)
+    self.assertTrue(test)
+
+  def testIsDoubleRcts2(self):
+    # Test multiple reactants Failure case
+    if IGNORE_TEST:
+      return
+    kinetic_law = self.laws_2[3]
+    #reaction: "BLL->ALL"
+    reactant_list = ['BLL']
+    kwargs = {"reactant_list": reactant_list}
+    test = kinetic_law.isDoubleRcts(**kwargs)
+    self.assertFalse(test)
+
+  def testIsMulRcts1(self):
+    # Test multiple reactants success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_239[12]
+    #reaction: "Pyr + CoA + NAD_p->CO2 + Acetyl_CoA + NADH"
+    reactant_list = ['Pyr', 'CoA', 'NAD_p']
     kwargs = {"reactant_list": reactant_list}
     test = kinetic_law.isMulRcts(**kwargs)
     self.assertTrue(test)

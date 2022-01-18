@@ -30,7 +30,8 @@ class TestKineticsClassification(unittest.TestCase):
     #check for biomodel6
     initial_model_indx = 5
     final_model_indx = 6
-    self.df_classification, self.df_gen_stat, self.df_mol_stat = kinetics_classification.main(initial_model_indx, final_model_indx)
+    self.df_classification, self.df_gen_stat, self.df_mol_stat, self.df_gen_stat_PR, \
+      self.biomodel_non_count = kinetics_classification.main(initial_model_indx, final_model_indx)
     
   def testClassification1(self):
     # Test all the column names
@@ -156,6 +157,33 @@ class TestKineticsClassification(unittest.TestCase):
         flag = 0
     self.assertTrue(flag)
 
+  def testGenStatPR1(self):
+    # Test all the column names
+    if IGNORE_TEST:
+      return    
+    test = all(item in self.df_gen_stat_PR.columns for item in kinetics_classification.COLUMN_NAME_df_gen_stat)
+    self.assertTrue(test)
+
+  def testGenStatPR2(self):
+    # Test whether there is at least one row
+    if IGNORE_TEST:
+      return    
+    self.assertTrue(len(self.df_gen_stat_PR.index)>0) 
+
+  def testGenStatPR3(self):
+    # Test column 'Percentage' of df_gen_stat is a list of floating numbers
+    if IGNORE_TEST:
+      return    
+    list_gen_stat_percentage = self.df_gen_stat_PR[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
+    test = all(isinstance(item, float) for item in list_gen_stat_percentage)
+    self.assertTrue(test) 
+  
+  def testBiomodelNonCount1(self):
+    # Test biomodel_non_count is an integer
+    if IGNORE_TEST:
+      return    
+    test = isinstance(self.biomodel_non_count, int)
+    self.assertTrue(test)
 
 if __name__ == '__main__':
   unittest.main()

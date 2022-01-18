@@ -127,6 +127,57 @@ class KineticLaw(object):
     """
     product_list = kwargs["product_list"]
     return self._numOfPrds(product_list) == 0
+  
+  def isSinglePrd(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Single Product
+    Single product classification rule: if there is a single product
+
+    Parameters
+    -------
+    **kwargs: dictionary-keyword arguments
+    product_list: list-products of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    product_list = kwargs["product_list"]
+    return self._numOfPrds(product_list) == 1
+
+  def isDoublePrds(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Double Products
+    Double products classification rule: if there are double products
+
+    Parameters
+    -------
+    **kwargs: dictionary-keyword arguments
+    product_list: list-products of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    product_list = kwargs["product_list"]
+    return self._numOfPrds(product_list) == 2
+
+  def isMulPrds(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Multiple Products
+    Multiple products classification rule: if there is are more than two products
+
+    Parameters
+    -------
+    **kwargs: dictionary-keyword arguments
+    product_list: list-products of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    product_list = kwargs["product_list"]
+    return self._numOfPrds(product_list) > 2
 
   def isNoRcts(self, **kwargs):
     """
@@ -162,10 +213,27 @@ class KineticLaw(object):
     reactant_list = kwargs["reactant_list"]
     return self._numOfRcts(reactant_list) == 1
 
+  def isDoubleRcts(self, **kwargs):
+    """
+    Tests whether the reaction belongs to the type of Double Reactants
+    Double reactants classification rule: if there is two reactants
+    
+    Parameters
+    -------
+    **kwargs: dictionary-keyword arguments
+    reactant_list: list-reactants of the reaction
+    
+    Returns
+    -------
+    True or False
+    """
+    reactant_list = kwargs["reactant_list"]
+    return self._numOfRcts(reactant_list) == 2
+
   def isMulRcts(self, **kwargs):
     """
     Tests whether the reaction belongs to the type of Multiple Reactants
-    Multiple reactants classification rule: if there are multiple reactants
+    Multiple reactants classification rule: if there are more than two reactants
     
     Parameters
     -------
@@ -177,7 +245,7 @@ class KineticLaw(object):
     True or False
     """
     reactant_list = kwargs["reactant_list"] 
-    return self._numOfRcts(reactant_list) > 1
+    return self._numOfRcts(reactant_list) > 2
 
 
   def isUNDR(self, **kwargs):

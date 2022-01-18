@@ -20,6 +20,7 @@ from libsbml import * # access functions in SBML
 import time
 
 import pandas as pd
+import math
 
 # Column names
 SBMLID = "SBMLid"
@@ -43,18 +44,26 @@ FR = "Fraction"
 PL = "Polynomial"
 NA = 'NA'
 PERCENTAGE = 'Percentage'
-REACTIONNUM = 'Reaction#'
+PERCENTAGE_SDER = 'Percentage standard error'
+PERCENTAGE_PER_MODEL = 'Percentage per model'
+PERCENTAGE_PER_MODEL_SDER = 'Percentage per model standard error'
+RXN_NUM = 'Reaction number'
+BIOMOL_NUM = 'Biomodel number'
 # COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
 #                 ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
 
 COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
                 ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
 
-COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE]
-# COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, POWER, NOPRD, NORCT,\
+# COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, PERCENTAGE_SDER, \
+#   PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
+COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, \
+  PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
+# COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, POWER, NOPRD, NORCT,\
 #   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
 
-COLUMN_NAME_df_mol_stat = [SBMLID, REACTIONNUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
+COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
+
 
 def main(initial_model_indx, final_model_indx): 
   """
@@ -70,11 +79,14 @@ def main(initial_model_indx, final_model_indx):
   df_classification: DataFrame-the kinetics classification for each reaction
   df_gen_stat: DataFrame-the general statistics for all the BioModels
   df_mol_stat: DataFrame-the statistics for each BioModel
+  df_gen_stat_PR: DataFrame-the general statistics for all the BioModels per number of rcts and prds
+  biomodel_non_count: Int-number of biomodels with non-classified rxns
   """
   iterator = simple_sbml.modelIterator(initial=initial_model_indx, final=final_model_indx)
 
   #do statistics for different types of reactions and non-classified reactions
   rxn_num = 0        #total number of reactions deals
+  rxn_num_PR = [0]*16 #total number of reactions with certain prds and rcts (4prds*4rcts)
   #all the lists are following the same order of kinetics classifications
   # types_name = ["Zeroth Order", "Kinetics with power terms", "No products", \
   #   "No reactants", "Single reactant", "Multiple reactants", \
@@ -93,11 +105,16 @@ def main(initial_model_indx, final_model_indx):
   types_simplified_name = ["ZERO", \
     "UNDR", "UNMO", "BIDR", "BIMO", "FR"]
   num_type_classification = len(types_name) -1  #types_name includes not classified cases
-  rxn_classification_num = [0]*(num_type_classification+1)
+  rxn_classification_num = [0]*(num_type_classification+1) #total number of classified cases for each type
+  rxn_classification_num_PR = np.zeros((16, (num_type_classification+1))) #16 rows for 4prds*4rcts
 
   df_classification = pd.DataFrame(columns = COLUMN_NAME_df_classification)
   df_mol_stat = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
-
+  df_mol_stat_PR = {} #set of dataframes to save mol stat for each PR
+  for i in range(16):
+    df_mol_stat_PR[i] = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
+  
+  biomodel_non_count = 0
   for idx, item in enumerate(iterator):
     if item is None:
       file_num = initial_model_indx +idx
@@ -122,12 +139,15 @@ def main(initial_model_indx, final_model_indx):
 
       #do the statistics per model
       rxn_num_permol = len(simple.reactions)
+      rxn_num_permol_PR = [0]*16 #rxn numbers per model for each PR
       if rxn_num_permol != 0:
+        flag_biomodel_non = 0
         mol_stat_row_dct = {k:[] for k in COLUMN_NAME_df_mol_stat}
         mol_stat_row_dct[SBMLID].append(name)
-        mol_stat_row_dct[REACTIONNUM].append(rxn_num_permol)
+        mol_stat_row_dct[RXN_NUM].append(rxn_num_permol)
 
         rxn_classification_num_permol = [0]*(num_type_classification+1)
+        rxn_classification_num_permol_PR = np.zeros((16,(num_type_classification+1)))
 
         for reaction in simple.reactions:          
           flag_classification = [0]*num_type_classification
@@ -210,10 +230,6 @@ def main(initial_model_indx, final_model_indx):
           classification_cp = [
             reaction.kinetic_law.isZerothOrder(**kwargs),
             # reaction.kinetic_law.isPowerTerms(**kwargs),
-            # reaction.kinetic_law.isNoPrds(**kwargs),
-            # reaction.kinetic_law.isNoRcts(**kwargs),
-            # reaction.kinetic_law.isSingleRct(**kwargs),
-            # reaction.kinetic_law.isMulRcts(**kwargs),
             reaction.kinetic_law.isUNDR(**kwargs),
             reaction.kinetic_law.isUNMO(**kwargs),
             reaction.kinetic_law.isBIDR(**kwargs),
@@ -224,12 +240,27 @@ def main(initial_model_indx, final_model_indx):
             #reaction.kinetic_law.isPolynomial(**kwargs),
           ]
 
+          classification_prds_cp = [
+            reaction.kinetic_law.isNoPrds(**kwargs),
+            reaction.kinetic_law.isSinglePrd(**kwargs),
+            reaction.kinetic_law.isDoublePrds(**kwargs),
+            reaction.kinetic_law.isMulPrds(**kwargs),
+          ]
+
+          classification_rcts_cp = [
+            reaction.kinetic_law.isNoRcts(**kwargs),
+            reaction.kinetic_law.isSingleRct(**kwargs),
+            reaction.kinetic_law.isDoubleRcts(**kwargs),
+            reaction.kinetic_law.isMulRcts(**kwargs),
+          ]
+
           for i in range(num_type_classification):
             if classification_cp[i]:
               rxn_classification_num_permol[i] += 1
               flag_classification[i] = 1
               flag_non = 0
               classification_list.append(types_simplified_name[i])
+              break #stop the loop once flag_non == 0, this applies to exclusive classification
 
           classification_str = ','.join([str(e) for e in classification_list])
           classification_row_dct[CLASSIFICATIONS].append(classification_str)
@@ -245,6 +276,7 @@ def main(initial_model_indx, final_model_indx):
           if flag_non == 1:
             rxn_classification_num_permol[num_type_classification] += 1
             classification_row_dct[NA].append('x')
+            flag_biomodel_non = 1
           else:
             classification_row_dct[NA].append('')
           
@@ -252,9 +284,25 @@ def main(initial_model_indx, final_model_indx):
             classification_row_dct[COLUMN_NAME_df_classification[i]] = classification_row_dct[COLUMN_NAME_df_classification[i]][0]
           df_classification = df_classification.append(classification_row_dct, ignore_index=True)
 
+
+          for x in range(4): #4prds
+            for y in range(4): #4rcts
+              flag_non_PR = 1
+              xy = x*4+y
+    
+              if classification_prds_cp[x] and classification_rcts_cp[y]:
+                rxn_num_permol_PR[xy] += 1
+                for i in range(num_type_classification):
+                  if classification_cp[i]:
+                    rxn_classification_num_permol_PR[xy,i] += 1
+                    flag_non_PR = 0
+                    break #stop the loop once, this applies to exclusive classification
+                if flag_non_PR == 1:
+                  rxn_classification_num_permol_PR[xy,num_type_classification] += 1 
+
+        #for each reaction above here, for per model below here:
         for i in range(num_type_classification+1):
           rxn_classification_num[i] += rxn_classification_num_permol[i] 
-
         rxn_num += rxn_num_permol
 
         for i in range(num_type_classification):
@@ -264,27 +312,85 @@ def main(initial_model_indx, final_model_indx):
         for i in range(len(COLUMN_NAME_df_mol_stat)):
           mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
         df_mol_stat = df_mol_stat.append(mol_stat_row_dct, ignore_index=True)
+      
+        if flag_biomodel_non == 1:
+          biomodel_non_count += 1
 
+        #PR:
+        for xy in range(16):
+          if rxn_num_permol_PR[xy]!= 0:
+            mol_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_mol_stat}
+            mol_stat_PR_row_dct[SBMLID].append(name)
+            
+            mol_stat_PR_row_dct[RXN_NUM].append(rxn_num_permol_PR[xy])
+            for i in range(num_type_classification+1):
+              rxn_classification_num_PR[xy,i] += rxn_classification_num_permol_PR[xy,i] 
+            rxn_num_PR[xy] += rxn_num_permol_PR[xy]
 
+            for i in range(num_type_classification):
+              mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[2+i]].append(float(rxn_classification_num_permol_PR[xy,i]/rxn_num_permol_PR[xy]))
+            mol_stat_PR_row_dct[NA].append(float(rxn_classification_num_permol_PR[xy,num_type_classification]/rxn_num_permol_PR[xy]))
+            
+            for i in range(len(COLUMN_NAME_df_mol_stat)):
+              mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
+            df_mol_stat_PR[xy] = df_mol_stat_PR[xy].append(mol_stat_PR_row_dct, ignore_index=True) 
+  #for all the biomodels below here
   # This part is the same as the printed part in main section
   if(rxn_num != 0):
     df_gen_stat = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
     for i in range(num_type_classification+1):
-      gen_stat_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat}
+      gen_stat_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
       gen_stat_row_dct[CLASSIFICATIONS].append(types_name[i])
       gen_stat_row_dct[PERCENTAGE].append(float(rxn_classification_num[i]/rxn_num))
-      for j in range(len(COLUMN_NAME_df_gen_stat)):
-        gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]][0] 
+      
+      # do a statistics of df_mol_stat and save to df_gen_stat
+      avg_value = df_mol_stat[COLUMN_NAME_df_mol_stat[i+2]].mean()
+      sdv_value = df_mol_stat[COLUMN_NAME_df_mol_stat[i+2]].std()/math.sqrt(len(df_mol_stat.index))
+      if math.isnan(sdv_value):
+        sdv_value = 0.
+      gen_stat_row_dct[PERCENTAGE_PER_MODEL].append(avg_value)
+      gen_stat_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)
+      for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+        gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]][0]
       df_gen_stat = df_gen_stat.append(gen_stat_row_dct, ignore_index=True)
+    
+    df_gen_stat.at[0, RXN_NUM] = rxn_num
+    df_gen_stat.at[0, BIOMOL_NUM] = len(df_mol_stat.index)
 
-  return (df_classification, df_gen_stat, df_mol_stat)
+
+  #PR
+  df_gen_stat_PR = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
+  for xy in range(16):
+    row = len(df_gen_stat_PR.index)
+    if(rxn_num_PR[xy] != 0):
+      for i in range(num_type_classification+1):
+        gen_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
+        gen_stat_PR_row_dct[CLASSIFICATIONS].append(types_name[i])
+        gen_stat_PR_row_dct[PERCENTAGE].append(float(rxn_classification_num_PR[xy,i]/rxn_num_PR[xy]))
+
+        # do a statistics of df_mol_stat and save to df_gen_stat
+        avg_value = df_mol_stat_PR[xy][COLUMN_NAME_df_mol_stat[i+2]].mean()
+        sdv_value = df_mol_stat_PR[xy][COLUMN_NAME_df_mol_stat[i+2]].std()/math.sqrt(len(df_mol_stat_PR[xy].index))
+        if math.isnan(sdv_value):
+          sdv_value = 0
+        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL].append(avg_value)
+        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)
+        for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+          gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
+        df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True)  
+    df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
+    df_gen_stat_PR.at[row, BIOMOL_NUM] = len(df_mol_stat_PR[xy].index)
+    
+
+  return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count)
 
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 1
-  final_model_indx = 2
-  (df_classification, df_gen_stat, df_mol_stat) = main(initial_model_indx, final_model_indx)
+  initial_model_indx = 5
+  final_model_indx = 6
+  (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count) = \
+    main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
   
 
@@ -306,7 +412,23 @@ if __name__ == '__main__':
   else:
     print("There are no reactions.")
 
-  df_classification.to_csv("classification.csv", index=False)
-  df_gen_stat.to_csv("general_statistics.csv", index=False)
-  df_mol_stat.to_csv("statistics_per_model.csv", index=False)
+  print("number of biomodels with some reactions not classified:", biomodel_non_count)
+
+  # df_classification.to_csv("classification.csv", index=False)
+  # df_gen_stat.to_csv("general_statistics.csv", index=False)
+  # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
+
+  # Create a Pandas Excel writer using XlsxWriter as the engine.
+  writer = pd.ExcelWriter('statistics_result.xlsx', engine='xlsxwriter')
+
+  # Write each dataframe to a different worksheet.
+  df_classification.to_excel(writer, sheet_name='classification')
+  df_gen_stat.to_excel(writer, sheet_name='general_statistics')
+  df_mol_stat.to_excel(writer, sheet_name='statistics_per_model')
+  df_gen_stat_PR.to_excel(writer, sheet_name='general_statistics_PR')
+  #df_mol_stat_PR.to_excel(writer, sheet_name='statistics_per_model_PR5')
+
+  # Close the Pandas Excel writer and output the Excel file.
+  writer.save()
+
   print("--- %s seconds ---" % (time.time() - start_time))
