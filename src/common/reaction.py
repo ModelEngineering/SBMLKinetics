@@ -23,7 +23,8 @@ class Reaction(object):
     self.products =  [self.reaction.getProduct(n)
         for n in range(self.reaction.getNumProducts())]
     self.kinetic_law = KineticLaw(
-        self.reaction.getKineticLaw(), self, function_definitions=None)
+        #self.reaction.getKineticLaw(), self, function_definitions=None)
+        self.reaction.getKineticLaw(), self, function_definitions=function_definitions)
     self.id = self.reaction.getId()
 
   def getId(self):
