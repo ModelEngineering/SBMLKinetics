@@ -21,6 +21,9 @@ import time
 
 import pandas as pd
 import math
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib
 
 # Column names
 SBMLID = "SBMLid"
@@ -58,7 +61,7 @@ COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, 
 # COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, PERCENTAGE_SDER, \
 #   PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
 COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, \
-  PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
+ PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
 # COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, POWER, NOPRD, NORCT,\
 #   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
 
@@ -95,22 +98,29 @@ def main(initial_model_indx, final_model_indx):
   #   "Michaelis-Menten Kinetics", "Michaelis-Menten Kinetics-catalyzed", \
   #   "Fraction function", "Polynomial function"\
   #   "Not classified reactions"]
-  types_name = ["Zeroth Order", \
-    "Uni-directional mass reaction", "Uni-term with moderator", \
-    "Bi-directional mass reaction", "Bi-terms with moderator", \
-    "Fraction function", \
-    "Not classified reactions"]
+  # types_name = ["Zeroth Order", \
+  #   "Uni-directional mass reaction", "Uni-term with moderator", \
+  #   "Bi-directional mass reaction", "Bi-terms with moderator", \
+  #   "Fraction function", \
+  #   "Not classified reactions"]
+  types_name = ["ZERO", \
+    "UNDR", "UNMO", "BIDR", "BIMO", "FR", "NA"]
   # types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
   #   "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "FR", "PL"]
-  types_simplified_name = ["ZERO", \
-    "UNDR", "UNMO", "BIDR", "BIMO", "FR"]
-  num_type_classification = len(types_name) -1  #types_name includes not classified cases
+  types_simplified_name = types_name[:-1]
+  
+  num_type_classification = len(types_simplified_name)
   rxn_classification_num = [0]*(num_type_classification+1) #total number of classified cases for each type
   rxn_classification_num_PR = np.zeros((16, (num_type_classification+1))) #16 rows for 4prds*4rcts
 
   df_classification = pd.DataFrame(columns = COLUMN_NAME_df_classification)
   df_mol_stat = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
   df_mol_stat_PR = {} #set of dataframes to save mol stat for each PR
+  df_table_PR = pd.DataFrame(columns = ["R = 0", "R = 1", "R = 2", "R > 2"], \
+                             index = ["P = 0", "P = 1", "P = 2", "P > 3"])
+  df_table_PR_per_model = pd.DataFrame(columns = ["R = 0", "R = 1", "R = 2", "R > 2"], \
+                             index = ["P = 0", "P = 1", "P = 2", "P > 3"])    
+
   for i in range(16):
     df_mol_stat_PR[i] = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
   
@@ -359,12 +369,13 @@ def main(initial_model_indx, final_model_indx):
 
 
   #PR
-  df_gen_stat_PR = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
+  df_gen_stat_PR = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat[0:-2])
   for xy in range(16):
-    row = len(df_gen_stat_PR.index)
+    #row = len(df_gen_stat_PR.index)
     if(rxn_num_PR[xy] != 0):
       for i in range(num_type_classification+1):
         gen_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
+        #gen_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat}
         gen_stat_PR_row_dct[CLASSIFICATIONS].append(types_name[i])
         gen_stat_PR_row_dct[PERCENTAGE].append(float(rxn_classification_num_PR[xy,i]/rxn_num_PR[xy]))
 
@@ -376,21 +387,40 @@ def main(initial_model_indx, final_model_indx):
         gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL].append(avg_value)
         gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)
         for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+        #for j in range(len(COLUMN_NAME_df_gen_stat)):
+          gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
+        df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True) 
+    else:
+      for i in range(num_type_classification+1):
+        gen_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
+        gen_stat_PR_row_dct[CLASSIFICATIONS].append(types_name[i])
+        gen_stat_PR_row_dct[PERCENTAGE].append(0.)
+        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL].append(0.)
+        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(0.)
+        for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+        #for j in range(len(COLUMN_NAME_df_gen_stat)):
           gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
         df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True)  
-    df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
-    df_gen_stat_PR.at[row, BIOMOL_NUM] = len(df_mol_stat_PR[xy].index)
-    
 
-  return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count)
+    #df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
+    df_table_PR.iloc[xy//4,xy%4] = rxn_num_PR[xy]
+    if len(df_mol_stat_PR[xy]) != 0:
+      #df_gen_stat_PR.at[row, BIOMOL_NUM] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+      df_table_PR_per_model.iloc[xy//4,xy%4] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+    else:
+      #df_gen_stat_PR.at[row, BIOMOL_NUM] = 0.
+      df_table_PR_per_model.iloc[xy//4,xy%4] = 0.
+
+  return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
+    df_table_PR, df_table_PR_per_model)
 
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 5
+  initial_model_indx = 4
   final_model_indx = 6
-  (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count) = \
-    main(initial_model_indx, final_model_indx)
+  (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
+    df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
   
 
@@ -414,19 +444,101 @@ if __name__ == '__main__':
 
   print("number of biomodels with some reactions not classified:", biomodel_non_count)
 
+  #automatially generate plots and tables from the existed dataframes
+  #generate the bar plot for the total statistics
+  df_gen_stat_plot = df_gen_stat[["Classifications", "Percentage", "Percentage per model", \
+    "Percentage per model standard error"]]
+  df_gen_stat_plot.insert(2, "Percentage standard error", 0)
+  yerr = df_gen_stat_plot[["Percentage standard error", \
+    "Percentage per model standard error"]].to_numpy().T
+  ax = df_gen_stat_plot.plot(kind="bar",x="Classifications", y=["Percentage","Percentage per model"],\
+    yerr=yerr)
+  ax.get_yaxis().set_major_formatter(
+    matplotlib.ticker.FuncFormatter(lambda y, p: str("{:.2%}".format(y))))
+  for p in ax.patches:
+    ax.annotate(str("{:.2%}".format(p.get_height())), (p.get_x() * 1.005, p.get_height() * 1.005), fontsize = 4)
+  # #plt.show()
+  fig = ax.get_figure()
+  fig.savefig('bar.pdf')
+
+  #generate the PR bar plots with multiple subplots
+  df_gen_stat_PR.insert(2, "Percentage standard error", 0)
+  df_gen_stat_PR_plot = {}
+  types = len(df_gen_stat_plot)
+  fig = plt.figure(figsize = (16,16))
+  axes = fig.subplots(nrows=4, ncols=4)
+  for i in range(16):
+    df_gen_stat_PR_plot[i] = pd.DataFrame(columns = df_gen_stat_PR.columns.tolist())
+    df_temp = df_gen_stat_PR[types*i:types*(i+1)]   
+    df_gen_stat_PR_plot[i] = df_gen_stat_PR_plot[i].append(df_temp, ignore_index = True) 
+    yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
+      "Percentage per model standard error"]].to_numpy().T
+    df_gen_stat_PR_plot[i].plot(ax = axes[i//4,i%4] , kind="bar", 
+        x="Classifications", y=["Percentage","Percentage per model"],\
+        yerr=yerr, legend = None, fontsize = 6)
+    axes[i//4, i%4].get_yaxis().set_major_formatter(
+    matplotlib.ticker.FuncFormatter(lambda y, p: str("{:.2%}".format(y))))
+    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR.iat[i//4, i%4]), xy=(0, .9), color = 'dodgerblue')
+    axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(2, .9))
+    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_per_model.iat[i//4, i%4]), xy=(5., .9), color = 'darkorange')
+    #if i//4 != 3:
+    if i != 12:
+      axes[i//4, i%4].get_xaxis().set_visible(False)
+    axes[i//4,i%4].set_ylim([0, 1])  
+  handles, labels = fig.axes[-1].get_legend_handles_labels()
+  fig.legend(handles, labels, loc='upper center')
+  #plt.show()
+  fig.savefig('bar-PR.pdf')
+
+  #generate the PR two tables
+  df_table_PR_plot = df_table_PR.div(df_table_PR.sum().sum())
+  df_table_PR_per_model_plot = df_table_PR_per_model.div(df_table_PR_per_model.sum().sum())
+  # Defining figure size for the output plot 
+  fig, bx = plt.subplots(figsize = (12, 7))
+  idx = df_table_PR_plot.index.tolist()
+  cols = df_table_PR_plot.columns.tolist()
+  df_table_PR_plot = pd.DataFrame(df_table_PR_plot.values.tolist(),
+                   columns = cols, index = idx)   
+  # Displaying dataframe as an heatmap 
+  # with diverging colourmap as RdYlGn
+  fmt = lambda x, pos: '{:.2%}'.format(x)
+  sns.heatmap(df_table_PR_plot, cmap ='RdYlGn', linewidths = 0.30, annot = True, fmt='.2%')
+  cbar = bx.collections[0].colorbar
+  cbar.set_ticks([0, .1, .2, .3, .4, .5, .6, .7, .8, .9])
+  cbar.set_ticklabels(['0', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%'])
+  # Displaying the figure
+  #plt.show()  
+  plt.savefig('table_PR.pdf', dpi=300)
+
+  fig, cx = plt.subplots(figsize = (12, 7))
+  idx = df_table_PR_per_model_plot.index.tolist()
+  cols = df_table_PR_per_model_plot.columns.tolist()
+  df_table_PR_per_model_plot = pd.DataFrame(df_table_PR_per_model_plot.values.tolist(),
+                   columns = cols, index = idx)   
+  # Displaying dataframe as an heatmap 
+  # with diverging colourmap as RdYlGn
+  fmt = lambda x, pos: '{:.2%}'.format(x)
+  sns.heatmap(df_table_PR_per_model_plot, cmap ='RdYlGn', linewidths = 0.30, annot = True, fmt='.2%')
+  cbar = cx.collections[0].colorbar
+  cbar.set_ticks([0, .1, .2, .3, .4, .5, .6, .7, .8, .9])
+  cbar.set_ticklabels(['0', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%'])
+  # Displaying the figure
+  #plt.show()  
+  plt.savefig('table_PR_per_model.pdf', dpi=300)
+
   # df_classification.to_csv("classification.csv", index=False)
   # df_gen_stat.to_csv("general_statistics.csv", index=False)
   # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
 
   # Create a Pandas Excel writer using XlsxWriter as the engine.
   writer = pd.ExcelWriter('statistics_result.xlsx', engine='xlsxwriter')
-
   # Write each dataframe to a different worksheet.
   df_classification.to_excel(writer, sheet_name='classification')
   df_gen_stat.to_excel(writer, sheet_name='general_statistics')
   df_mol_stat.to_excel(writer, sheet_name='statistics_per_model')
   df_gen_stat_PR.to_excel(writer, sheet_name='general_statistics_PR')
-  #df_mol_stat_PR.to_excel(writer, sheet_name='statistics_per_model_PR5')
+  df_table_PR.to_excel(writer, sheet_name = 'table_PR')
+  df_table_PR_per_model.to_excel(writer, sheet_name = 'table_PR_per_model')
 
   # Close the Pandas Excel writer and output the Excel file.
   writer.save()

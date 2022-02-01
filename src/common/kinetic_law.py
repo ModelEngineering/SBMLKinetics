@@ -5,7 +5,10 @@ from src.common import constants as cn
 from src.common import util
 from src.common import exceptions
 from src.common import msgs
-from sympy import *
+#from sympy import *
+import sympy
+from sympy import symbols
+from sympy import core
 
 import collections #use set to compare two lists
 import numpy as np
@@ -796,7 +799,7 @@ class KineticLaw(object):
                   pre += pre_d          
                   expr1_stat = "expr1 =" + pre
                   exec(expr1_stat,globals())
-                  if simplify(expr1) == simplify(expr):
+                  if sympy.simplify(expr1) == sympy.simplify(expr):
                     flag = 1
                     break
                   # assuming there are two parameters in the numerator
@@ -810,7 +813,7 @@ class KineticLaw(object):
                       expr1_stat = "expr1 =" + pre
                       exec(expr1_stat,globals()) 
                       #exec() does not work in python function?
-                      if simplify(expr1) == simplify(expr):
+                      if sympy.simplify(expr1) == sympy.simplify(expr):
                         flag = 1
                         break
                       # assuming there are three parameters in the numerator
@@ -823,7 +826,7 @@ class KineticLaw(object):
                           pre += pre_d       
                           expr1_stat = "expr1 =" + pre
                           exec(expr1_stat,globals())
-                          if simplify(expr1) == simplify(expr):
+                          if sympy.simplify(expr1) == sympy.simplify(expr):
                             flag = 1
                             break
               if flag == 1:
@@ -895,7 +898,7 @@ class KineticLaw(object):
               pre += pre_d           
               expr1_stat = "expr1 =" + pre
               exec(expr1_stat,globals())
-              if simplify(expr1) == simplify(expr):
+              if sympy.simplify(expr1) == sympy.simplify(expr):
                 flag = 1
                 break
               # assuming there is one parameter in the numerator
@@ -908,7 +911,7 @@ class KineticLaw(object):
                   pre += pre_d           
                   expr1_stat = "expr1 =" + pre
                   exec(expr1_stat,globals())
-                  if simplify(expr1) == simplify(expr):
+                  if sympy.simplify(expr1) == sympy.simplify(expr):
                     flag = 1
                     break
                   # assuming there are two parameters in the numerator
@@ -921,7 +924,7 @@ class KineticLaw(object):
                       pre += pre_d
                       expr1_stat = "expr1 =" + pre
                       exec(expr1_stat,globals())
-                      if simplify(expr1) == simplify(expr):
+                      if sympy.simplify(expr1) == sympy.simplify(expr):
                         flag = 1
                         break
             if flag == 1:
