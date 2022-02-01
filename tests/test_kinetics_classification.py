@@ -31,7 +31,8 @@ class TestKineticsClassification(unittest.TestCase):
     initial_model_indx = 5
     final_model_indx = 6
     self.df_classification, self.df_gen_stat, self.df_mol_stat, self.df_gen_stat_PR, \
-      self.biomodel_non_count = kinetics_classification.main(initial_model_indx, final_model_indx)
+      self.biomodel_non_count, self.df_table_PR, self.df_table_PR_per_model \
+         = kinetics_classification.main(initial_model_indx, final_model_indx)
     
   def testClassification1(self):
     # Test all the column names
@@ -161,7 +162,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test all the column names
     if IGNORE_TEST:
       return    
-    test = all(item in self.df_gen_stat_PR.columns for item in kinetics_classification.COLUMN_NAME_df_gen_stat)
+    test = all(item in self.df_gen_stat_PR.columns for item in kinetics_classification.COLUMN_NAME_df_gen_stat[0:-2])
     self.assertTrue(test)
 
   def testGenStatPR2(self):
@@ -177,7 +178,34 @@ class TestKineticsClassification(unittest.TestCase):
     list_gen_stat_percentage = self.df_gen_stat_PR[kinetics_classification.COLUMN_NAME_df_gen_stat[1]].tolist()
     test = all(isinstance(item, float) for item in list_gen_stat_percentage)
     self.assertTrue(test) 
-  
+
+  def testTable1(self):
+    # Test all the column names
+    if IGNORE_TEST:
+      return    
+    self.assertTrue(all(item in self.df_table_PR.columns for item in ["R = 0", "R = 1", "R = 2", "R > 2"]))
+    self.assertTrue(all(item in self.df_table_PR.index for item in ["P = 0", "P = 1", "P = 2", "P > 3"]))
+
+  def testTable2(self):
+    # Test whether there is at least one row
+    if IGNORE_TEST:
+      return    
+    self.assertTrue(len(self.df_table_PR.index)==4) 
+
+  def testTablePerMol1(self):
+    # Test all the column names
+    if IGNORE_TEST:
+      return    
+    self.assertTrue(all(item in self.df_table_PR_per_model.columns for item in ["R = 0", "R = 1", "R = 2", "R > 2"]))
+    self.assertTrue(all(item in self.df_table_PR_per_model.index for item in ["P = 0", "P = 1", "P = 2", "P > 3"]))
+
+  def testTablePerMol2(self):
+    # Test whether there is at least one row
+    if IGNORE_TEST:
+      return    
+    self.assertTrue(len(self.df_table_PR_per_model.index)==4) 
+
+    
   def testBiomodelNonCount1(self):
     # Test biomodel_non_count is an integer
     if IGNORE_TEST:

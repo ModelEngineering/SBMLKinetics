@@ -6,7 +6,8 @@ from src.common import kinetic_law
 from src.common.simple_sbml import SimpleSBML
 from src.common.kinetic_law import KineticLaw
 from tests.common import helpers
-from sympy import *
+
+#from sympy import *
 
 import copy
 import libsbml
