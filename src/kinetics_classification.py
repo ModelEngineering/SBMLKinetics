@@ -402,14 +402,18 @@ def main(initial_model_indx, final_model_indx):
           gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
         df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True)  
 
-    #df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
-    df_table_PR.iloc[xy//4,xy%4] = rxn_num_PR[xy]
-    if len(df_mol_stat_PR[xy]) != 0:
-      #df_gen_stat_PR.at[row, BIOMOL_NUM] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
-      df_table_PR_per_model.iloc[xy//4,xy%4] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+    if False:
+      #df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
+      df_table_PR.iloc[xy//4,xy%4] = rxn_num_PR[xy]
+      if len(df_mol_stat_PR[xy]) != 0:
+        #df_gen_stat_PR.at[row, BIOMOL_NUM] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+        df_table_PR_per_model.iloc[xy//4,xy%4] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+      else:
+        #df_gen_stat_PR.at[row, BIOMOL_NUM] = 0.
+        df_table_PR_per_model.iloc[xy//4,xy%4] = 0.
     else:
-      #df_gen_stat_PR.at[row, BIOMOL_NUM] = 0.
-      df_table_PR_per_model.iloc[xy//4,xy%4] = 0.
+      df_table_PR = None
+      df_table_RR_per_model = None
 
   return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
     df_table_PR, df_table_PR_per_model)
@@ -422,6 +426,8 @@ if __name__ == '__main__':
   (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
     df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
+  import sys;
+  sys.exit()
   
 
   SBML_id_list = []
