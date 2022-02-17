@@ -11,6 +11,7 @@ from sympy.core import parameters
 from src.common.simple_sbml import SimpleSBML
 import src.common.simple_sbml as simple_sbml
 import src.common.constants as cn
+import sys
 
 import numpy as np
 import os
@@ -91,13 +92,6 @@ def main(initial_model_indx, final_model_indx):
   rxn_num = 0        #total number of reactions deals
   rxn_num_PR = [0]*16 #total number of reactions with certain prds and rcts (4prds*4rcts)
   #all the lists are following the same order of kinetics classifications
-  # types_name = ["Zeroth Order", "Kinetics with power terms", "No products", \
-  #   "No reactants", "Single reactant", "Multiple reactants", \
-  #   "Uni-directional mass reaction", "Uni-term with moderator", \
-  #   "Bi-directional mass reaction", "Bi-terms with moderator", \
-  #   "Michaelis-Menten Kinetics", "Michaelis-Menten Kinetics-catalyzed", \
-  #   "Fraction function", "Polynomial function"\
-  #   "Not classified reactions"]
   # types_name = ["Zeroth Order", \
   #   "Uni-directional mass reaction", "Uni-term with moderator", \
   #   "Bi-directional mass reaction", "Bi-terms with moderator", \
@@ -290,9 +284,15 @@ def main(initial_model_indx, final_model_indx):
           else:
             classification_row_dct[NA].append('')
           
-          for i in range(len(COLUMN_NAME_df_classification)):
-            classification_row_dct[COLUMN_NAME_df_classification[i]] = classification_row_dct[COLUMN_NAME_df_classification[i]][0]
-          df_classification = df_classification.append(classification_row_dct, ignore_index=True)
+          #for i in range(len(COLUMN_NAME_df_classification)):
+          #  classification_row_dct[COLUMN_NAME_df_classification[i]] = classification_row_dct[COLUMN_NAME_df_classification[i]][0]
+          #df_classification = df_classification.append(classification_row_dct, ignore_index=True)
+          #print(classification_row_dct)
+          if len(df_classification) == 0:
+              df_classification = pd.DataFrame(classification_row_dct)
+          else:
+              df_classification = pd.concat([df_classification,\
+                  pd.DataFrame(classification_row_dct)], ignore_index=True)
 
 
           for x in range(4): #4prds
@@ -319,9 +319,14 @@ def main(initial_model_indx, final_model_indx):
           mol_stat_row_dct[COLUMN_NAME_df_mol_stat[2+i]].append(float(rxn_classification_num_permol[i]/rxn_num_permol))
         mol_stat_row_dct[NA].append(float(rxn_classification_num_permol[num_type_classification]/rxn_num_permol))
         
-        for i in range(len(COLUMN_NAME_df_mol_stat)):
-          mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
-        df_mol_stat = df_mol_stat.append(mol_stat_row_dct, ignore_index=True)
+        # for i in range(len(COLUMN_NAME_df_mol_stat)):
+        #   mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
+        # df_mol_stat = df_mol_stat.append(mol_stat_row_dct, ignore_index=True)
+        if len(df_mol_stat) == 0:
+            df_mol_stat = pd.DataFrame(mol_stat_row_dct)
+        else:
+            df_mol_stat = pd.concat([df_mol_stat,\
+                pd.DataFrame(mol_stat_row_dct)], ignore_index=True)
       
         if flag_biomodel_non == 1:
           biomodel_non_count += 1
@@ -341,9 +346,14 @@ def main(initial_model_indx, final_model_indx):
               mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[2+i]].append(float(rxn_classification_num_permol_PR[xy,i]/rxn_num_permol_PR[xy]))
             mol_stat_PR_row_dct[NA].append(float(rxn_classification_num_permol_PR[xy,num_type_classification]/rxn_num_permol_PR[xy]))
             
-            for i in range(len(COLUMN_NAME_df_mol_stat)):
-              mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
-            df_mol_stat_PR[xy] = df_mol_stat_PR[xy].append(mol_stat_PR_row_dct, ignore_index=True) 
+            # for i in range(len(COLUMN_NAME_df_mol_stat)):
+            #   mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]] = mol_stat_PR_row_dct[COLUMN_NAME_df_mol_stat[i]][0]
+            # df_mol_stat_PR[xy] = df_mol_stat_PR[xy].append(mol_stat_PR_row_dct, ignore_index=True)
+            if len(df_mol_stat_PR[xy]) == 0:
+                df_mol_stat_PR[xy] = pd.DataFrame(mol_stat_PR_row_dct)
+            else:
+                df_mol_stat_PR[xy] = pd.concat([df_mol_stat_PR[xy],\
+                    pd.DataFrame(mol_stat_PR_row_dct)], ignore_index=True) 
   #for all the biomodels below here
   # This part is the same as the printed part in main section
   if(rxn_num != 0):
@@ -360,9 +370,14 @@ def main(initial_model_indx, final_model_indx):
         sdv_value = 0.
       gen_stat_row_dct[PERCENTAGE_PER_MODEL].append(avg_value)
       gen_stat_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)
-      for j in range(len(COLUMN_NAME_df_gen_stat)-2):
-        gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]][0]
-      df_gen_stat = df_gen_stat.append(gen_stat_row_dct, ignore_index=True)
+      # for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+      #   gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_row_dct[COLUMN_NAME_df_gen_stat[j]][0]
+      # df_gen_stat = df_gen_stat.append(gen_stat_row_dct, ignore_index=True)
+      if len(df_gen_stat) == 0:
+          df_gen_stat = pd.DataFrame(gen_stat_row_dct)
+      else:
+          df_gen_stat = pd.concat([df_gen_stat,\
+              pd.DataFrame(gen_stat_row_dct)], ignore_index=True) 
     
     df_gen_stat.at[0, RXN_NUM] = rxn_num
     df_gen_stat.at[0, BIOMOL_NUM] = len(df_mol_stat.index)
@@ -385,38 +400,47 @@ def main(initial_model_indx, final_model_indx):
         if math.isnan(sdv_value):
           sdv_value = 0
         gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL].append(avg_value)
-        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)
-        for j in range(len(COLUMN_NAME_df_gen_stat)-2):
-        #for j in range(len(COLUMN_NAME_df_gen_stat)):
-          gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
-        df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True) 
-    else:
-      for i in range(num_type_classification+1):
-        gen_stat_PR_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
-        gen_stat_PR_row_dct[CLASSIFICATIONS].append(types_name[i])
-        gen_stat_PR_row_dct[PERCENTAGE].append(0.)
-        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL].append(0.)
-        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(0.)
-        for j in range(len(COLUMN_NAME_df_gen_stat)-2):
-        #for j in range(len(COLUMN_NAME_df_gen_stat)):
-          gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
-        df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True)  
-
-    if False:
-      #df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
-      df_table_PR.iloc[xy//4,xy%4] = rxn_num_PR[xy]
-      if len(df_mol_stat_PR[xy]) != 0:
-        #df_gen_stat_PR.at[row, BIOMOL_NUM] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
-        df_table_PR_per_model.iloc[xy//4,xy%4] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+        gen_stat_PR_row_dct[PERCENTAGE_PER_MODEL_SDER].append(sdv_value)  
+        # for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+        # #for j in range(len(COLUMN_NAME_df_gen_stat)):
+        #   gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
+        # df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True)       
+        if len(df_gen_stat_PR) == 0:
+            df_gen_stat_PR = pd.DataFrame(gen_stat_PR_row_dct)
+        else:
+            df_gen_stat_PR = pd.concat([df_gen_stat_PR,\
+                pd.DataFrame(gen_stat_PR_row_dct)], ignore_index=True) 
+    else: #the else part slows down from 7h to 29h
+      gen_stat_PR_mul_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
+      gen_stat_PR_mul_row_dct[CLASSIFICATIONS].extend(types_name)
+      gen_stat_PR_mul_row_dct[PERCENTAGE].extend([0.]*(num_type_classification+1))
+      gen_stat_PR_mul_row_dct[PERCENTAGE_PER_MODEL].extend([0.]*(num_type_classification+1))
+      gen_stat_PR_mul_row_dct[PERCENTAGE_PER_MODEL_SDER].extend([0.]*(num_type_classification+1))
+      # for j in range(len(COLUMN_NAME_df_gen_stat)-2):
+      # #for j in range(len(COLUMN_NAME_df_gen_stat)):
+      #   gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]] = gen_stat_PR_row_dct[COLUMN_NAME_df_gen_stat[j]][0]    
+      # df_gen_stat_PR = df_gen_stat_PR.append(gen_stat_PR_row_dct, ignore_index=True) 
+      if len(df_gen_stat_PR) == 0:
+          df_gen_stat_PR = pd.DataFrame(gen_stat_PR_mul_row_dct)
       else:
-        #df_gen_stat_PR.at[row, BIOMOL_NUM] = 0.
-        df_table_PR_per_model.iloc[xy//4,xy%4] = 0.
+          df_gen_stat_PR = pd.concat([df_gen_stat_PR,\
+              pd.DataFrame(gen_stat_PR_mul_row_dct)], ignore_index=True) 
+
+    #df_gen_stat_PR.at[row, RXN_NUM] = rxn_num_PR[xy]
+    df_table_PR.iloc[xy//4,xy%4] = rxn_num_PR[xy]
+    if len(df_mol_stat_PR[xy]) != 0:
+      #df_gen_stat_PR.at[row, BIOMOL_NUM] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
+      df_table_PR_per_model.iloc[xy//4,xy%4] = rxn_num_PR[xy]/len(df_mol_stat_PR[xy].index)
     else:
-      df_table_PR = None
-      df_table_RR_per_model = None
+      #df_gen_stat_PR.at[row, BIOMOL_NUM] = 0.
+      df_table_PR_per_model.iloc[xy//4,xy%4] = 0.
+    # #Joe's advice to test speed up part of code
+    # df_table_PR = None
+    # df_table_PR_per_model = None
 
   return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
     df_table_PR, df_table_PR_per_model)
+  #return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count)
 
 
 if __name__ == '__main__':
@@ -424,11 +448,23 @@ if __name__ == '__main__':
   initial_model_indx = 4
   final_model_indx = 6
   (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
-    df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
+   df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
+  #(df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count) \
+  #  = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)
-  import sys;
-  sys.exit()
-  
+
+  # # Create a Pandas Excel writer using XlsxWriter as the engine.
+  # writer = pd.ExcelWriter('statistics_result.xlsx', engine='xlsxwriter')
+  # # Write each dataframe to a different worksheet.
+  # df_classification.to_excel(writer, sheet_name='classification')
+  # df_gen_stat.to_excel(writer, sheet_name='general_statistics')
+  # df_mol_stat.to_excel(writer, sheet_name='statistics_per_model')
+  # df_gen_stat_PR.to_excel(writer, sheet_name='general_statistics_PR')
+  # writer.save()
+
+  # #Joe's advice to test part of speedup, not sure if this works
+  # print("--- %s seconds ---" % (time.time() - start_time))
+  # sys.exit("Stop code runnning before statistics and plots")
 
   SBML_id_list = []
   for i in range(len(df_classification)):
@@ -449,6 +485,33 @@ if __name__ == '__main__':
     print("There are no reactions.")
 
   print("number of biomodels with some reactions not classified:", biomodel_non_count)
+
+
+  #generate the PR two tables
+  df_table_PR_plot = df_table_PR.div(df_table_PR.sum().sum())
+  df_table_PR_per_model_plot = df_table_PR_per_model.div(df_table_PR_per_model.sum().sum())
+
+  #save the dataframe results to excel files
+  # df_classification.to_csv("classification.csv", index=False)
+  # df_gen_stat.to_csv("general_statistics.csv", index=False)
+  # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
+
+  # Create a Pandas Excel writer using XlsxWriter as the engine.
+  writer = pd.ExcelWriter('statistics_result.xlsx', engine='xlsxwriter')
+  # Write each dataframe to a different worksheet.
+  df_classification.to_excel(writer, sheet_name='classification')
+  df_gen_stat.to_excel(writer, sheet_name='general_statistics')
+  df_mol_stat.to_excel(writer, sheet_name='statistics_per_model')
+  df_gen_stat_PR.to_excel(writer, sheet_name='general_statistics_PR')
+  df_table_PR_plot.to_excel(writer, sheet_name = 'table_PR')
+  df_table_PR_per_model_plot.to_excel(writer, sheet_name = 'table_PR_per_model')
+
+  # Close the Pandas Excel writer and output the Excel file.
+  writer.save()
+
+  #Joe's advice to test part of speedup, not sure if this works
+  print("--- %s seconds ---" % (time.time() - start_time))
+  sys.exit("Stop code runnning before statistics and plots")
 
   #automatially generate plots and tables from the existed dataframes
   #generate the bar plot for the total statistics
@@ -476,7 +539,9 @@ if __name__ == '__main__':
   for i in range(16):
     df_gen_stat_PR_plot[i] = pd.DataFrame(columns = df_gen_stat_PR.columns.tolist())
     df_temp = df_gen_stat_PR[types*i:types*(i+1)]   
-    df_gen_stat_PR_plot[i] = df_gen_stat_PR_plot[i].append(df_temp, ignore_index = True) 
+    #df_gen_stat_PR_plot[i] = df_gen_stat_PR_plot[i].append(df_temp, ignore_index = True)
+    df_gen_stat_PR_plot[i] = pd.concat([df_gen_stat_PR_plot[i],df_temp], ignore_index=True)
+
     yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
       "Percentage per model standard error"]].to_numpy().T
     df_gen_stat_PR_plot[i].plot(ax = axes[i//4,i%4] , kind="bar", 
@@ -484,9 +549,9 @@ if __name__ == '__main__':
         yerr=yerr, legend = None, fontsize = 6)
     axes[i//4, i%4].get_yaxis().set_major_formatter(
     matplotlib.ticker.FuncFormatter(lambda y, p: str("{:.2%}".format(y))))
-    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR.iat[i//4, i%4]), xy=(0, .9), color = 'dodgerblue')
+    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_plot.iat[i//4, i%4]), xy=(0, .9), color = 'dodgerblue')
     axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(2, .9))
-    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_per_model.iat[i//4, i%4]), xy=(5., .9), color = 'darkorange')
+    axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_per_model_plot.iat[i//4, i%4]), xy=(5., .9), color = 'darkorange')
     #if i//4 != 3:
     if i != 12:
       axes[i//4, i%4].get_xaxis().set_visible(False)
@@ -496,9 +561,7 @@ if __name__ == '__main__':
   #plt.show()
   fig.savefig('bar-PR.pdf')
 
-  #generate the PR two tables
-  df_table_PR_plot = df_table_PR.div(df_table_PR.sum().sum())
-  df_table_PR_per_model_plot = df_table_PR_per_model.div(df_table_PR_per_model.sum().sum())
+
   # Defining figure size for the output plot 
   fig, bx = plt.subplots(figsize = (12, 7))
   idx = df_table_PR_plot.index.tolist()
@@ -526,27 +589,11 @@ if __name__ == '__main__':
   fmt = lambda x, pos: '{:.2%}'.format(x)
   sns.heatmap(df_table_PR_per_model_plot, cmap ='RdYlGn', linewidths = 0.30, annot = True, fmt='.2%')
   cbar = cx.collections[0].colorbar
-  cbar.set_ticks([0, .1, .2, .3, .4, .5, .6, .7, .8, .9])
-  cbar.set_ticklabels(['0', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%'])
+  cbar.set_ticks([0, .05, .1, .15, .2, .25, .3, .35, .4, .45, .5, .55, .6, .65, .7, .75, .8, .85, .9, .95])
+  cbar.set_ticklabels(['0', '5%', '10%', '15%', '20%', '25%', '30%', '35%', \
+    '40%', '45%', '50%', '55%', '60%', '65%', '70%', '75%', '80%', '85%', '90%', '95%'])
   # Displaying the figure
   #plt.show()  
   plt.savefig('table_PR_per_model.pdf', dpi=300)
-
-  # df_classification.to_csv("classification.csv", index=False)
-  # df_gen_stat.to_csv("general_statistics.csv", index=False)
-  # df_mol_stat.to_csv("statistics_per_model.csv", index=False)
-
-  # Create a Pandas Excel writer using XlsxWriter as the engine.
-  writer = pd.ExcelWriter('statistics_result.xlsx', engine='xlsxwriter')
-  # Write each dataframe to a different worksheet.
-  df_classification.to_excel(writer, sheet_name='classification')
-  df_gen_stat.to_excel(writer, sheet_name='general_statistics')
-  df_mol_stat.to_excel(writer, sheet_name='statistics_per_model')
-  df_gen_stat_PR.to_excel(writer, sheet_name='general_statistics_PR')
-  df_table_PR.to_excel(writer, sheet_name = 'table_PR')
-  df_table_PR_per_model.to_excel(writer, sheet_name = 'table_PR_per_model')
-
-  # Close the Pandas Excel writer and output the Excel file.
-  writer.save()
 
   print("--- %s seconds ---" % (time.time() - start_time))
