@@ -455,6 +455,7 @@ class KineticLaw(object):
     ---- 
     **kwargs: dictionary-keyword arguments 
     kinetics: string-kinetics
+    kinetics_sim: string-simplified kinetics
     ids_list: list-id list including all the ids in kinetics, reactants and products
     species_in_kinetic_law: list-species in the kinetics
     parameters_in_kinetic_law: list-parameters in the kinetics  
@@ -466,15 +467,27 @@ class KineticLaw(object):
     """
   
     kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
     ids_list = kwargs["ids_list"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
     parameters_in_kinetic_law = kwargs["parameters_in_kinetic_law"]
     reactant_list = kwargs["reactant_list"]
 
+
+    eq = self._numeratorDenominator(kinetics_sim, ids_list)
+    flag_fr = False
+    if len(species_in_kinetic_law) > 0:
+      for i in range(len(species_in_kinetic_law)):
+        if species_in_kinetic_law[i] in eq[1]:
+          flag_fr = True
+
     flag = False
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 1 and self._numOfRcts(reactant_list) == 1:
-      if self._MMSingleSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, reactant_list) == True:
-        flag = True
+    if flag_fr:
+      if self._numSpeciesInKinetics(species_in_kinetic_law) == 1 and self._numOfRcts(reactant_list) == 1:
+        if self._MMSingleSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, reactant_list) == True:
+          flag = True
+    else:
+      flag = False
 
     return flag
 
@@ -498,18 +511,74 @@ class KineticLaw(object):
     -------
     True or False
     """
-
+      
     kinetics = kwargs["kinetics"]
+    kinetics_sim = kwargs["kinetics_sim"]
     ids_list = kwargs["ids_list"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
     parameters_in_kinetic_law = kwargs["parameters_in_kinetic_law"]
     reactant_list = kwargs["reactant_list"]
 
+
+    eq = self._numeratorDenominator(kinetics_sim, ids_list)
+    flag_fr = False
+    if len(species_in_kinetic_law) > 0:
+      for i in range(len(species_in_kinetic_law)):
+        if species_in_kinetic_law[i] in eq[1]:
+          flag_fr = True
+
     flag = False
-    if self._numSpeciesInKinetics(species_in_kinetic_law) == 2 and self._numOfRcts(reactant_list) == 1:
-      if self._MMTwoSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, species_in_kinetic_law, reactant_list) == True:  
-        flag = True
+    if flag_fr:
+      if self._numSpeciesInKinetics(species_in_kinetic_law) == 2 and self._numOfRcts(reactant_list) == 1:
+        if self._MMTwoSpecInNumerator(kinetics, ids_list, parameters_in_kinetic_law, species_in_kinetic_law, reactant_list) == True:  
+          flag = True
+    else:
+      flag = False
       
+    return flag
+
+  def isHill(self, **kwargs):
+
+    """
+    Tests whether the reaction belongs to the type of Hill equations.
+    Hill equations classification rule:
+    1) kinetics has to be in the format of fraction;
+    2) there is only one species in the kinetics, but it does not have to be a reactant;
+    3) kinetics is in the Hill format;
+
+    Parameters
+    ---- 
+    **kwargs: dictionary-keyword arguments 
+    kinetics_sim: string-simplified kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
+    
+    Returns
+    -------
+    True or False
+    """
+
+    kinetics_sim = kwargs["kinetics_sim"]
+    ids_list = kwargs["ids_list"]
+    species_in_kinetic_law = kwargs["species_in_kinetic_law"]
+
+
+    eq = self._numeratorDenominator(kinetics_sim, ids_list)
+    flag_fr = False
+    if len(species_in_kinetic_law) > 0:
+      for i in range(len(species_in_kinetic_law)):
+        if species_in_kinetic_law[i] in eq[1]:
+          flag_fr = True
+
+    flag = False
+    if flag_fr:
+      if self._numSpeciesInKinetics(species_in_kinetic_law) == 1:
+        if self._HillFormat(kinetics_sim, ids_list, species_in_kinetic_law) == True:
+          flag = True
+    else:
+      flag = False
+
+
     return flag
 
   def isFraction(self, **kwargs):
@@ -646,20 +715,15 @@ class KineticLaw(object):
     -------
     True or False
     """
-    flag = False
-    if "+" not in kinetics and "-" not in kinetics:
-      flag = True
-    elif "+" not in kinetics_sim and "-" not in kinetics_sim:
-      flag = True
-    elif "-" in kinetics and "e-" in kinetics: 
-      flag = True
-    elif "-" in kinetics_sim and "e-" in kinetics_sim: 
-      flag = True
-    elif "-" in kinetics and "exp(-" in kinetics: 
-      flag = True
-    elif "-" in kinetics_sim and "exp(-" in kinetics_sim: 
-      return True
-
+    flag = True
+    if "+" in kinetics or "-" in kinetics:
+      flag = False
+      if "e-" in kinetics or "exp(-" in kinetics:
+        flag = True
+    elif "+" in kinetics_sim or "-" in kinetics_sim:
+      flag = False
+      if "e-" in kinetics or "exp(-" in kinetics_sim:
+        flag = True
     return flag
 
   def _SpecsInKineticsAllRcts(self, species_in_kinetic_law, reactant_list):
@@ -937,6 +1001,51 @@ class KineticLaw(object):
     else: 
       return False
 
+  def _HillFormat(self, kinetics_sim, ids_list, species_in_kinetic_law):
+    """
+    Tests whether the kinetics is in the format of Hill equations.
+    1) the numerator is one product of terms with the species to a power;
+    2) the denomimator is the sum of two product of terms, one of which does not include the species
+       and the other one of which include the species to the same power as the numerator.
+    
+    Parameters
+    ----    
+    kinetics_sim: string-simplified kinetics
+    ids_list: list-id list including all the ids in kinetics, reactants and products
+    species_in_kinetic_law: list-species in the kinetics
+
+    Returns
+    -------
+    True or False
+    """
+    flag_numerator = False
+    flag_denominator = False
+    flag = False
+    eq = self._numeratorDenominator(kinetics_sim, ids_list)
+    numerator = eq[0]
+    denominator = eq[1]
+    species = species_in_kinetic_law[0]
+
+    if "+" not in numerator and "-" not in numerator:
+      if species in numerator:
+        if ("pow(" in numerator and "-1)" not in numerator) or "**" in numerator:
+          flag_numerator = True
+    if "+" in denominator:
+      terms = denominator.split("+")
+      term1 = terms[0]
+      term2 = terms[1]
+      if species in term1 and species not in term2:
+        if ("pow(" in term1 and "-1)" not in term1) or "**" in term1:
+          flag_denominator = True
+      if species in term2 and species not in term1:
+        if ("pow(" in term2 and "-1)" not in term2) or "**" in term2:
+          flag_denominator = True
+
+    if flag_numerator == True and flag_denominator == True:
+      flag = True
+
+    return flag
+
   def _numeratorDenominator(self, kinetics_sim, ids_list):
     """
     Get the numerator and denominator of a "fraction" function.
@@ -982,6 +1091,7 @@ class KineticLaw(object):
         pass
 
     return eq
+
 
   def _isPolynomial(self, kinetics_sim, ids_list):
     """

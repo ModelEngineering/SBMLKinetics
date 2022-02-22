@@ -564,13 +564,18 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws_3[4]
     #"M->; cell * M * V2 * pow(K2 + M, -1) "
     kinetics =  "cell * M * V2 * pow(K2 + M, -1)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
     ids_list = ['cell', 'M', 'V2', 'K2']
     species_in_kinetic_law = ['M']
     parameters_in_kinetic_law = ['cell', 'V2', 'K2']
     reactant_list = ['M']
-    kwargs = {"reactant_list": reactant_list, \
-              "kinetics": kinetics, "ids_list": ids_list, \
-              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, \
+              "kinetics_sim": kinetics_sim, "ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, \
+              "parameters_in_kinetic_law": parameters_in_kinetic_law}
     test = kinetic_law.isMM(**kwargs)
     self.assertTrue(test) 
 
@@ -581,13 +586,18 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws_3[2]
     #"C->; C * cell * vd * X * pow(C + Kd, -1)"
     kinetics =  "C * cell * vd * X * pow(C + Kd, -1)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
     ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
     species_in_kinetic_law = ['C', 'X']
     parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
     reactant_list = ['C']
-    kwargs = {"reactant_list": reactant_list, \
-              "kinetics": kinetics, "ids_list": ids_list, \
-              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, \
+              "kinetics_sim": kinetics_sim,"ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, \
+              "parameters_in_kinetic_law": parameters_in_kinetic_law}
     test = kinetic_law.isMM(**kwargs)
     self.assertFalse(test)
 
@@ -598,13 +608,18 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws_3[2]
     #"C->; C * cell * vd * X * pow(C + Kd, -1)"
     kinetics =  "C * cell * vd * X * pow(C + Kd, -1)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
     ids_list = ['C', 'cell', 'vd', 'X', 'Kd']
     species_in_kinetic_law = ['C', 'X']
     parameters_in_kinetic_law = ['cell', 'vd', 'Kd']
     reactant_list = ['C']
-    kwargs = {"reactant_list": reactant_list, \
-              "kinetics": kinetics, "ids_list": ids_list, \
-              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, \
+              "kinetics_sim": kinetics_sim,"ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, \
+              "parameters_in_kinetic_law": parameters_in_kinetic_law}
     test = kinetic_law.isMMcat(**kwargs)
     self.assertTrue(test) 
 
@@ -615,15 +630,56 @@ class TestKineticLaw(unittest.TestCase):
     kinetic_law = self.laws_3[4]
     #"M->; cell * M * V2 * pow(K2 + M, -1) "
     kinetics =  "cell * M * V2 * pow(K2 + M, -1)"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
     ids_list = ['cell', 'M', 'V2', 'K2']
     species_in_kinetic_law = ['M']
     parameters_in_kinetic_law = ['cell', 'V2', 'K2']
     reactant_list = ['M']
-    kwargs = {"reactant_list": reactant_list, \
-              "kinetics": kinetics, "ids_list": ids_list, \
-              "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law}
+    kwargs = {"reactant_list": reactant_list, "kinetics": kinetics, \
+              "kinetics_sim": kinetics_sim,"ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law, \
+              "parameters_in_kinetic_law": parameters_in_kinetic_law}
     test = kinetic_law.isMMcat(**kwargs)
     self.assertFalse(test)
+
+  def testIsHill1(self):
+    # Test Hill equations success case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_43[1]
+    #"Z->Y;intravesicular * (Vm2 * pow(Z, 2) / (pow(K2, 2) + pow(Z, 2)))"
+    kinetics =  "intravesicular * (Vm2 * pow(Z, 2) / (pow(K2, 2) + pow(Z, 2)))"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    ids_list = ['intravesicular', 'Vm2', 'Z', 'K2', 'Y']
+    species_in_kinetic_law = ['Z']
+    kwargs = {"kinetics_sim": kinetics_sim,"ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isHill(**kwargs)
+    self.assertTrue(test) 
+
+  def testIsHill2(self):
+    # Test Hill equations failure case
+    if IGNORE_TEST:
+      return    
+    kinetic_law = self.laws_43[3]
+    #"Y->Z; cytosol * Kf * Y "
+    kinetics =  "cytosol * Kf * Y"
+    try:
+      kinetics_sim = str(simplify(kinetics))
+    except:
+      kinetics_sim = kinetics
+    species_in_kinetic_law = ['Y']
+    ids_list =  ['cytosol', 'Kf', 'Y', 'Z']
+    kwargs = {"kinetics_sim": kinetics_sim,"ids_list": ids_list, \
+              "species_in_kinetic_law": species_in_kinetic_law}
+    test = kinetic_law.isHill(**kwargs)
+    self.assertFalse(test) 
 
   def testIsFraction1(self):
     # Test Fraction success case

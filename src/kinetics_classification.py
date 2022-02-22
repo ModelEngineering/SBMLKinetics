@@ -44,6 +44,7 @@ BI = 'Bi-directional mass reaction'
 BIMOD = 'Bi-terms with moderator'
 MM = 'Michaelis-Menten kinetics'
 MMCAT = 'Michaelis-Menten kinetics-catalyzed'
+HILL = "Hill equations"
 FR = "Fraction"
 PL = "Polynomial"
 NA = 'NA'
@@ -54,18 +55,14 @@ PERCENTAGE_PER_MODEL_SDER = 'Percentage per model standard error'
 RXN_NUM = 'Reaction number'
 BIOMOL_NUM = 'Biomodel number'
 # COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
-#                 ZEROTH, POWER, NOPRD, NORCT, SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
-
+#                 ZEROTH, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HILL, FR, NA]
 COLUMN_NAME_df_classification = [SBMLID, REACTIONID, CLASSIFICATIONS, REACTION, KINETICLAW,
                 ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
 
-# COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, PERCENTAGE_SDER, \
-#   PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
 COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, \
  PERCENTAGE_PER_MODEL, PERCENTAGE_PER_MODEL_SDER, RXN_NUM, BIOMOL_NUM]
-# COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, POWER, NOPRD, NORCT,\
-#   SIGRCT, MULRCT, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, FR, PL, NA]
 
+# COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HILL, FR, NA]
 COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, FR, NA]
 
 
@@ -92,15 +89,8 @@ def main(initial_model_indx, final_model_indx):
   rxn_num = 0        #total number of reactions deals
   rxn_num_PR = [0]*16 #total number of reactions with certain prds and rcts (4prds*4rcts)
   #all the lists are following the same order of kinetics classifications
-  # types_name = ["Zeroth Order", \
-  #   "Uni-directional mass reaction", "Uni-term with moderator", \
-  #   "Bi-directional mass reaction", "Bi-terms with moderator", \
-  #   "Fraction function", \
-  #   "Not classified reactions"]
-  types_name = ["ZERO", \
-    "UNDR", "UNMO", "BIDR", "BIMO", "FR", "NA"]
-  # types_simplified_name = ["ZERO", "POWER", "P=0", "R=0", "R=1", "R>1", \
-  #   "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "FR", "PL"]
+  # types_name = ["ZERO", "UNDR", "UNMO", "BIDR", "BIMO", "MM", "MMCAT", "HILL", "FR", "NA"]
+  types_name = ["ZERO", "UNDR", "UNMO", "BIDR", "BIMO", "FR", "NA"]
   types_simplified_name = types_name[:-1]
   
   num_type_classification = len(types_simplified_name)
@@ -211,9 +201,9 @@ def main(initial_model_indx, final_model_indx):
 
           parameters_in_kinetic_law = parameters_in_kinetic_law + others_in_kinetic_law
           # print("species")
-          # print("species_in_kinetic_law:", species_in_kinetic_law)
+          #print("species_in_kinetic_law:", species_in_kinetic_law)
           # print("parameters")
-          # print(parameters_in_kinetic_law)
+          #print(parameters_in_kinetic_law)
 
           #only for MM, MMcat and FR
           if len(reactant_list) != 0:
@@ -223,7 +213,7 @@ def main(initial_model_indx, final_model_indx):
           ids_list = list(dict.fromkeys(ids_list))
 
           # print("reactant_list:", reactant_list)
-          # print("ids_list:", ids_list)
+          #print("ids_list:", ids_list)
 
           #Define the keyword arguments
           kwargs = {"kinetics": kinetics, "kinetics_sim": kinetics_sim, \
@@ -231,7 +221,7 @@ def main(initial_model_indx, final_model_indx):
             "species_in_kinetic_law": species_in_kinetic_law, "parameters_in_kinetic_law": parameters_in_kinetic_law, \
             "ids_list": ids_list}
 
-          classification_cp = [
+          classification_cp = [#needs to be in order
             reaction.kinetic_law.isZerothOrder(**kwargs),
             # reaction.kinetic_law.isPowerTerms(**kwargs),
             reaction.kinetic_law.isUNDR(**kwargs),
@@ -240,6 +230,7 @@ def main(initial_model_indx, final_model_indx):
             reaction.kinetic_law.isBIMO(**kwargs),
             #reaction.kinetic_law.isMM(**kwargs),
             #reaction.kinetic_law.isMMcat(**kwargs),
+            #reaction.kinetic_law.isHill(**kwargs),
             reaction.kinetic_law.isFraction(**kwargs),
             #reaction.kinetic_law.isPolynomial(**kwargs),
           ]
@@ -356,8 +347,8 @@ def main(initial_model_indx, final_model_indx):
                     pd.DataFrame(mol_stat_PR_row_dct)], ignore_index=True) 
   #for all the biomodels below here
   # This part is the same as the printed part in main section
+  df_gen_stat = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
   if(rxn_num != 0):
-    df_gen_stat = pd.DataFrame(columns = COLUMN_NAME_df_gen_stat)
     for i in range(num_type_classification+1):
       gen_stat_row_dct = {k:[] for k in COLUMN_NAME_df_gen_stat[0:-2]}
       gen_stat_row_dct[CLASSIFICATIONS].append(types_name[i])
@@ -445,8 +436,8 @@ def main(initial_model_indx, final_model_indx):
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 4
-  final_model_indx = 6
+  initial_model_indx = 0
+  final_model_indx = 850
   (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
    df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
   #(df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count) \
@@ -488,8 +479,11 @@ if __name__ == '__main__':
 
 
   #generate the PR two tables
-  df_table_PR_plot = df_table_PR.div(df_table_PR.sum().sum())
-  df_table_PR_per_model_plot = df_table_PR_per_model.div(df_table_PR_per_model.sum().sum())
+  try:
+    df_table_PR_plot = df_table_PR.div(df_table_PR.sum().sum())
+    df_table_PR_per_model_plot = df_table_PR_per_model.div(df_table_PR_per_model.sum().sum())
+  except Exception as e:
+    raise Exception(e)
 
   #save the dataframe results to excel files
   # df_classification.to_csv("classification.csv", index=False)
@@ -509,9 +503,9 @@ if __name__ == '__main__':
   # Close the Pandas Excel writer and output the Excel file.
   writer.save()
 
-  #Joe's advice to test part of speedup, not sure if this works
-  print("--- %s seconds ---" % (time.time() - start_time))
-  sys.exit("Stop code runnning before statistics and plots")
+  # #Joe's advice to test part of speedup, not sure if this works
+  # print("--- %s seconds ---" % (time.time() - start_time))
+  # sys.exit("Stop code runnning before statistics and plots")
 
   #automatially generate plots and tables from the existed dataframes
   #generate the bar plot for the total statistics
