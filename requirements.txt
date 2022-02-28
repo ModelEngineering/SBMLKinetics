@@ -10,3 +10,5 @@ sympy
 urllib3
 seaborn
 xlsxwriter
+openpyxl
+

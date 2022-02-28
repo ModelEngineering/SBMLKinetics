@@ -98,9 +98,9 @@ def main(initial_model_indx, final_model_indx):
   df_mol_stat = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
   df_mol_stat_PR = {} #set of dataframes to save mol stat for each PR
   df_table_PR = pd.DataFrame(columns = ["R = 0", "R = 1", "R = 2", "R > 2"], \
-                             index = ["P = 0", "P = 1", "P = 2", "P > 3"])
+                             index = ["P = 0", "P = 1", "P = 2", "P > 2"])
   df_table_PR_per_model = pd.DataFrame(columns = ["R = 0", "R = 1", "R = 2", "R > 2"], \
-                             index = ["P = 0", "P = 1", "P = 2", "P > 3"])    
+                             index = ["P = 0", "P = 1", "P = 2", "P > 2"])    
 
   for i in range(16):
     df_mol_stat_PR[i] = pd.DataFrame(columns = COLUMN_NAME_df_mol_stat)
@@ -488,7 +488,14 @@ if __name__ == '__main__':
     axes[i//4, i%4].get_yaxis().set_major_formatter(
     matplotlib.ticker.FuncFormatter(lambda y, p: str("{:.2%}".format(y))))
     axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_plot.iat[i//4, i%4]), xy=(0, .9), color = 'dodgerblue')
-    axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(2, .9))
+    if i//4 == 3 and i % 4 != 3:
+      axes[i//4, i%4].annotate('P > %d, R = %d'%(2, i%4), xy=(2, .9))
+    elif i//4 != 3 and i % 4 == 3:
+      axes[i//4, i%4].annotate('P = %d, R > %d'%(i//4, 2), xy=(2, .9))
+    elif i//4 == 3 and i % 4 == 3:
+      axes[i//4, i%4].annotate('P > %d, R > %d'%(2, 2), xy=(2, .9))
+    else:
+      axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(2, .9))
     axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_per_model_plot.iat[i//4, i%4]), xy=(7., .9), color = 'darkorange')
     #if i//4 != 3:
     if i != 12:
