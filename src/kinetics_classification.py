@@ -489,13 +489,13 @@ if __name__ == '__main__':
     matplotlib.ticker.FuncFormatter(lambda y, p: str("{:.2%}".format(y))))
     axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_plot.iat[i//4, i%4]), xy=(0, .9), color = 'dodgerblue')
     if i//4 == 3 and i % 4 != 3:
-      axes[i//4, i%4].annotate('P > %d, R = %d'%(2, i%4), xy=(2, .9))
+      axes[i//4, i%4].annotate('P > %d, R = %d'%(2, i%4), xy=(3, .9))
     elif i//4 != 3 and i % 4 == 3:
-      axes[i//4, i%4].annotate('P = %d, R > %d'%(i//4, 2), xy=(2, .9))
+      axes[i//4, i%4].annotate('P = %d, R > %d'%(i//4, 2), xy=(3, .9))
     elif i//4 == 3 and i % 4 == 3:
-      axes[i//4, i%4].annotate('P > %d, R > %d'%(2, 2), xy=(2, .9))
+      axes[i//4, i%4].annotate('P > %d, R > %d'%(2, 2), xy=(3, .9))
     else:
-      axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(2, .9))
+      axes[i//4, i%4].annotate('P = %d, R = %d'%(i//4, i%4), xy=(3, .9))
     axes[i//4, i%4].annotate('%s'%"{:.2%}".format(df_table_PR_per_model_plot.iat[i//4, i%4]), xy=(7., .9), color = 'darkorange')
     #if i//4 != 3:
     if i != 12:
