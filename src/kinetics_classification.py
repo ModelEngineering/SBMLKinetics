@@ -197,10 +197,9 @@ def main(initial_model_indx, final_model_indx):
               others_in_kinetic_law.append(ids_list[i])
 
           parameters_in_kinetic_law = parameters_in_kinetic_law + others_in_kinetic_law
-          # print("species")
+
           #print("species_in_kinetic_law:", species_in_kinetic_law)
-          # print("parameters")
-          #print(parameters_in_kinetic_law)
+          #print("parameters_in_kinetic_law:", parameters_in_kinetic_law)
 
           #only for MM, MMcat and FR
           if len(reactant_list) != 0:
@@ -405,8 +404,8 @@ def main(initial_model_indx, final_model_indx):
 
 if __name__ == '__main__':
   start_time = time.time()
-  initial_model_indx = 4
-  final_model_indx = 6
+  initial_model_indx = 0
+  final_model_indx = 100
   (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
    df_table_PR, df_table_PR_per_model) = main(initial_model_indx, final_model_indx)
   rxn_num = len(df_classification)

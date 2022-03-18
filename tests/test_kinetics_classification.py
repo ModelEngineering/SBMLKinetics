@@ -184,7 +184,7 @@ class TestKineticsClassification(unittest.TestCase):
     if IGNORE_TEST:
       return    
     self.assertTrue(all(item in self.df_table_PR.columns for item in ["R = 0", "R = 1", "R = 2", "R > 2"]))
-    self.assertTrue(all(item in self.df_table_PR.index for item in ["P = 0", "P = 1", "P = 2", "P > 3"]))
+    self.assertTrue(all(item in self.df_table_PR.index for item in ["P = 0", "P = 1", "P = 2", "P > 2"]))
 
   def testTable2(self):
     # Test whether there is at least one row
@@ -197,7 +197,7 @@ class TestKineticsClassification(unittest.TestCase):
     if IGNORE_TEST:
       return    
     self.assertTrue(all(item in self.df_table_PR_per_model.columns for item in ["R = 0", "R = 1", "R = 2", "R > 2"]))
-    self.assertTrue(all(item in self.df_table_PR_per_model.index for item in ["P = 0", "P = 1", "P = 2", "P > 3"]))
+    self.assertTrue(all(item in self.df_table_PR_per_model.index for item in ["P = 0", "P = 1", "P = 2", "P > 2"]))
 
   def testTablePerMol2(self):
     # Test whether there is at least one row

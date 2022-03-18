@@ -5,7 +5,6 @@ from src.common import constants as cn
 from src.common import util
 from src.common import exceptions
 from src.common import msgs
-#from sympy import *
 import sympy
 from sympy import symbols
 from sympy import core
@@ -15,7 +14,6 @@ import numpy as np
 import re # Extract substrings between brackets
 
 MAX_RECURSION = 5 # Maximum number for iteration function expansions
-
 
 class KineticLaw(object):
 
@@ -75,8 +73,6 @@ class KineticLaw(object):
     self.expanded_formula = self.expression_formula.replace("^","**")
     return self.expanded_formula
 
-
-
   def isZerothOrder(self, **kwargs):
     """
     Check whether the reaction with a kinetic law belongs to the type of Zeroth Order 
@@ -93,7 +89,6 @@ class KineticLaw(object):
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
     return self._numSpeciesInKinetics(species_in_kinetic_law) == 0  
   
-
   def isPowerTerms(self, **kwargs):
     """
     Check whether the reaction with a kinetic law belongs to the type of Kinetics with power terms
@@ -519,7 +514,6 @@ class KineticLaw(object):
     parameters_in_kinetic_law = kwargs["parameters_in_kinetic_law"]
     reactant_list = kwargs["reactant_list"]
 
-
     eq = self._numeratorDenominator(kinetics_sim, ids_list)
     flag_fr = False
     if len(species_in_kinetic_law) > 0:
@@ -561,7 +555,6 @@ class KineticLaw(object):
     kinetics_sim = kwargs["kinetics_sim"]
     ids_list = kwargs["ids_list"]
     species_in_kinetic_law = kwargs["species_in_kinetic_law"]
-
 
     eq = self._numeratorDenominator(kinetics_sim, ids_list)
     flag_fr = False
