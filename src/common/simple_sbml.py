@@ -181,7 +181,12 @@ def modelIterator(initial=0, final=1000,
     lines = read_func(filename)
     if isinstance(lines, bytes):
       lines = lines.decode("utf-8") 
-    model = SimpleSBML(lines)
-    iterator_item = IteratorItem(filename=filename,
-        model=model, number=num)
+    try:
+      #model could be invalid sbml
+      model = SimpleSBML(lines)
+      iterator_item = IteratorItem(filename=filename,
+      model=model, number=num)
+    except Exception as e:
+      print(e)
+      iterator_item = None
     yield iterator_item

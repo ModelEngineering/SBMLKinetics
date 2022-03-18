@@ -9,3 +9,7 @@ pip>20
 sympy
 tellurium
 urllib3
+seaborn
+xlsxwriter
+openpyxl
+
