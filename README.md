@@ -1,5 +1,7 @@
 <img src="https://api.travis-ci.org/ModelEngineering/kinetics_validator.svg?branch=master" width="100"/>
 
+[![Coverage](https://codecov.io/gh/ModelEngineering/kinetics_validator/branch/master/graph/badge.svg)](https://codecov.io/gh/ModelEngineering/kinetics_validator)
+
 # Kinetics Validator
 Repository of tests to validate kinetics expressions in SBML models.
 
