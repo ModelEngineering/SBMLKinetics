@@ -22,11 +22,13 @@ from sympy import *
 from libsbml import * # access functions in SBML
 import time
 
+import collections
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib
+
 
 # Column names
 SBMLID = "SBMLid"
@@ -64,6 +66,7 @@ COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, \
 
 COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HILL, FR, NA]
 
+# FIXME: Make this a class KineticStatics
 def _dataSetToTuple(data_dir = cn.BIOMODELS_DIR, zip_filename = cn.BIOMODELS_ZIP_FILENAME,
 initial_model_indx = 0, final_model_indx = 1000): 
   """
@@ -410,7 +413,7 @@ initial_model_indx = 0, final_model_indx = 1000):
   return (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
     df_table_PR, df_table_PR_per_model)
 
-class loadDataSet:
+class KineticAnalyzer:
   """
   Load Dataset of SBML files.
 
@@ -850,6 +853,7 @@ class loadDataSet:
 if __name__ == '__main__':
   start_time = time.time()
 
+  #from SBMLKinetics.kinetic_analyzer import KineticAnalyzer
 
   initial_model_indx = 5
   final_model_indx = 6
@@ -858,10 +862,12 @@ if __name__ == '__main__':
   #  final_model_indx = final_model_indx)
   # rxn_num = len(df_classification)
 
-  SBMLData = loadDataSet(dataSetName = "biomodels",
-  initial_model_indx = initial_model_indx, final_model_indx = final_model_indx)
-  print(SBMLData.getKineticLawDistribution(fileName = "KineticLawDistribution.xlsx")) 
-  # SBMLData.plotKineticLawDistribution() 
+  model_indices = range(initial_model_indx, final_model_indx+1)
+  # FIXME: Update constructor to handle a list of indices
+  analyzer = KineticAnalyzer(dataSetName = "biomodels", model_indices=model_incies)
+  # FIXME: Provide option for a path
+  print(analyzer.LawDistribution(fileName = "KineticLawDistribution.xlsx")) 
+  # analyzer.plotKineticLawDistribution() 
   # print(SBMLData.chooseKineticLawType())
   
 
