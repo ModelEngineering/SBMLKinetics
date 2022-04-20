@@ -1,11 +1,11 @@
 """
 Tests for kinetics_classification.py
 """
-from src import kinetics_classification
-from src.common import constants as cn
-from src.common import kinetic_law
-from src.common.simple_sbml import SimpleSBML
-from src.common.kinetic_law import KineticLaw
+from SBMLKinetics import kinetics_classification
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common import kinetic_law
+from SBMLKinetics.common.simple_sbml import SimpleSBML
+from SBMLKinetics.common.kinetic_law import KineticLaw
 from tests.common import helpers
 from sympy import *
 

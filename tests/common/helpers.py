@@ -1,5 +1,5 @@
-from src.common import constants as cn
-from src.common import simple_sbml
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common import simple_sbml
 
 import libsbml
 import os

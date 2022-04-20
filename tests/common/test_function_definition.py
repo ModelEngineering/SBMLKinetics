@@ -1,10 +1,10 @@
 """
 Tests for Reactions
 """
-from src.common import constants as cn
-from src.common.simple_sbml import SimpleSBML
-from src.common import simple_sbml
-from src.common.function_definition import FunctionDefinition
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common.simple_sbml import SimpleSBML
+from SBMLKinetics.common import simple_sbml
+from SBMLKinetics.common.function_definition import FunctionDefinition
 from tests.common import helpers
 
 import copy

@@ -7,9 +7,9 @@ variable as described in the github repository.
 
 # Import the required files
 from sympy.core import parameters
-from src.common.simple_sbml import SimpleSBML
-import src.common.simple_sbml as simple_sbml
-import src.common.constants as cn
+from SBMLKinetics.common.simple_sbml import SimpleSBML
+import SBMLKinetics.common.simple_sbml as simple_sbml
+import SBMLkinetics.common.constants as cn
 
 import numpy as np
 import collections #use set to compare two lists

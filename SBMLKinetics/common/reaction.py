@@ -1,8 +1,8 @@
 '''Python Abstraction for a Reaction.'''
 
-from src.common import constants as cn
-from src.common.kinetic_law import KineticLaw
-from src.common import util
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common.kinetic_law import KineticLaw
+from SBMLKinetics.common import util
 
 import numpy as np
 import libsbml

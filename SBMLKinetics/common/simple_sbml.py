@@ -1,10 +1,10 @@
 '''Python representation of an SBML model.'''
 
-from src.common import constants as cn
-from src.common.kinetic_law import KineticLaw
-from src.common.reaction import Reaction
-from src.common.function_definition import FunctionDefinition
-from src.common import util
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common.kinetic_law import KineticLaw
+from SBMLKinetics.common.reaction import Reaction
+from SBMLKinetics.common.function_definition import FunctionDefinition
+from SBMLKinetics.common import util
 
 import collections
 import os.path

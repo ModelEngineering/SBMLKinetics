@@ -1,6 +1,6 @@
-from src.common import constants as cn
-from src.common import exceptions
-from src.common import util
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common import exceptions
+from SBMLKinetics.common import util
 import libsbml
 
 

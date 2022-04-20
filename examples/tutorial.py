@@ -2,9 +2,9 @@
 environment variable as described in the github repository. """
 
 # Import the required files
-from src.common.simple_sbml import SimpleSBML
-import src.common.simple_sbml as simple_sbml
-import src.common.constants as cn
+from SBMLKinetics.common.simple_sbml import SimpleSBML
+import SBMLKinetics.common.simple_sbml as simple_sbml
+import SBMLKinetics.common.constants as cn
 
 import numpy as np
 import os

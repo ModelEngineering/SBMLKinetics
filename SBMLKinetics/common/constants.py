@@ -7,11 +7,14 @@ import os
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 for _ in range(2):
   PROJECT_DIR = os.path.dirname(PROJECT_DIR)
-CODE_DIR = os.path.join(PROJECT_DIR, "src")
+#CODE_DIR = os.path.join(PROJECT_DIR, "src")
+CODE_DIR = os.path.join(PROJECT_DIR, "SBMLKinetics")
 TEST_DIR = os.path.join(PROJECT_DIR, "tests")
 
 ################ DATA DIRECTORIES #################
-BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data")
+#BIOMODELS_DIR = os.path.join(PROJECT_DIR, "data")
+
+BIOMODELS_DIR = os.path.join(CODE_DIR, "data")
 BIOMODELS_ZIP_FILENAME = "biomodels.zip"
 
 ############### TEST FILES #####################

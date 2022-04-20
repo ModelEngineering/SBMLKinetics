@@ -1,6 +1,6 @@
 """ Helpers for Tests. """
 
-from src.common import constants as cn
+from SBMLKinetics.common import constants as cn
 
 import os.path
 import pandas as pd

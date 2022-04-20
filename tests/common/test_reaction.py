@@ -1,9 +1,9 @@
 """
 Tests for Reactions
 """
-from src.common import constants as cn
-from src.common.simple_sbml import SimpleSBML
-from src.common.reaction import Reaction
+from SBMLKinetics.common import constants as cn
+from SBMLKinetics.common.simple_sbml import SimpleSBML
+from SBMLKinetics.common.reaction import Reaction
 from tests.common import helpers
 
 import copy
