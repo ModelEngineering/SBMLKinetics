@@ -42,9 +42,9 @@ NOPRD = 'No products'
 NORCT = 'No reactants'
 SIGRCT = 'Single reactant'
 MULRCT = 'Multiple reactants'
-UNI = 'Uni-directional mass reaction'
+UNI = 'Uni-directional mass action'
 UNIMOD = 'Uni-term with moderator'
-BI = 'Bi-directional mass reaction'
+BI = 'Bi-directional mass action'
 BIMOD = 'Bi-terms with moderator'
 MM = 'Michaelis-Menten kinetics'
 MMCAT = 'Michaelis-Menten kinetics-catalyzed'
@@ -66,7 +66,8 @@ COLUMN_NAME_df_gen_stat = [CLASSIFICATIONS, PERCENTAGE, \
 
 COLUMN_NAME_df_mol_stat = [SBMLID, RXN_NUM, ZEROTH, UNI, UNIMOD, BI, BIMOD, MM, MMCAT, HILL, FR, NA]
 
-# FIXME: Make this a class KineticStatics
+# FIXME: Make this a class KineticStatics and move it to another module;
+# make each of the dataframe to an object.
 def _dataSetToTuple(data_dir = cn.BIOMODELS_DIR, zip_filename = cn.BIOMODELS_ZIP_FILENAME,
 initial_model_indx = 0, final_model_indx = 1000): 
   """
@@ -418,21 +419,33 @@ class KineticAnalyzer:
   Load Dataset of SBML files.
 
   Args: 
-      dataSetName: str-"biomodels", "curated", "metabolic", "signalling", "homo_sapiens", "non_homo", 
-      "cellular_organisms", "Mus_musculus", "Mammalia", "Saccharomyces_cerevisiae"
-      initial_model_indx: int-the intial BioModel to process
-      final_model_indx: int-the final BioModel to process
+      dataSet: str-"biomodels", "curated", "metabolic", "signalling", "homo_sapiens", "non_homo", 
+      "cellular_organisms", "Mus_musculus", "Mammalia", "Saccharomyces_cerevisiae";
+      path: str-path to the file, with a format of 'D:\path\to';
+      model_indices: range-(initial_model_indx, final_model_indx)
 
   """
 
-  def __init__(self, dataSetName = "biomodels", initial_model_indx = 0, final_model_indx = 1000):
+  def __init__(self, path = os.path.dirname(os.path.abspath(__file__)), 
+    dataSet = "biomodels", model_indices = range(0,1000)):
 
-    if type(dataSetName) == str and dataSetName in ["biomodels", "curated", 
+    #In addition to dataSetName, allow users to inmport a zip of sbml files from a path 
+    initial_model_indx = min(model_indices)
+    final_model_indx = max(model_indices)
+
+    if type(dataSet) == str and dataSet in ["biomodels", "curated", 
     "metabolic", "signalling", "homo_sapiens", "non_homo", 
     "cellular_organisms", "Mus_musculus", "Mammalia", "Saccharomyces_cerevisiae"]:
-      zip_filename = dataSetName + '.zip'
+      zip_filename = dataSet + '.zip'
       try:
         self.tuple = _dataSetToTuple(zip_filename = zip_filename, 
+        initial_model_indx = initial_model_indx, final_model_indx = final_model_indx)
+      except Exception as err:
+          raise Exception (err)
+
+    elif '.zip' in dataSet:
+      try:
+        self.tuple = _dataSetToTuple(data_dir = path, zip_filename = dataSet, 
         initial_model_indx = initial_model_indx, final_model_indx = final_model_indx)
       except Exception as err:
           raise Exception (err)
@@ -440,34 +453,49 @@ class KineticAnalyzer:
     else:
       raise Exception("Not a valid dataset input.")
 
-  def getKineticLawDistribution(self, fileName = ""):
+  def getKineticLawDistribution(self, path = "", fileName = ""):
     """
     Get the kinetic law distribution (and save the dataframe into an excel file).
 
     Args: 
+        path: str-path to the file, with a format like 'D:/path/to/' (or 'D:\\path\\to\\')
+
         fileName: str-file name with which the excel file save to, "" (do not save to excel file).
 
     Returns:
-        df_gen_stat_plot: dataFrame-kinetic law distribution.  
+        df_gen_stat_final: dataFrame-kinetic law distribution. 
+        The column names are: "Classifications", "Percentage", "Percentage standard error", 
+        "Percentage per model", "Percentage per model standard error".
+        In the column of "Classifications", there are "ZERO", "UNDR", "UNMO", "BIDR", "BIMO", 
+        "MM", "MMCAT", "HILL", "FR" and "NA" in detail. 
+        "ZERO" means "Zeroth order", "UNDR" means "Uni-directional mass action", "UNMO" means
+        "Uni-term with moderator", "BIDR" means "Bi-directional mass action", "BIMO" means "Bi-
+        terms with moderator", "MM" means "Michaelis-Menten kinetics", "MMCAT" means "Michaelis-
+        Menten kinetics", "HILL" means "Hill equations", "FR" means kinetics in the format of 
+        fraction other than MM, MMCAT and HILL, "NA" means not classified kinetics.
+
     """  
  
     (_, df_gen_stat, _, _, _, _, _) = self.tuple
 
-    df_gen_stat_plot = df_gen_stat[["Classifications", "Percentage", "Percentage per model", \
+    df_gen_stat_final = df_gen_stat[["Classifications", "Percentage", "Percentage per model", \
       "Percentage per model standard error"]]
+
+    df_gen_stat_final.insert(2, "Percentage standard error", 0)
 
     if fileName != "":
       # Create a Pandas Excel writer using XlsxWriter as the engine.
-      writer = pd.ExcelWriter(fileName, engine='xlsxwriter')
-      df_gen_stat_plot.to_excel(writer, sheet_name='general_statistics')
+      path_fileName = path + fileName
+      writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
+      df_gen_stat_final.to_excel(writer, sheet_name='general_statistics')
       # Close the Pandas Excel writer and output the Excel file.
       writer.save()
 
-    return df_gen_stat_plot
+    return df_gen_stat_final
 
-  def chooseKineticLawType(self):
+  def TopFrequentKineticLawType(self):
     """
-    Choose the most frequent kinetic law type in the loaded SBML dataset on average. 
+    Return the most frequent kinetic law type on average in the loaded SBML dataset . 
 
     Returns:
         kinetics_type_list: list pf kinetics_type.
@@ -495,7 +523,6 @@ class KineticAnalyzer:
       
     return kinetics_type_list
 
-    return kinetics_type
 
   def plotKineticLawDistribution(self, fileName = 'KineticLawDistribution.pdf'):
     """
@@ -524,7 +551,7 @@ class KineticAnalyzer:
     fig.savefig(fileName)
 
 
-  def getKineticLawDistributionPerMassTransfer(self, rct_num, prd_num, fileName = ""):
+  def getKineticLawDistributionPerMassTransfer(self, rct_num, prd_num, path = "", fileName = ""):
     """
     Get the kinetic law distribution for the certein mass transfer 
     (and save the dataframe into an excel file).
@@ -532,10 +559,20 @@ class KineticAnalyzer:
     Args: 
         rct_num: int-0, 1, 2, 3 (representing > 2).
         prd_num: int-0, 1, 2, 3 (representing > 2).
+        path: str-path to the file, with a format like 'D:/path/to/' (or 'D:\\path\\to\\')
         fileName: str-file name with which the excel file save to, "" (do not save to excel file).
 
     Returns:
-        df_gen_stat_plot: dataFrame-the kinetic law distribution for a certain mass trasfer.
+        df_gen_stat_PR_final: dataFrame-the kinetic law distribution for a certain mass trasfer.
+        The column names are: "Classifications", "Percentage", "Percentage standard error", 
+        "Percentage per model", "Percentage per model standard error".
+        In the column of "Classifications", there are "ZERO", "UNDR", "UNMO", "BIDR", "BIMO", 
+        "MM", "MMCAT", "HILL", "FR" and "NA" in detail. 
+        "ZERO" means "Zeroth order", "UNDR" means "Uni-directional mass action", "UNMO" means
+        "Uni-term with moderator", "BIDR" means "Bi-directional mass action", "BIMO" means "Bi-
+        terms with moderator", "MM" means "Michaelis-Menten kinetics", "MMCAT" means "Michaelis-
+        Menten kinetics", "HILL" means "Hill equations", "FR" means kinetics in the format of 
+        fraction other than MM, MMCAT and HILL, "NA" means not classified kinetics.
     """  
     (_, df_gen_stat, _, df_gen_stat_PR, _, _, _) = self.tuple
 
@@ -553,18 +590,22 @@ class KineticAnalyzer:
 
       if fileName != "":
         # Create a Pandas Excel writer using XlsxWriter as the engine.
-        writer = pd.ExcelWriter(fileName, engine='xlsxwriter')
+        path_fileName = path + fileName
+        writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
         df_gen_stat_PR_plot[i].to_excel(writer, sheet_name='general_statistics_PR')
         # Close the Pandas Excel writer and output the Excel file.
         writer.save()
 
-      return df_gen_stat_PR_plot[i]
+      df_gen_stat_PR_final = df_gen_stat_PR_plot[i]
+      return df_gen_stat_PR_final
     else:
       raise Exception("Not a valid reactant or product number.")
 
-  def chooseKineticLawTypePerMassTransfer(self, rct_num, prd_num):
+  def TopFrequentKineticLawTypePerMassTransfer(self, rct_num, prd_num):
+
     """
-    Choose the most frequent kinetic law type in the loaded SBML dataset on average. 
+    Return the most frequent kinetic law type on average for a certain mass transfer 
+    in the loaded SBML dataset . 
 
     Args: 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -607,7 +648,8 @@ class KineticAnalyzer:
     else:
       raise Exception("Not a valid reactant or product number.")
 
-  def plotKineticLawDistributionPerMassTransfer(self, rct_num, prd_num, fileName = "KineticLawDistributionPerMassTransfer.pdf"):
+  def plotKineticLawDistributionPerMassTransfer(self, rct_num, prd_num, 
+  fileName = "KineticLawDistributionPerMassTransfer.pdf"):
     """
     Plot the kinetic law distribution for the certain mass transfer.
 
@@ -790,7 +832,7 @@ class KineticAnalyzer:
     #plt.show()  
     plt.savefig(fileName, dpi=350)
 
-  def printBriefStatOfKineticLawDistribution(self):
+  def _printBriefStatOfKineticLawDistribution(self):
     """
     Print the brief statistics for the kinetic law distribution.
     """  
@@ -806,7 +848,7 @@ class KineticAnalyzer:
       print("There are no reactions.")
     print("number of biomodels with some reactions not classified:", biomodel_non_count)
 
-  def printReactionKineticsTypes(self):
+  def _printReactionKineticsTypes(self):
     """
     Print the kinetics type for each reaction.
     """  
@@ -820,7 +862,7 @@ class KineticAnalyzer:
       print(df_classification.iloc[i][REACTION] + ";" + df_classification.iloc[i][KINETICLAW])
       print(df_classification.iloc[i][CLASSIFICATIONS])
 
-  def saveAllStatisticsInfoToExcel(self, fileName):
+  def _saveAllStatisticsInfoToExcel(self, fileName):
     """
     Save all the statistics information of kinetics classification into an excel file.
       
@@ -853,7 +895,7 @@ class KineticAnalyzer:
 if __name__ == '__main__':
   start_time = time.time()
 
-  #from SBMLKinetics.kinetic_analyzer import KineticAnalyzer
+  #from SBMLKinetics.kinetics_classification import KineticAnalyzer
 
   initial_model_indx = 5
   final_model_indx = 6
@@ -862,27 +904,28 @@ if __name__ == '__main__':
   #  final_model_indx = final_model_indx)
   # rxn_num = len(df_classification)
 
+  #FIXME-self: In addition to dataSetName, allow users to inmport a zip of sbml files from a path 
   model_indices = range(initial_model_indx, final_model_indx+1)
-  # FIXME: Update constructor to handle a list of indices
-  analyzer = KineticAnalyzer(dataSetName = "biomodels", model_indices=model_incies)
-  # FIXME: Provide option for a path
-  print(analyzer.LawDistribution(fileName = "KineticLawDistribution.xlsx")) 
+  analyzer = KineticAnalyzer(path = 'D:/summer-2020/Jo/kinetics_validator/data',
+  dataSet = "biomodels.zip", model_indices=model_indices)
+  # print(analyzer.getKineticLawDistribution(path = 'D:/summer-2020/Jo/', fileName = "KineticLawDistribution.xlsx")) 
+  # print(analyzer.getKineticLawDistribution(fileName = "KineticLawDistribution.xlsx")) 
   # analyzer.plotKineticLawDistribution() 
-  # print(SBMLData.chooseKineticLawType())
+  # print(analyzer.TopFrequentKineticLawType())
   
 
-  # print(SBMLData.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,
+  # print(analyzer.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,
   # fileName="KineticLawDistributionPerMassTransfer.xlsx"))
-  # SBMLData.plotKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1)
-  # print(SBMLData.chooseKineticLawTypePerMassTransfer(rct_num=1,prd_num=1))
-  # SBMLData.plotKineticLawDistributionVsMassTransfer()
+  # analyzer.plotKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1)
+  # print(analyzer.TopFrequentKineticLawTypePerMassTransfer(rct_num=1,prd_num=1))
+  # analyzer.plotKineticLawDistributionVsMassTransfer()
 
-  # SBMLData.plotRxnDistOfEachMassTransfer()
-  # SBMLData.plotRxnDistPerModelOfEachMassTransfer()
+  # analyzer.plotRxnDistOfEachMassTransfer()
+  # analyzer.plotRxnDistPerModelOfEachMassTransfer()
 
-  # SBMLData.printBriefStatOfKineticLawDistribution()
-  # SBMLData.printReactionKineticsTypes()
-  # SBMLData.saveAllStatisticsInfoToExcel( fileName='statistics_result.xlsx')
-  
+  # analyzer._printBriefStatOfKineticLawDistribution()
+  # analyzer._printReactionKineticsTypes()
+  # analyzer._saveAllStatisticsInfoToExcel(fileName='statistics_result.xlsx')
+ 
 
   print("--- %s seconds ---" % (time.time() - start_time))

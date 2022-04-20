@@ -30,12 +30,14 @@ class TestKineticsClassification(unittest.TestCase):
     #check for biomodel6
     initial_model_indx = 5
     final_model_indx = 6
+    model_indices = range(initial_model_indx, final_model_indx+1)
+
     self.df_classification, self.df_gen_stat, self.df_mol_stat, self.df_gen_stat_PR, \
     self.biomodel_non_count, self.df_table_PR, self.df_table_PR_per_model \
     = kinetics_classification._dataSetToTuple(initial_model_indx = initial_model_indx, final_model_indx = final_model_indx)
     
-    self.SBMLData = kinetics_classification.loadDataSet(dataSetName = "biomodels",
-    initial_model_indx = initial_model_indx, final_model_indx = final_model_indx)
+    self.SBMLData = kinetics_classification.KineticAnalyzer(dataSet = "biomodels",
+    model_indices=model_indices)
 
   def testClassification1(self):
     # Test all the column names
@@ -250,11 +252,11 @@ class TestKineticsClassification(unittest.TestCase):
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
 
-  def testChooseKineticLawDistribution(self):
-    # Test chooseKineticLawType()
+  def testTopFrequentKineticLawDistribution(self):
+    # Test TopFrequentKineticLawType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.chooseKineticLawType() == ['ZERO', 'UNDR', 'NA'])
+    self.assertTrue(self.SBMLData.TopFrequentKineticLawType() == ['ZERO', 'UNDR', 'NA'])
 
   def testGetKineticLawDistributionPerMassTransfer1(self):
     # Test getKineticLawDistributionPerMassTransfer() column names
@@ -291,11 +293,11 @@ class TestKineticsClassification(unittest.TestCase):
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
   
-  def testChooseKineticLawDistributionPerMassTransfer(self):
-    # Test chooseKineticLawTypePerMassTransfer()
+  def testTopFrequentKineticLawDistributionPerMassTransfer(self):
+    # Test TopFrequentKineticLawTypePerMassTransfer()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.chooseKineticLawTypePerMassTransfer(rct_num=1,prd_num=1) 
+    self.assertTrue(self.SBMLData.TopFrequentKineticLawTypePerMassTransfer(rct_num=1,prd_num=1) 
     == ['ZERO', 'UNDR', 'NA'])
 
 if __name__ == '__main__':
