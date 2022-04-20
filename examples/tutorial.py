@@ -19,9 +19,9 @@ simple = SimpleSBML(path)  # Creates a model
 # The model has instance variables for the following:
 #  simple.species - list of libsbml Species objects
 #  simple.reactions - list of Reaction objects as
-#                     described in src/common/reaction.py
+#                     described in SBMLKinetics/common/reaction.py
 #  simple.reactions - list of Reaction objects as
-#                     described in src/common/reaction.py
+#                     described in SBMLKinetics/common/reaction.py
 #  simple.parameters- list of libsbml Parameters objects
 
 # Here's an example of using these objects
