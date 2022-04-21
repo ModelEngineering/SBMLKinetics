@@ -16,6 +16,7 @@ jobs:
         run: |
           coverage run -m unittest tests/test_*.py
           coverage run -m unittest tests/common/test_*.py
+          coverage run --source={'tests'} -m unittest discover -s tests/test_*.py
           coverage xml -i
           
       - name: Upload coverage to Codecov
