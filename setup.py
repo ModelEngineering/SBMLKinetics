@@ -27,7 +27,7 @@ setup(
     name='SBMLKinetics',
     packages=find_packages(),
     version=get_version('SBMLKinetics/_version.py'),
-    description='Analyze SBML kinetis.',
+    description='Analyze SBML kinetics.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Jin Xu, Joseph Hellerstein',

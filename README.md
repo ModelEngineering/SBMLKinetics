@@ -21,7 +21,7 @@ To verify the setup:
 - ``source kv/Scripts/activate``
 (Use "\\" in windows.)
 - ``export PYTHONPATH=`pwd` ``
-- ``python tests/common/test_simple_sbml.py``. The
+- ``python tests/test_simple_sbml.py``. The
 tests should run without error.
 (Use "\\" in windows.)
 
