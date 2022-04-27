@@ -5,7 +5,9 @@ python:
 
 install:
   - pip install --upgrade pip
-  - pip install -r requirements.txt
+  - pip install SBMLKinetics
+  # - pip install -r requirements.txt
 
 script:
   - nosetests tests
+  - python examples/tutorial.py
