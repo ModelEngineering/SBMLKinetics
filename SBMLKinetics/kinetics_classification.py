@@ -419,7 +419,7 @@ if __name__ == '__main__':
   initial_model_indx = 5
   final_model_indx = 6
   (df_classification, df_gen_stat, df_mol_stat, df_gen_stat_PR, biomodel_non_count, \
-   df_table_PR, df_table_PR_per_model) = _dataSetToTuple(initial_model_indx = initial_model_indx, 
+   df_table_PR, df_table_PR_per_model) = _dataSetStatistics(initial_model_indx = initial_model_indx, 
    final_model_indx = final_model_indx)
   rxn_num = len(df_classification)
   print(rxn_num)

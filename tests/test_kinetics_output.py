@@ -28,87 +28,181 @@ class TestKineticsClassification(unittest.TestCase):
     self.SBMLData = kinetics_output.KineticAnalyzer(dataSet = "biomodels",
     model_indices=model_indices)
 
-  def testGetKineticLawDistribution1(self):
-    # Test getKineticLawDistribution() column names
+##Statistics
+  def testGetKTypeDistribution1(self):
+    # Test getKTypeDistribution() column names
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistribution(fileName = "")
+    df_temp = self.SBMLData.getKTypeDistribution()
     test = all(item in df_temp.columns for item in ['Classifications', 'Percentage', 
     'Percentage per model', 'Percentage per model standard error'])
     self.assertTrue(test)
 
-  def testGetKineticLawDistribution2(self):
-    # Test getKineticLawDistribution() if there is at least one row
+  def testGetKTypeDistribution2(self):
+    # Test getKTypeDistribution() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistribution(fileName = "")
+    df_temp = self.SBMLData.getKTypeDistribution()
     self.assertTrue(len(df_temp.index)>0)
 
-  def testGetKineticLawDistribution3(self):
+  def testGetKTypeDistribution3(self):
     # Test column 'Percentage' a list of floating numbers
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistribution(fileName = "")
+    df_temp = self.SBMLData.getKTypeDistribution()
     list_percentage = df_temp['Percentage'].tolist()
     test = all(isinstance(item, float) for item in list_percentage)
     self.assertTrue(test) 
 
-  def testGetKineticLawDistribution4(self):
+  def testGetKTypeDistribution4(self):
     # Test column 'Percentage' does not have nan values
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistribution(fileName = "")
+    df_temp = self.SBMLData.getKTypeDistribution()
     list_percentage = df_temp['Percentage'].tolist()
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
 
-  def testTopFrequentKineticLawDistribution(self):
-    # Test TopFrequentKineticLawType()
-    if IGNORE_TEST:
-      return 
-    self.assertTrue(self.SBMLData.TopFrequentKineticLawType() == ['ZERO', 'UNDR', 'NA'])
-
-  def testGetKineticLawDistributionPerMassTransfer1(self):
-    # Test getKineticLawDistributionPerMassTransfer() column names
+  def testGetKTypeDistributionPerMType1(self):
+    # Test getKTypeDistributionPerMType() column names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,fileName="")
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
     test = all(item in df_temp.columns for item in ['Classifications', 'Percentage',
     'Percentage standard error', 'Percentage per model', 'Percentage per model standard error'])
     self.assertTrue(test)
 
-  def testGetKineticLawDistributionPerMassTransfer2(self):
-    # Test getKineticLawDistributionPerMassTransfer() if there is at least one row
+  def testGetKTypeDistributionPerMType2(self):
+    # Test getKTypeDistributionPerMType() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,fileName="")
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
     self.assertTrue(len(df_temp.index)>0)
 
-  def testGetKineticLawDistributionPerMassTransfer3(self):
+  def testGetKTypeDistributionPerMType3(self):
     # Test column 'Percentage' a list of floating numbers
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,fileName="")
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
     list_percentage = df_temp['Percentage'].tolist()
     test = all(isinstance(item, float) for item in list_percentage)
     self.assertTrue(test) 
 
-  def testGetKineticLawDistributionPerMassTransfer4(self):
+  def testGetKTypeDistributionPerMType4(self):
     # Test column 'Percentage' does not have nan values
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKineticLawDistributionPerMassTransfer(rct_num=1,prd_num=1,fileName="")
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
     list_percentage = df_temp['Percentage'].tolist()
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
-  
-  def testTopFrequentKineticLawDistributionPerMassTransfer(self):
-    # Test TopFrequentKineticLawTypePerMassTransfer()
+
+  def testGetMTypeDistribution1(self):
+    # Test getMTypeDistribution() column names
+    if IGNORE_TEST:
+      return
+
+    df_temp = self.SBMLData.getMTypeDistribution()
+    test = all(item in df_temp.columns for item in ['R = 0', 'R = 1',
+    'R = 2', 'R > 2'])
+    self.assertTrue(test)
+
+  def testGetMTypeDistribution2(self):
+    # Test getMTypeDistribution() if there is at least one row
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.TopFrequentKineticLawTypePerMassTransfer(rct_num=1,prd_num=1) 
+    df_temp = self.SBMLData.getMTypeDistribution()
+    self.assertTrue(len(df_temp.index)>0)
+
+  def testGetMTypeDistribution3(self):
+    # Test getMTypeDistribution() row names
+    if IGNORE_TEST:
+      return
+
+    df_temp = self.SBMLData.getMTypeDistribution()
+    test = all(item in df_temp.index for item in ['P = 0', 'P = 1',
+    'P = 2', 'P > 2'])
+    self.assertTrue(test)
+
+  def testGetMTypeDistributionPerModel1(self):
+    # Test getMTypeDistributionPerModel() column names
+    if IGNORE_TEST:
+      return
+
+    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    test = all(item in df_temp.columns for item in ['R = 0', 'R = 1',
+    'R = 2', 'R > 2'])
+    self.assertTrue(test)
+
+  def testGetMTypeDistributionPerModel2(self):
+    # Test getMTypeDistributionPerModel() if there is at least one row
+    if IGNORE_TEST:
+      return 
+    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    self.assertTrue(len(df_temp.index)>0)
+
+  def testGetMTypeDistributionPerModel3(self):
+    # Test getMTypeDistributionPerModel() row names
+    if IGNORE_TEST:
+      return
+
+    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    test = all(item in df_temp.index for item in ['P = 0', 'P = 1',
+    'P = 2', 'P > 2'])
+    self.assertTrue(test)
+
+  def testGetBasicStatisticsInfo(self):
+    # Test the basic statistics functions
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getNumBiomodelsAnalyzed() == 1)
+    self.assertTrue(self.SBMLData.getNumRxnsAnalyzed() == 3)
+
+##Query
+  def testGetTopKType(self):
+    # Test getTopKType()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getTopKType() == ['ZERO', 'UNDR', 'NA'])
+  
+  def testGetKTypeProb(self):
+    # Test getKTypeProb()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getKTypeProb(K_type = "NA") == 1./3)
+
+  def testGetTopKTypePerMType(self):
+    # Test getTopKTypePerMType()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getTopKTypePerMType(rct_num=1,prd_num=1) 
     == ['ZERO', 'UNDR', 'NA'])
+
+  def testGetKTypeProbPerMType(self):
+    # Test getKTypeProbPerMType()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getKTypeProbPerMType(rct_num=1, prd_num = 1, K_type="NA") 
+    == 1./3)
+
+  def testGetTopMType(self):
+    # Test getTopMType()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getTopMType()
+    == [('R = 1', 'P = 1')])
+  
+  def testGetMTypeProb(self):
+    # Test getTopMTypeProb()
+    if IGNORE_TEST:
+      return 
+    self.assertTrue(self.SBMLData.getMTypeProb(rct_num = 1, prd_num = 1) 
+    == 1.)
+
+
+##Presentations (not applicable)
+##_functions are not applicable
 
 if __name__ == '__main__':
   unittest.main()
