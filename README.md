@@ -2,10 +2,22 @@
 
 [![Coverage](https://codecov.io/gh/ModelEngineering/kinetics_validator/branch/master/graph/badge.svg)](https://codecov.io/gh/ModelEngineering/kinetics_validator)
 
-# Kinetics Validator
-Repository of tests to validate kinetics expressions in SBML models.
+# SBMLKinetics
+SBMLKinetics is a package of tests to analyze kinetics expressions in SBML models.
+If you are using any of the code, please cite the PYPI web page 
+(https://pypi.org/project/SBMLKinetics/). 
 
-## Setup environment
+## For users
+### Installation
+
+``pip install SBMLKinetics``
+
+### Documentation
+Please see the documentation at https://modelengineering.github.io/kinetics_validator/ for details.
+
+
+## For developers
+### Setup environment
 - Install [spyder3](http://www.psych.mcgill.ca/labs/mogillab/anaconda2/lib/python2.7/site-packages/spyder/doc/installation.html)
 - Clone the ``kinetics_validator`` repository using ``git clone https://github.com/ModelEngineering/kinetics_validator``
 - Create a virtual environment for the project.
@@ -25,13 +37,13 @@ To verify the setup:
 tests should run without error.
 (Use "\\" in windows.)
 
-## Running Codes
+### Running Codes
 - ``cd kinetics_validator``
 - ``source kv/bin/activate``
 (Use "\\" in windows.)
 When you're done, use ``deactivate``.
 
-## Documentation
+### Documentation
 - ``examples/tutorial.py`` has code illustrating usage
 - ``SBMLKinetics/common/*.py`` has codes for the 
 SmpleSBML (``simple_sbml.py``),
