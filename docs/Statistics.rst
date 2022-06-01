@@ -1,0 +1,20 @@
+.. _Statistics:
+ 
+
+Statistics
+=============
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeDistribution
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getMTypeDistribution
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getNumRxnsAnalyzed
+
+
+
