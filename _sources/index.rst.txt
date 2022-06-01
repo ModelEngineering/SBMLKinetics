@@ -11,7 +11,10 @@ Welcome to SBMLKinetics's documentation!
    :caption: Contents:
 
    Introduction
-   APIs
+   Tutorial
+   Statistics
+   Query
+   Presentation
     
     
 ------------
@@ -19,6 +22,6 @@ Introduction
 ------------
 
 SBMLKinetics is a package of tests to analyze kinetics expressions in SBML models.
-If you are using any of the code, please cite the PYPI web page (https://pypi.org/project/SBMLKinetics/). 
-Thanks. 
+If you are using any of the code, please cite the PYPI web page 
+(https://pypi.org/project/SBMLKinetics/). 
 
