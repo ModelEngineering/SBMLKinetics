@@ -33,4 +33,4 @@ Kinetic law type (K type) including ten types "ZERO" (Zeroth order), "UNDR"
 (not classified kinetics). 
 
 Mass transfer type (M type) is quantitatively represented by the number of reactants 
-(r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, >2 (representing > 2)).
+(r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).

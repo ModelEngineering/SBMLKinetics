@@ -41,7 +41,7 @@ class KineticAnalyzer:
   (not classified kinetics). 
 
   Mass transfer type (M type) is quantitatively represented by the number of reactants 
-  (r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, >2 (representing > 2)).
+  (r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).
 
   Args: 
       dataSet: str-"biomodels", "curated", "metabolic", "signalling", "homo_sapiens", "non_homo", 
@@ -91,7 +91,7 @@ class KineticAnalyzer:
         The column names are: "Classifications", "Percentage", "Percentage standard error", 
         "Percentage per model", "Percentage per model standard error".
         
-        The column of "Classifications" covers the ten Kinetic law types.
+        The column of "Classifications" covers the ten kinetic law types.
         
     """  
  
@@ -122,7 +122,7 @@ class KineticAnalyzer:
         The column names are: "Classifications", "Percentage", "Percentage standard error", 
         "Percentage per model", "Percentage per model standard error".
         
-        The column of "Classifications" covers the ten Kinetic law types.
+        The column of "Classifications" covers the ten kinetic law types.
         
     """  
     (_, df_gen_stat, _, df_gen_stat_PR, _, _, _) = self.tuple
@@ -254,7 +254,7 @@ class KineticAnalyzer:
         (not classified kinetics). 
 
     Returns:
-        Kinetics_value: float-the probability of the certain kinetic law type.
+        kinetics_value: float-the probability of the certain kinetic law type.
     """  
 
     df_temp = self.getKTypeDistribution()
@@ -317,7 +317,7 @@ class KineticAnalyzer:
         (not classified kinetics). 
 
     Returns:
-        Kinetics_value: float-the probability of the certain kinetic law type.
+        kinetics_value: float-the probability of the certain kinetic law type.
     """  
 
     df_temp = self.getKTypeDistributionPerMType(rct_num = rct_num, prd_num = prd_num)
@@ -341,7 +341,7 @@ class KineticAnalyzer:
 
     returns: 
         rct_prd_num_list: list of rct and prd num info with the most frequent mass transfer 
-        type.Sometimes there could be more than one top kinetic law type to make the length 
+        type. Sometimes there could be more than one top kinetic law type to make the length 
         of rct_prd_num_list larger than one. 
         
         (rct_num, prd_num): tuple (str, str)
@@ -482,7 +482,8 @@ class KineticAnalyzer:
 
   def plotKTypeDistributionVsMType(self, path = "", fileName = 'KTypeDistributionVsMType.pdf'):
     """
-    Plot the kinetic law type distribution vs each mass transfer type.
+    Plot the kinetic law type distribution vs each mass transfer type and save it as a pdf 
+    file.
   
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
@@ -540,12 +541,13 @@ class KineticAnalyzer:
 
   def plotMtypeDistribution(self, path = "", fileName = 'MTypeDistribution.pdf'):
     """
-    Plot the distribution of reaction involved for each type of mass transfer.
+    Plot the distribution of reaction involved for each type of mass transfer and save it 
+    as a pdf file.
   
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
 
-        fileName: str-file name with which the pdf file save to.
+        fileName: str-file name with which the pdf file save to, ending with '.pdf'.
     """  
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
@@ -573,12 +575,13 @@ class KineticAnalyzer:
 
   def plotMTypeDistributionPerModel(self, path = "", fileName = 'MTypeDistributionPerModel.pdf'):
     """
-    Plot the distribution of reactions involved for each type of mass transfer per model.
+    Plot the distribution of reactions involved for each type of mass transfer per model and 
+    save it as a pdf file.
       
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
 
-        fileName: str-file name with which the pdf file save to.
+        fileName: str-file name with which the pdf file save to, ending with '.pdf'.
     """  
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
@@ -636,7 +639,7 @@ class KineticAnalyzer:
         
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
         
-        fileName: str-file name with which the excel file save to, "" (do not save to excel file).
+        fileName: str-file name with which the excel file save to, ending with ".xlsx".
         
     """  
     if str(fileName).lower()[-5:] == ".xlsx" and fileName[:-5] != "":
