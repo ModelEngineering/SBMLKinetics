@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Presentation" href="Presentation.html" />
-    <link rel="prev" title="Statistics" href="Statistics.html" /> 
+    <link rel="next" title="Plots" href="Plots.html" />
+    <link rel="prev" title="Tutorial" href="Tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,10 +85,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Statistics.html">Statistics</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Query</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Presentation.html">Presentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Query</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#query-distributions">Query Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#query-elements">Query Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html">Plots</a></li>
 </ul>
 
             
@@ -156,14 +160,82 @@
             
   <div class="section" id="query">
 <span id="id1"></span><h1>Query<a class="headerlink" href="#query" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="query-distributions">
+<h2>Query Distributions<a class="headerlink" href="#query-distributions" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistribution">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the kinetic law type distribution.</p>
+<dl>
+<dt>Returns:</dt><dd><p>df_gen_stat_final: dataFrame-kinetic law type distribution. 
+The column names are: “Classifications”, “Percentage”, “Percentage standard error”, 
+“Percentage per model”, “Percentage per model standard error”.</p>
+<p>The column of “Classifications” covers the ten kinetic law types.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the kinetic law type distribution for the certein mass transfer type.</p>
+<dl>
+<dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+</dd>
+<dt>Returns:</dt><dd><p>df_gen_stat_PR_final: dataFrame-the kinetic law distribution for a certain mass trasfer.</p>
+<p>The column names are: “Classifications”, “Percentage”, “Percentage standard error”, 
+“Percentage per model”, “Percentage per model standard error”.</p>
+<p>The column of “Classifications” covers the ten kinetic law types.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getMTypeDistribution">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the distribution of reaction involved for each type of mass transfer.</p>
+<dl>
+<dt>Returns:</dt><dd><p>df_table_PR_final: dataFrame-Mass transfer type distribution.</p>
+<p>The column names represent number of reactants: “R = 0”, “R = 1”, “R = 2”, “R &gt; 2”.</p>
+<p>The row names represent number of products: “P = 0”, “P = 1”, “P = 2”, “P &gt; 2”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeDistributionPerModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the distribution of reaction involved for each type of mass transfer per model.</p>
+<dl>
+<dt>Returns:</dt><dd><p>df_table_PR_per_model final: dataFrame-Mass transfer type distribution.</p>
+<p>The column names represent number of reactants: “R = 0”, “R = 1”, “R = 2”, “R &gt; 2”.</p>
+<p>The row names represent number of products: “P = 0”, “P = 1”, “P = 2”, “P &gt; 2”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="query-elements">
+<h2>Query Elements<a class="headerlink" href="#query-elements" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getTopKType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the most frequent kinetic law type.</p>
 <dl>
-<dt>Returns:</dt><dd><p>kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
+<dt>Returns:</dt><dd><p>kinetic_type_list: list of K_type. Sometimes there could be more than one
 top kinetic law type to make the length of kinetic_type_list larger than one.</p>
-<p>kinetic_type: str-kinetic law type.</p>
+<p>K_type: an object with an attribute K_type_str representing 
+the type of kinetic law.</p>
+<p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
+(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
+(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+(not classified kinetics).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -172,8 +244,10 @@ top kinetic law type to make the length of kinetic_type_list larger than one.</p
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeProb">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the probability value of the certain kinetic law type.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>K_type: str-“ZERO” (Zeroth order), “UNDR” 
+<dl>
+<dt>Args:</dt><dd><p>K_type: an object with an attribute K_type_str representing 
+the type of kinetic law.</p>
+<p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
 (Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
@@ -188,10 +262,12 @@ top kinetic law type to make the length of kinetic_type_list larger than one.</p
 
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getTopKTypePerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKTypePerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">rct_num</span></em>, <em class="sig-param"><span class="n">prd_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKTypePerMType" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKTypePerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKTypePerMType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the most frequent kinetic law type from a certain mass transfer type.</p>
 <dl>
-<dt>Args: </dt><dd><p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
 <dt>Returns:</dt><dd><p>kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
@@ -203,12 +279,15 @@ top kinetic law type to make the length of kinetic_type_list larger than one.</p
 
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProbPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">rct_num</span></em>, <em class="sig-param"><span class="n">prd_num</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProbPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the probability value of the certain kinetic law type from a certain mass transfer type.</p>
 <dl>
-<dt>Args:</dt><dd><p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<dt>Args:</dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
-<p>K_type: str-“ZERO” (Zeroth order), “UNDR” 
+<p>K_type: an object with an attribute K_type_str representing the type of kinetic law.</p>
+<p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
 (Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
@@ -227,19 +306,24 @@ top kinetic law type to make the length of kinetic_type_list larger than one.</p
 <dd><p>Get the most frequent mass transfer type (with the most number of reactions involved in
 the certain type of mass transfer).</p>
 <dl>
-<dt>returns: </dt><dd><p>rct_prd_num_list: list of rct and prd num info with the most frequent mass transfer 
+<dt>returns: </dt><dd><p>rct_prd_num_list: list of M_type info with the most frequent mass transfer 
 type. Sometimes there could be more than one top kinetic law type to make the length 
 of rct_prd_num_list larger than one.</p>
-<p>(rct_num, prd_num): tuple (str, str)</p>
+<p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getMTypeProb">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">rct_num</span></em>, <em class="sig-param"><span class="n">prd_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeProb" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeProb" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
-<dt>Args:</dt><dd><p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<dt>Args:</dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
 <dt>Returns:</dt><dd><p>M_value: float-the probability of the certain mass transfer type.</p>
@@ -247,6 +331,27 @@ of rct_prd_num_list larger than one.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getNumBiomodelsAnalyzed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of biomodels analyzed.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>biomodels_num: int-number of biomodels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.getNumRxnsAnalyzed">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getNumRxnsAnalyzed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getNumRxnsAnalyzed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of reactions analyzed.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>rxn_num: int-number of reactions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -257,10 +362,10 @@ of rct_prd_num_list larger than one.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Presentation.html" class="btn btn-neutral float-right" title="Presentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Plots.html" class="btn btn-neutral float-right" title="Plots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Statistics.html" class="btn btn-neutral float-left" title="Statistics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

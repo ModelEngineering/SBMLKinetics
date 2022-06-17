@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Statistics" href="Statistics.html" />
-    <link rel="prev" title="Introduction" href="Introduction.html" /> 
+    <link rel="next" title="Query" href="Query.html" />
+    <link rel="prev" title="Core Concepts" href="Core%20Concepts.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,10 +85,10 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Statistics.html">Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Query.html">Query</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Presentation.html">Presentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plots.html">Plots</a></li>
 </ul>
 
             
@@ -165,35 +165,28 @@
 <span class="n">analyzer</span> <span class="o">=</span> <span class="n">KineticAnalyzer</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;D:/path/to/folder&#39;</span><span class="p">,</span>
 <span class="n">dataSet</span> <span class="o">=</span> <span class="s2">&quot;biomodels.zip&quot;</span><span class="p">,</span> <span class="n">model_indices</span><span class="o">=</span><span class="n">model_indices</span><span class="p">)</span>
 
-<span class="c1">#Statistics</span>
+<span class="c1">#Query Distributions</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeDistribution</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeDistributionPerMType</span><span class="p">(</span><span class="n">rct_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">prd_num</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeDistributionPerMType</span><span class="p">(</span><span class="n">M_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">M_type</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getMTypeDistribution</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getMTypeDistributionPerModel</span><span class="p">())</span>
+
+<span class="c1">#Query Elements</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopKType</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">K_type_str</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeProb</span><span class="p">(</span><span class="n">K_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">K_type</span><span class="p">(</span><span class="s2">&quot;NA&quot;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopKTypePerMType</span><span class="p">(</span><span class="n">M_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">M_type</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeProbPerMType</span><span class="p">(</span><span class="n">M_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">M_type</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">K_type</span><span class="o">=</span><span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">K_type</span><span class="p">(</span><span class="s2">&quot;NA&quot;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopMType</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rct_num</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getMTypeProb</span><span class="p">(</span><span class="n">M_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">M_type</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getNumBiomodelsAnalyzed</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getNumRxnsAnalyzed</span><span class="p">())</span>
 
-<span class="c1">#Query</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopKType</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeProb</span><span class="p">(</span><span class="n">K_type</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopKTypePerMType</span><span class="p">(</span><span class="n">rct_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">prd_num</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getKTypeProbPerMType</span><span class="p">(</span><span class="n">rct_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">prd_num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">K_type</span><span class="o">=</span><span class="s2">&quot;NA&quot;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getTopMType</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">getMTypeProb</span><span class="p">(</span><span class="n">rct_num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">prd_num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
-
-<span class="c1">#Presentations</span>
-<span class="c1">#plot</span>
+<span class="c1">#Plots</span>
 <span class="n">analyzer</span><span class="o">.</span><span class="n">plotKTypeDistribution</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;D:/path/to/folder/&#39;</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">plotKTypeDistributionPerMType</span><span class="p">(</span><span class="n">rct_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">prd_num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">analyzer</span><span class="o">.</span><span class="n">plotKTypeDistributionPerMType</span><span class="p">(</span><span class="n">M_type</span> <span class="o">=</span> <span class="n">SBMLKinetics</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">M_type</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">analyzer</span><span class="o">.</span><span class="n">plotKTypeDistributionVsMType</span><span class="p">()</span>
 <span class="n">analyzer</span><span class="o">.</span><span class="n">plotMtypeDistribution</span><span class="p">()</span>
 <span class="n">analyzer</span><span class="o">.</span><span class="n">plotMTypeDistributionPerModel</span><span class="p">()</span>
-<span class="c1">#table</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">tableKTypeDistribution</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;D:/path/to/folder/&#39;</span><span class="p">,</span> <span class="n">fileName</span> <span class="o">=</span> <span class="s2">&quot;Kinetics.xlsx&quot;</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">tableKTypeDistribution</span><span class="p">()</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">tableKTypeDistributionPerMType</span><span class="p">(</span><span class="n">rct_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">prd_num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">tableMTypeDistribution</span><span class="p">()</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">tableMTypeDistributionPerModel</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -206,10 +199,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Statistics.html" class="btn btn-neutral float-right" title="Statistics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Query.html" class="btn btn-neutral float-right" title="Query" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Core%20Concepts.html" class="btn btn-neutral float-left" title="Core Concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

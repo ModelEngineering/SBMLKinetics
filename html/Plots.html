@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Presentation &mdash; SBMLKinetics 0.0.1 documentation</title>
+  <title>Plots &mdash; SBMLKinetics 0.0.1 documentation</title>
   
 
   
@@ -84,14 +84,10 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Statistics.html">Statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Query.html">Query</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Presentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#functions-to-plot">Functions to plot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#functions-to-table">Functions to table</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plots</a></li>
 </ul>
 
             
@@ -138,13 +134,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Presentation</li>
+      <li>Plots</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/Presentation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/Plots.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -157,10 +153,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="presentation">
-<span id="id1"></span><h1>Presentation<a class="headerlink" href="#presentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="functions-to-plot">
-<h2>Functions to plot<a class="headerlink" href="#functions-to-plot" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="plots">
+<span id="id1"></span><h1>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.plotKTypeDistribution">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistribution.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistribution" title="Permalink to this definition">¶</a></dt>
@@ -174,12 +168,14 @@
 
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">rct_num</span></em>, <em class="sig-param"><span class="n">prd_num</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistributionPerMType.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistributionPerMType.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the kinetic law type distribution for a certain mass transfer type and save it as
 a pdf file.</p>
 <dl>
-<dt>Args: </dt><dd><p>rct_num: int - 0, 1, 2, 3 (representing &gt; 2)</p>
-<p>prd_num: int - 0, 1, 2, 3 (representing &gt; 2)</p>
+<dt>Args:  </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
 <p>fileName: str-file name with which the pdf file save to, ending with “.pdf”.</p>
 </dd>
@@ -222,57 +218,6 @@ save it as a pdf file.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="functions-to-table">
-<h2>Functions to table<a class="headerlink" href="#functions-to-table" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.tableKTypeDistribution">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">tableKTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistribution.xlsx'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.tableKTypeDistribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the kinetic law type distribution to an excel file.</p>
-<dl>
-<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
-<p>fileName: str-file name with which the excel file save to, ending with “.xlsx”.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.tableKTypeDistributionPerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">tableKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">rct_num</span></em>, <em class="sig-param"><span class="n">prd_num</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistributionPerMType.xlsx'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.tableKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the kinetic law type distribution for a certain mass transfer type to an excel file.</p>
-<dl>
-<dt>Args: </dt><dd><p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
-<p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
-<p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
-<p>fileName: str-file name with which the excel file save to, ending with “.xlsx”.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.tableMTypeDistribution">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">tableMTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'MTypeDistribution.xlsx'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.tableMTypeDistribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the distribution of reaction involved for each type of mass transfer to an excel file.</p>
-<dl>
-<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
-<p>fileName: str-file name with which the excel file save to, ending with “.xlsx”.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.tableMTypeDistributionPerModel">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">tableMTypeDistributionPerModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'MTypeDistributionPerModel.xlsx'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.tableMTypeDistributionPerModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the distribution of reaction involved for each type of mass transfer per model to an 
-excel file.</p>
-<dl>
-<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
-<p>fileName: str-file name with which the excel file save to, ending with “.xlsx”.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
 </div>
 
 
