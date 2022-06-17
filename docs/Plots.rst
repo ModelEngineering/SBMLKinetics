@@ -1,0 +1,18 @@
+.. _Plots:
+ 
+
+Plots
+=============
+
+
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistribution
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerMType
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionVsMType
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotMtypeDistribution
+
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotMTypeDistributionPerModel
+

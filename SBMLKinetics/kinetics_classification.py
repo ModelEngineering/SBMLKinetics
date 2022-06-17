@@ -1,7 +1,7 @@
 
-#This script is to do kinetic classification.
-#Make sure that you have setup your PYTHONPATH environment
-#variable as described in the github repository.
+# This script was written by Jin Xu and available on Github
+# https://github.com/ModelEngineering/kinetics_validator
+# This file includes all the functions to do the kinetics classification.
 
 
 # Import the required files

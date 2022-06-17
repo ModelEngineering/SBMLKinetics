@@ -11,10 +11,10 @@ Welcome to SBMLKinetics's documentation!
    :caption: Contents:
 
    Introduction
+   Core Concepts
    Tutorial
-   Statistics
    Query
-   Presentation
+   Plots
     
     
 ------------

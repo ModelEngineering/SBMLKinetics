@@ -1,8 +1,13 @@
 """
-Tests for kinetics_classification.py
+Tests for kinetics_output.py
 """
+# This script was written by Jin Xu and available on Github
+# https://github.com/ModelEngineering/kinetics_validator
+# This file includes all the tests to do the kinetics analysis.
+
 from SBMLKinetics import kinetics_classification
 from SBMLKinetics import kinetics_output
+from SBMLKinetics import types
 from sympy import *
 import unittest
 import math
@@ -28,7 +33,7 @@ class TestKineticsClassification(unittest.TestCase):
     self.SBMLData = kinetics_output.KineticAnalyzer(dataSet = "biomodels",
     model_indices=model_indices)
 
-##Statistics
+##Query Distributions
   def testGetKTypeDistribution1(self):
     # Test getKTypeDistribution() column names
     if IGNORE_TEST:
@@ -68,7 +73,7 @@ class TestKineticsClassification(unittest.TestCase):
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
     test = all(item in df_temp.columns for item in ['Classifications', 'Percentage',
     'Percentage standard error', 'Percentage per model', 'Percentage per model standard error'])
     self.assertTrue(test)
@@ -77,14 +82,14 @@ class TestKineticsClassification(unittest.TestCase):
     # Test getKTypeDistributionPerMType() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
     self.assertTrue(len(df_temp.index)>0)
 
   def testGetKTypeDistributionPerMType3(self):
     # Test column 'Percentage' a list of floating numbers
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
     list_percentage = df_temp['Percentage'].tolist()
     test = all(isinstance(item, float) for item in list_percentage)
     self.assertTrue(test) 
@@ -93,7 +98,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test column 'Percentage' does not have nan values
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(rct_num=1,prd_num=1)
+    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
     list_percentage = df_temp['Percentage'].tolist()
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
@@ -159,45 +164,46 @@ class TestKineticsClassification(unittest.TestCase):
     self.assertTrue(self.SBMLData.getNumBiomodelsAnalyzed() == 1)
     self.assertTrue(self.SBMLData.getNumRxnsAnalyzed() == 3)
 
-##Query
+##Query Elements
   def testGetTopKType(self):
     # Test getTopKType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getTopKType() == ['ZERO', 'UNDR', 'NA'])
+    self.assertTrue(self.SBMLData.getTopKType()[0].K_type_str == 'ZERO')
   
   def testGetKTypeProb(self):
     # Test getKTypeProb()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getKTypeProb(K_type = "NA") == 1./3)
+    self.assertTrue(self.SBMLData.getKTypeProb(K_type = types.K_type("NA")) == 1./3)
 
   def testGetTopKTypePerMType(self):
     # Test getTopKTypePerMType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getTopKTypePerMType(rct_num=1,prd_num=1) 
+    self.assertTrue(self.SBMLData.getTopKTypePerMType(M_type = types.M_type(1,1)) 
     == ['ZERO', 'UNDR', 'NA'])
 
   def testGetKTypeProbPerMType(self):
     # Test getKTypeProbPerMType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getKTypeProbPerMType(rct_num=1, prd_num = 1, K_type="NA") 
+    self.assertTrue(self.SBMLData.getKTypeProbPerMType(M_type = types.M_type(1,1), \
+      K_type=types.K_type("NA")) 
     == 1./3)
 
   def testGetTopMType(self):
     # Test getTopMType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getTopMType()
-    == [('R = 1', 'P = 1')])
+
+    self.assertTrue(self.SBMLData.getTopMType()[0].rct_num == 1)
   
   def testGetMTypeProb(self):
     # Test getTopMTypeProb()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getMTypeProb(rct_num = 1, prd_num = 1) 
+    self.assertTrue(self.SBMLData.getMTypeProb(M_type = types.M_type(1,1)) 
     == 1.)
 
 

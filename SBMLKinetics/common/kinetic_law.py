@@ -1,4 +1,7 @@
 '''Provides Information on SBML Kinetics Laws'''
+# This script was written by Jin Xu and available on Github
+# https://github.com/ModelEngineering/kinetics_validator
+# This file includes all the functions of types to classify the kinetics.
 
 
 from SBMLKinetics.common import constants as cn

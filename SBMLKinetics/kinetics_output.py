@@ -1,7 +1,7 @@
 
-#This script is to do kinetic classification.
-#Make sure that you have setup your PYTHONPATH environment
-#variable as described in the github repository.
+# This script was written by Jin Xu and available on Github
+# https://github.com/ModelEngineering/kinetics_validator
+# This file includes all the functions to do the kinetics analysis.
 
 
 from zipfile import ZIP_FILECOUNT_LIMIT
@@ -20,6 +20,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib
+
+from SBMLKinetics import types
 
 # Column names
 SBMLID = "SBMLid"
@@ -80,7 +82,7 @@ class KineticAnalyzer:
     else:
       raise Exception("Not a valid dataset input.")
 
-  ##Statistics    
+  ##Query Distributions    
 
   def getKTypeDistribution(self):
     """
@@ -107,11 +109,14 @@ class KineticAnalyzer:
     return df_gen_stat_final
 
 
-  def getKTypeDistributionPerMType(self, rct_num, prd_num):
+  def getKTypeDistributionPerMType(self, M_type):
     """
     Get the kinetic law type distribution for the certein mass transfer type.
 
     Args: 
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
         rct_num: int-0, 1, 2, 3 (representing > 2).
         
         prd_num: int-0, 1, 2, 3 (representing > 2).
@@ -125,6 +130,9 @@ class KineticAnalyzer:
         The column of "Classifications" covers the ten kinetic law types.
         
     """  
+    rct_num = M_type.rct_num
+    prd_num = M_type.prd_num
+
     (_, df_gen_stat, _, df_gen_stat_PR, _, _, _) = self.tuple
 
     df_gen_stat_plot = df_gen_stat[["Classifications", "Percentage", "Percentage per model", \
@@ -193,6 +201,218 @@ class KineticAnalyzer:
     except Exception as e:
       raise Exception(e)
 
+
+  ##Query Elements
+  def getTopKType(self):
+    """
+    Get the most frequent kinetic law type. 
+
+    Returns:
+        kinetic_type_list: list of K_type. Sometimes there could be more than one
+        top kinetic law type to make the length of kinetic_type_list larger than one. 
+        
+        K_type: an object with an attribute K_type_str representing 
+        the type of kinetic law.
+
+        K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
+        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
+        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        (not classified kinetics). 
+ 
+    """  
+
+    df_temp = self.getKTypeDistribution()
+    max_value = df_temp['Percentage'].max()
+    idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
+    kinetics_type_list =[] 
+    for i in range(len(idx_list)):
+        kinetics_type_list.append(types.K_type(df_temp.iloc[idx_list[i]]["Classifications"]))
+      
+    return kinetics_type_list
+  
+  def getKTypeProb(self, K_type):
+    """
+    Get the probability value of the certain kinetic law type.
+
+    Args:
+        K_type: an object with an attribute K_type_str representing 
+        the type of kinetic law.
+
+        K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
+        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
+        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        (not classified kinetics). 
+
+    Returns:
+        kinetics_value: float-the probability of the certain kinetic law type.
+    """  
+    K_type_str = K_type.K_type_str
+    df_temp = self.getKTypeDistribution()
+    idx_list = df_temp.index[df_temp['Classifications'] == K_type_str].tolist()
+    if len(idx_list) == 0:
+      raise Exception("Please enter a valid kinetic type.")
+    else:
+      kinetics_value_list =[] 
+      for i in range(len(idx_list)):
+          kinetics_value_list.append(df_temp.iloc[idx_list[i]]["Percentage"])
+      kinetics_value = kinetics_value_list[0] 
+      
+      return kinetics_value
+
+  def getTopKTypePerMType(self, M_type):
+
+    """
+    Get the most frequent kinetic law type from a certain mass transfer type. 
+
+    Args: 
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
+        rct_num: int-0, 1, 2, 3 (representing > 2).
+        
+        prd_num: int-0, 1, 2, 3 (representing > 2).
+
+    Returns:
+        kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
+        top kinetic law type to make the length of kinetic_type_list larger than one. 
+        
+        kinetic_type: str-kinetic law type. 
+    """  
+    rct_num = M_type.rct_num
+    prd_num = M_type.prd_num
+
+    if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
+      df_temp = self.getKTypeDistributionPerMType(M_type = M_type)
+
+      max_value = df_temp['Percentage'].max()
+      idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
+      kinetics_type_list =[] 
+      for i in range(len(idx_list)):
+          kinetics_type_list.append(df_temp.iloc[idx_list[i]]["Classifications"])
+      
+      return kinetics_type_list
+
+    else:
+      raise Exception("Not a valid reactant or product number.")
+
+  def getKTypeProbPerMType(self, M_type, K_type):
+    """
+    Get the probability value of the certain kinetic law type from a certain mass transfer type.
+
+    Args:
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
+        rct_num: int-0, 1, 2, 3 (representing > 2).
+        
+        prd_num: int-0, 1, 2, 3 (representing > 2).
+
+        K_type: an object with an attribute K_type_str representing the type of kinetic law.
+
+        K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
+        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
+        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        (not classified kinetics). 
+
+    Returns:
+        kinetics_value: float-the probability of the certain kinetic law type.
+    """  
+    K_type_str = K_type.K_type_str
+
+    df_temp = self.getKTypeDistributionPerMType(M_type = M_type)
+
+    idx_list = df_temp.index[df_temp['Classifications'] == K_type_str].tolist()
+    if len(idx_list) == 0:
+      raise Exception("Please enter a valid kinetic type.")
+    else:
+      kinetics_value_list =[] 
+      for i in range(len(idx_list)):
+          kinetics_value_list.append(df_temp.iloc[idx_list[i]]["Percentage"])
+      kinetics_value = kinetics_value_list[0] 
+      
+      return kinetics_value
+
+  def getTopMType(self):
+
+    """
+    Get the most frequent mass transfer type (with the most number of reactions involved in
+    the certain type of mass transfer). 
+
+    returns: 
+        rct_prd_num_list: list of M_type info with the most frequent mass transfer 
+        type. Sometimes there could be more than one top kinetic law type to make the length 
+        of rct_prd_num_list larger than one. 
+        
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
+        rct_num: int-0, 1, 2, 3 (representing > 2).
+        
+        prd_num: int-0, 1, 2, 3 (representing > 2).
+
+    """  
+
+    df_temp = self.getMTypeDistributionPerModel()
+
+    max_value = 0
+    rct_prd_num_list = []
+
+    for col in df_temp.columns:
+      max = df_temp[col].max()
+      idx_list = df_temp.index[df_temp[col] == max].tolist()
+      if max > max_value:
+        max_value = max
+
+    for col in df_temp.columns:
+      idx_list = df_temp.index[df_temp[col] == max_value].tolist()
+      for i in range(len(idx_list)):
+        if '=' in col:
+          rct_num = int(col[-1])
+        else:
+          rct_num = 3
+        if '=' in idx_list[i]:
+          prd_num = int(idx_list[i][-1])
+        else:
+          prd_num = 3 
+        
+        rct_prd_num_list.append(types.M_type(rct_num, prd_num))
+
+    return rct_prd_num_list
+
+  def getMTypeProb(self, M_type):
+
+    """
+    Args:
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
+        rct_num: int-0, 1, 2, 3 (representing > 2).
+        
+        prd_num: int-0, 1, 2, 3 (representing > 2).
+
+    Returns:
+        M_value: float-the probability of the certain mass transfer type.
+    """  
+    rct_num = M_type.rct_num
+    prd_num = M_type.prd_num
+
+    if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
+      df_temp = self.getMTypeDistribution()
+      value = df_temp.iat[prd_num, rct_num]
+    else:
+        raise Exception("Not a valid reactant or product number.")
+
+    return value
+
   def getNumBiomodelsAnalyzed(self):
     """
     Get the number of biomodels analyzed.
@@ -219,173 +439,7 @@ class KineticAnalyzer:
     return rxn_num
 
 
-  ##Query
-  def getTopKType(self):
-    """
-    Get the most frequent kinetic law type. 
-
-    Returns:
-        kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
-        top kinetic law type to make the length of kinetic_type_list larger than one. 
-        
-        kinetic_type: str-kinetic law type.  
-    """  
-
-    df_temp = self.getKTypeDistribution()
-    max_value = df_temp['Percentage'].max()
-    idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
-    kinetics_type_list =[] 
-    for i in range(len(idx_list)):
-        kinetics_type_list.append(df_temp.iloc[idx_list[i]]["Classifications"])
-      
-    return kinetics_type_list
-  
-  def getKTypeProb(self, K_type):
-    """
-    Get the probability value of the certain kinetic law type.
-
-    Args:
-        K_type: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
-        (not classified kinetics). 
-
-    Returns:
-        kinetics_value: float-the probability of the certain kinetic law type.
-    """  
-
-    df_temp = self.getKTypeDistribution()
-    idx_list = df_temp.index[df_temp['Classifications'] == K_type].tolist()
-    if len(idx_list) == 0:
-      raise Exception("Please enter a valid kinetic type.")
-    else:
-      kinetics_value_list =[] 
-      for i in range(len(idx_list)):
-          kinetics_value_list.append(df_temp.iloc[idx_list[i]]["Percentage"])
-      kinetics_value = kinetics_value_list[0] 
-      
-      return kinetics_value
-
-  def getTopKTypePerMType(self, rct_num, prd_num):
-
-    """
-    Get the most frequent kinetic law type from a certain mass transfer type. 
-
-    Args: 
-        rct_num: int-0, 1, 2, 3 (representing > 2).
-        
-        prd_num: int-0, 1, 2, 3 (representing > 2).
-
-    Returns:
-        kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
-        top kinetic law type to make the length of kinetic_type_list larger than one. 
-        
-        kinetic_type: str-kinetic law type. 
-    """  
-    if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
-      df_temp = self.getKTypeDistributionPerMType(rct_num = rct_num, prd_num = prd_num)
-
-      max_value = df_temp['Percentage'].max()
-      idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
-      kinetics_type_list =[] 
-      for i in range(len(idx_list)):
-          kinetics_type_list.append(df_temp.iloc[idx_list[i]]["Classifications"])
-      
-      return kinetics_type_list
-
-    else:
-      raise Exception("Not a valid reactant or product number.")
-
-  def getKTypeProbPerMType(self, rct_num, prd_num, K_type):
-    """
-    Get the probability value of the certain kinetic law type from a certain mass transfer type.
-
-    Args:
-        rct_num: int-0, 1, 2, 3 (representing > 2).
-        
-        prd_num: int-0, 1, 2, 3 (representing > 2).
-
-        K_type: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
-        (not classified kinetics). 
-
-    Returns:
-        kinetics_value: float-the probability of the certain kinetic law type.
-    """  
-
-    df_temp = self.getKTypeDistributionPerMType(rct_num = rct_num, prd_num = prd_num)
-
-    idx_list = df_temp.index[df_temp['Classifications'] == K_type].tolist()
-    if len(idx_list) == 0:
-      raise Exception("Please enter a valid kinetic type.")
-    else:
-      kinetics_value_list =[] 
-      for i in range(len(idx_list)):
-          kinetics_value_list.append(df_temp.iloc[idx_list[i]]["Percentage"])
-      kinetics_value = kinetics_value_list[0] 
-      
-      return kinetics_value
-
-  def getTopMType(self):
-
-    """
-    Get the most frequent mass transfer type (with the most number of reactions involved in
-    the certain type of mass transfer). 
-
-    returns: 
-        rct_prd_num_list: list of rct and prd num info with the most frequent mass transfer 
-        type. Sometimes there could be more than one top kinetic law type to make the length 
-        of rct_prd_num_list larger than one. 
-        
-        (rct_num, prd_num): tuple (str, str)
-
-    """  
-
-    df_temp = self.getMTypeDistributionPerModel()
-
-    max_value = 0
-    rct_prd_num_list = []
-
-    for col in df_temp.columns:
-      max = df_temp[col].max()
-      idx_list = df_temp.index[df_temp[col] == max].tolist()
-      if max > max_value:
-        max_value = max
-
-    for col in df_temp.columns:
-      idx_list = df_temp.index[df_temp[col] == max_value].tolist()
-      for i in range(len(idx_list)):
-        rct_prd_num_list.append((col, idx_list[i]))
-    
-    return rct_prd_num_list
-
-  def getMTypeProb(self, rct_num, prd_num):
-
-    """
-    Args:
-        rct_num: int-0, 1, 2, 3 (representing > 2).
-        
-        prd_num: int-0, 1, 2, 3 (representing > 2).
-
-    Returns:
-        M_value: float-the probability of the certain mass transfer type.
-    """  
-    if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
-      df_temp = self.getMTypeDistribution()
-      value = df_temp.iat[prd_num, rct_num]
-    else:
-        raise Exception("Not a valid reactant or product number.")
-
-    return value
-
-  ##Presentations 
+  ##Plots 
   def plotKTypeDistribution(self, path = "", fileName = 'KTypeDistribution.pdf'):
     """
     Plot the kinetic law type distribution and save it as a pdf file.
@@ -416,20 +470,26 @@ class KineticAnalyzer:
       raise Exception("Please enter a valid pdf file name.")
 
 
-  def plotKTypeDistributionPerMType(self, rct_num, prd_num, path = "", fileName = "KTypeDistributionPerMType.pdf"):
+  def plotKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.pdf"):
     """
     Plot the kinetic law type distribution for a certain mass transfer type and save it as
     a pdf file.
 
-    Args: 
-        rct_num: int - 0, 1, 2, 3 (representing > 2)
+    Args:  
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
+        rct_num: int-0, 1, 2, 3 (representing > 2).
         
-        prd_num: int - 0, 1, 2, 3 (representing > 2)
-        
+        prd_num: int-0, 1, 2, 3 (representing > 2).
+
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
 
         fileName: str-file name with which the pdf file save to, ending with ".pdf".
     """  
+
+    rct_num = M_type.rct_num
+    prd_num = M_type.prd_num
 
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
@@ -447,7 +507,7 @@ class KineticAnalyzer:
 
       if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
         i = prd_num*4 + rct_num
-        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerMType(rct_num = rct_num, prd_num=prd_num)
+        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerMType(M_type = M_type)
         yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
           "Percentage per model standard error"]].to_numpy().T
         ax = df_gen_stat_PR_plot[i].plot(kind="bar",x="Classifications", y=["Percentage","Percentage per model"],\
@@ -509,7 +569,8 @@ class KineticAnalyzer:
       fig = plt.figure(figsize = (16,16))
       axes = fig.subplots(nrows=4, ncols=4)
       for i in range(16):
-        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerMType(rct_num=i//4, prd_num=i%4)
+        df_gen_stat_PR_plot[i] = \
+          self.getKTypeDistributionPerMType(types.M_type(rct_num=i//4, prd_num=i%4))
         yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
           "Percentage per model standard error"]].to_numpy().T
         df_gen_stat_PR_plot[i].plot(ax = axes[i//4,i%4] , kind="bar", 
@@ -606,7 +667,7 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid pdf file name.")
   
-  def tableKTypeDistribution(self, path = "", fileName = "KTypeDistribution.xlsx"):
+  def _tableKTypeDistribution(self, path = "", fileName = "KTypeDistribution.xlsx"):
     """
     Save the kinetic law type distribution to an excel file.
 
@@ -628,22 +689,26 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.")
 
-  def tableKTypeDistributionPerMType(self, rct_num, prd_num, path = "", fileName = "KTypeDistributionPerMType.xlsx"):
+  def _tableKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.xlsx"):
     """
     Save the kinetic law type distribution for a certain mass transfer type to an excel file.
 
     Args: 
+        M_type: an object with attributes rct_num and prd_num representing 
+        the number of reactants and products.
+
         rct_num: int-0, 1, 2, 3 (representing > 2).
         
         prd_num: int-0, 1, 2, 3 (representing > 2).
-        
+
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
         
         fileName: str-file name with which the excel file save to, ending with ".xlsx".
         
-    """  
+    """
+
     if str(fileName).lower()[-5:] == ".xlsx" and fileName[:-5] != "":
-      df_gen_stat_final = self.getKTypeDistributionPerMType(rct_num = rct_num, prd_num=prd_num)
+      df_gen_stat_final = self.getKTypeDistributionPerMType(M_type = M_type)
       # Create a Pandas Excel writer using XlsxWriter as the engine.
       path_fileName = path + fileName[:-5] + ".xlsx"
       writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
@@ -653,7 +718,7 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.")
 
-  def tableMTypeDistribution(self, path = "", fileName = "MTypeDistribution.xlsx"):
+  def _tableMTypeDistribution(self, path = "", fileName = "MTypeDistribution.xlsx"):
     """
     Save the distribution of reaction involved for each type of mass transfer to an excel file.
 
@@ -675,7 +740,7 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.") 
 
-  def tableMTypeDistributionPerModel(self, path = "", fileName = "MTypeDistributionPerModel.xlsx"):
+  def _tableMTypeDistributionPerModel(self, path = "", fileName = "MTypeDistributionPerModel.xlsx"):
     """
     Save the distribution of reaction involved for each type of mass transfer per model to an 
     excel file.
@@ -768,36 +833,37 @@ if __name__ == '__main__':
   analyzer = KineticAnalyzer(path = 'D:/summer-2020/Jo/kinetics_validator/data',
   dataSet = "biomodels.zip", model_indices=model_indices) 
 
-  # #Statistics 
+  # #Query Distributions
   # print(analyzer.getKTypeDistribution()) 
-  # print(analyzer.getKTypeDistributionPerMType(rct_num=1,prd_num=1))
+  # print(analyzer.getKTypeDistributionPerMType(M_type = types.M_type(1,1)))
   # print(analyzer.getMTypeDistribution())
   # print(analyzer.getMTypeDistributionPerModel())
+
+  
+  #Query Elements
+  # print(analyzer.getTopKType()[0].K_type_str)
+  # print(analyzer.getKTypeProb(K_type = types.K_type("NA")))
+  # print(analyzer.getTopKTypePerMType(M_type = types.M_type(1,1)))
+  # print(analyzer.getKTypeProbPerMType(M_type = types.M_type(1,1), K_type=types.K_type("NA")))
+  # print(analyzer.getTopMType()[0].rct_num)
+  # print(analyzer.getMTypeProb(M_type = types.M_type(1,1)))
   # print(analyzer.getNumBiomodelsAnalyzed())
   # print(analyzer.getNumRxnsAnalyzed())
 
-  
-  # #Query 
-  # print(analyzer.getTopKType())
-  # print(analyzer.getKTypeProb(K_type = "NA"))
-  # print(analyzer.getTopKTypePerMType(rct_num=1,prd_num=1))
-  # print(analyzer.getKTypeProbPerMType(rct_num=1, prd_num = 1, K_type="NA"))
-  # print(analyzer.getTopMType())
-  # print(analyzer.getMTypeProb(rct_num = 1, prd_num = 1))
 
-
-  # #Presentations #tests are not necessary
+  # #Plots #tests are not necessary
   # analyzer.plotKTypeDistribution(path = 'D:/summer-2020/Jo/')
-  # analyzer.plotKTypeDistributionPerMType(rct_num=1,prd_num=1)
+  # analyzer.plotKTypeDistributionPerMType(M_type = types.M_type(1,1))
   # analyzer.plotKTypeDistributionVsMType()
   # analyzer.plotMtypeDistribution()
   # analyzer.plotMTypeDistributionPerModel()
 
-  # analyzer.tableKTypeDistribution(path = 'D:/summer-2020/Jo/', fileName = "Kinetics.xlsx")
-  # analyzer.tableKTypeDistribution()
-  # analyzer.tableKTypeDistributionPerMType(rct_num=1,prd_num=1)
-  # analyzer.tableMTypeDistribution()
-  # analyzer.tableMTypeDistributionPerModel()
+  # #Tables
+  # analyzer._tableKTypeDistribution(path = 'D:/summer-2020/Jo/', fileName = "Kinetics.xlsx")
+  # analyzer._tableKTypeDistribution()
+  # analyzer._tableKTypeDistributionPerMType(M_type = types.M_type(1,1))
+  # analyzer._tableMTypeDistribution()
+  # analyzer._tableMTypeDistributionPerModel()
 
 
   # analyzer._printBriefStatOfKTypeDistribution()

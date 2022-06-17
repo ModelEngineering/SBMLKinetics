@@ -1,6 +1,10 @@
 """
 Tests for kinetics_classification.py
 """
+# This script was written by Jin Xu and available on Github
+# https://github.com/ModelEngineering/kinetics_validator
+# This file includes all the tests to do the kinetics analysis.
+
 from SBMLKinetics import kinetics_classification
 from sympy import *
 import unittest 

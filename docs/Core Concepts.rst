@@ -1,0 +1,17 @@
+.. _Core Concepts:
+ 
+
+Core Concepts
+=============
+
+Kinetic law type (K type) including ten types "ZERO" (Zeroth order), "UNDR" 
+(Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
+(Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
+(Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
+(Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+"FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+(not classified kinetics). 
+
+Mass transfer type (M type) is quantitatively represented by the number of reactants 
+(r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).
+
