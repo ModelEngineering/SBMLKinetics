@@ -279,10 +279,19 @@ class KineticAnalyzer:
         prd_num: int-0, 1, 2, 3 (representing > 2).
 
     Returns:
-        kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
+        kinetic_type_list: list of k_type. Sometimes there could be more than one
         top kinetic law type to make the length of kinetic_type_list larger than one. 
-        
-        kinetic_type: str-kinetic law type. 
+         
+        K_type: an object with an attribute K_type_str representing 
+        the type of kinetic law.
+
+        K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
+        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
+        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        (not classified kinetics). 
     """  
     rct_num = M_type.rct_num
     prd_num = M_type.prd_num
@@ -294,7 +303,7 @@ class KineticAnalyzer:
       idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
       kinetics_type_list =[] 
       for i in range(len(idx_list)):
-          kinetics_type_list.append(df_temp.iloc[idx_list[i]]["Classifications"])
+          kinetics_type_list.append(types.K_type(df_temp.iloc[idx_list[i]]["Classifications"]))
       
       return kinetics_type_list
 
@@ -843,7 +852,7 @@ if __name__ == '__main__':
   #Query Elements
   # print(analyzer.getTopKType()[0].K_type_str)
   # print(analyzer.getKTypeProb(K_type = types.K_type("NA")))
-  # print(analyzer.getTopKTypePerMType(M_type = types.M_type(1,1)))
+  # print(analyzer.getTopKTypePerMType(M_type = types.M_type(1,1))[0].K_type_str)
   # print(analyzer.getKTypeProbPerMType(M_type = types.M_type(1,1), K_type=types.K_type("NA")))
   # print(analyzer.getTopMType()[0].rct_num)
   # print(analyzer.getMTypeProb(M_type = types.M_type(1,1)))

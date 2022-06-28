@@ -181,8 +181,8 @@ class TestKineticsClassification(unittest.TestCase):
     # Test getTopKTypePerMType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getTopKTypePerMType(M_type = types.M_type(1,1)) 
-    == ['ZERO', 'UNDR', 'NA'])
+    self.assertTrue(self.SBMLData.getTopKTypePerMType(M_type = types.M_type(1,1))[0].K_type_str 
+    == ['ZERO', 'UNDR', 'NA'][0])
 
   def testGetKTypeProbPerMType(self):
     # Test getKTypeProbPerMType()

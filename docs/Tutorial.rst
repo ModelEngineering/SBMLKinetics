@@ -24,7 +24,7 @@ Tutorial
    #Query Elements
    print(analyzer.getTopKType()[0].K_type_str)
    print(analyzer.getKTypeProb(K_type = SBMLKinetics.types.K_type("NA")))
-   print(analyzer.getTopKTypePerMType(M_type = SBMLKinetics.types.M_type(1,1)))
+   print(analyzer.getTopKTypePerMType(M_type = SBMLKinetics.types.M_type(1,1))[0].K_type_str)
    print(analyzer.getKTypeProbPerMType(M_type = SBMLKinetics.types.M_type(1,1), K_type=SBMLKinetics.types.K_type("NA")))
    print(analyzer.getTopMType()[0].rct_num)
    print(analyzer.getMTypeProb(M_type = SBMLKinetics.types.M_type(1,1)))
