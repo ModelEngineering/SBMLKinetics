@@ -270,9 +270,17 @@ the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
-<dt>Returns:</dt><dd><p>kinetic_type_list: list of kinetics_type. Sometimes there could be more than one
+<dt>Returns:</dt><dd><p>kinetic_type_list: list of k_type. Sometimes there could be more than one
 top kinetic law type to make the length of kinetic_type_list larger than one.</p>
-<p>kinetic_type: str-kinetic law type.</p>
+<p>K_type: an object with an attribute K_type_str representing 
+the type of kinetic law.</p>
+<p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
+(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
+(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+(not classified kinetics).</p>
 </dd>
 </dl>
 </dd></dl>
