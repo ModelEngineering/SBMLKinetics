@@ -86,8 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Query.html">Query</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plot%20Methods.html">Plot Methods</a></li>
 </ul>
 
             
@@ -162,21 +163,31 @@
 <li class="toctree-l2"><a class="reference internal" href="Introduction.html#installation">Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Query.html">Query</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Query.html#query-distributions">Query Distributions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Query.html#query-elements">Query Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Core%20Concepts.html#k-type">K Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Core%20Concepts.html#m-type">M Type</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Query%20Methods.html#query-distributions">Query Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Query%20Methods.html#query-elements">Query Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Plot%20Methods.html">Plot Methods</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>SBMLKinetics is a package of tests to analyze kinetics expressions in SBML models.
-If you are using any of the code, please cite the PYPI web page
-(<a class="reference external" href="https://pypi.org/project/SBMLKinetics/">https://pypi.org/project/SBMLKinetics/</a>).</p>
+<p>SBMLKinetics is a Python package to evaluate and classify kinetics expressions in SBML models.
+There are many possible kinetics laws like zeroth order, mass action, Michaelis-Menten,
+Hill equations and others. This work characterizes the kinetic laws used in the BioModels
+Database to improve modeling best practices. Our tool can analyze any dataset with SBML files
+as input. Users can also use this tool to compare different data sets. For instance, we
+compare the distribution of kinetic laws for signaling and metabolic networks and find the
+substantial differences between two types of networks. If you are using any of the code,
+please cite the PYPI web page (<a class="reference external" href="https://pypi.org/project/SBMLKinetics/">https://pypi.org/project/SBMLKinetics/</a>).</p>
 </div>
 </div>
 

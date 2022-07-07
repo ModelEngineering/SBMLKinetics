@@ -85,10 +85,15 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Concepts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#k-type">K Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#m-type">M Type</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Query.html">Query</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plot%20Methods.html">Plot Methods</a></li>
 </ul>
 
             
@@ -156,15 +161,29 @@
             
   <div class="section" id="core-concepts">
 <span id="id1"></span><h1>Core Concepts<a class="headerlink" href="#core-concepts" title="Permalink to this headline">¶</a></h1>
-<p>Kinetic law type (K type) including ten types “ZERO” (Zeroth order), “UNDR”
-(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR”
-(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM”
-(Michaelis-Menten kinetics without explicit enzyme), “MMCAT”
-(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations),
-“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA”
-(not classified kinetics).</p>
+<div class="section" id="k-type">
+<h2>K Type<a class="headerlink" href="#k-type" title="Permalink to this headline">¶</a></h2>
+<p>Kinetic law type (K type) including ten types:</p>
+<ul class="simple">
+<li><p>“ZERO” (Zeroth order);</p></li>
+<li><p>“UNDR” (Uni-directional mass action);</p></li>
+<li><p>“UNMO” (Uni-term with moderator);</p></li>
+<li><p>“BIDR” (Bi-directional mass action);</p></li>
+<li><p>“BIMO” (Bi-terms with moderator);</p></li>
+<li><p>“MM” (Michaelis-Menten kinetics without explicit enzyme);</p></li>
+<li><p>“MMCAT” (Michaelis-Menten kinetics with explicit enzyme);</p></li>
+<li><p>“HILL” (Hill equations);</p></li>
+<li><p>“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL);</p></li>
+<li><p>“NA” (not classified kinetics).</p></li>
+</ul>
+<p>Example: K_type = SBMLKinetics.types.K_type(“NA”).</p>
+</div>
+<div class="section" id="m-type">
+<h2>M Type<a class="headerlink" href="#m-type" title="Permalink to this headline">¶</a></h2>
 <p>Mass transfer type (M type) is quantitatively represented by the number of reactants
 (r = 0, 1, 2, 3 (representing&gt;2)) and products (p= 0, 1, 2, 3 (representing&gt;2)).</p>
+<p>Example: M_type = SBMLKinetics.types.M_type(1,1).</p>
+</div>
 </div>
 
 

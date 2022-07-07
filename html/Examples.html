@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; SBMLKinetics 0.0.1 documentation</title>
+  <title>Examples &mdash; SBMLKinetics 0.0.1 documentation</title>
   
 
   
@@ -20,7 +20,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -35,9 +34,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Query Methods" href="Query%20Methods.html" />
+    <link rel="prev" title="Tutorial" href="Tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -64,7 +64,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -83,11 +83,11 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Plot%20Methods.html">Plot Methods</a></li>
 </ul>
@@ -136,12 +136,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Examples</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/Examples.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -153,23 +155,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="examples">
+<span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>1) Kinetic law type distribution from curated BioModels Database. The blue bars investigate
+the kinetic law type distribution on the average of all the reactions from all the models.
+The orange bars indicate the distribution on the average of reactions for each model. The
+trend for two color bars is qualitatively similar. The error bars on the top of orange bars
+represent the uncertainty among different models.</p>
+<a class="reference internal image-reference" href="_images/Fig1_curated.png"><img alt="_images/Fig1_curated.png" src="_images/Fig1_curated.png" style="width: 700px;" /></a>
+<p>Based on the result of Figure 1 from curated BioModels, users can select UNIDR with the
+highest probability as the general kinetics of mass action to model synthetic reaction
+networks. Users can also follow its distribution to assign the probability for each type of
+kinetics while generating random synthetic reaction networks. In detail, users can assign the
+probability values of generating reaction networks from the certain kinetics of ZERO, UNIDR,
+UNIMO etc.</p>
+<p>2) Kinetic law type distribution for signaling networks (A) and metabolic networks (B) from
+BioModels Database. The blue bars investigate the kinetic law type distribution on the
+average of all the reactions from all the models. The orange bars indicate the distribution
+on the average of reactions for each model. The trend for two color bars is qualitatively
+similar for each subplot. However, there is significant difference of the kinetic law type
+distributions between the signaling and metabolic networks. The error bars on the top of
+orange bars represent the uncertainty among different models.</p>
+<a class="reference internal image-reference" href="_images/Fig2_signalling_vs_metabolic.png"><img alt="_images/Fig2_signalling_vs_metabolic.png" src="_images/Fig2_signalling_vs_metabolic.png" style="width: 700px;" /></a>
+<p>If users want to model synthetic signaling networks instead of metabolic networks, they can
+refer to the distributions of Figure A instead of Figure B.</p>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Query%20Methods.html" class="btn btn-neutral float-right" title="Query Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -209,14 +234,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
