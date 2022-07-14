@@ -185,6 +185,7 @@ initial_model_indx = 0, final_model_indx = 1000):
             parameter_list.append(parameter_id)
 
           kinetics = reaction.kinetic_law.expanded_formula  
+          #print("kinetics:", kinetics)
 
           try:
             kinetics_sim = str(simplify(kinetics))
