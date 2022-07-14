@@ -299,7 +299,7 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of uni-term with moderator
     Uni-term with moderator classification rule: 
-    1) Kinetics is a single product of terms or with an additional const term
+    1) Kinetics is a single product of terms
     2) The species inside the kinetics are not only reactants
     
     Parameters
@@ -393,7 +393,7 @@ class KineticLaw(object):
     """
     Tests whether the reaction belongs to the type of bi-terms with moderator
     Bi-terms with moderator classification rule: 
-    1) Kinetics is the difference of two product of terms, with species in each term
+    1) Kinetics is the difference of two product of terms
     2) The first term before - does not include all the reactants
        while the second term after - does not include all the products
     
