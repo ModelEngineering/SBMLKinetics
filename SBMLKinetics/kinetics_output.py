@@ -34,12 +34,12 @@ class KineticAnalyzer:
   """
   Load Dataset of SBML files.
 
-  Kinetic law type (K type) including ten types "ZERO" (Zeroth order), "UNDR" 
+  Kinetics type (K type) including ten types "ZERO" (Zeroth order), "UNDR" 
   (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
   (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
   (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
   (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-  "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+  "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
   (not classified kinetics). 
 
   Mass transfer type (M type) is quantitatively represented by the number of reactants 
@@ -86,10 +86,10 @@ class KineticAnalyzer:
 
   def getKTypeDistribution(self):
     """
-    Get the kinetic law type distribution.
+    Get the kinetics type distribution.
 
     Returns:
-        df_gen_stat_final: dataFrame-kinetic law type distribution. 
+        df_gen_stat_final: dataFrame-kinetics type distribution. 
         The column names are: "Classifications", "Percentage", "Percentage standard error", 
         "Percentage per model", "Percentage per model standard error".
         
@@ -111,7 +111,7 @@ class KineticAnalyzer:
 
   def getKTypeDistributionPerMType(self, M_type):
     """
-    Get the kinetic law type distribution for the certein mass transfer type.
+    Get the kinetics type distribution for the certein mass transfer type.
 
     Args: 
         M_type: an object with attributes rct_num and prd_num representing 
@@ -122,7 +122,7 @@ class KineticAnalyzer:
         prd_num: int-0, 1, 2, 3 (representing > 2).
         
     Returns:
-        df_gen_stat_PR_final: dataFrame-the kinetic law distribution for a certain mass trasfer.
+        df_gen_stat_PR_final: dataFrame-the kinetics distribution for a certain mass trasfer.
         
         The column names are: "Classifications", "Percentage", "Percentage standard error", 
         "Percentage per model", "Percentage per model standard error".
@@ -205,21 +205,21 @@ class KineticAnalyzer:
   ##Query Elements
   def getTopKType(self):
     """
-    Get the most frequent kinetic law type. 
+    Get the most frequent kinetics type. 
 
     Returns:
         kinetic_type_list: list of K_type. Sometimes there could be more than one
-        top kinetic law type to make the length of kinetic_type_list larger than one. 
+        top kinetics type to make the length of kinetic_type_list larger than one. 
         
         K_type: an object with an attribute K_type_str representing 
-        the type of kinetic law.
+        the type of kinetics.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
         (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
         (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
         (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
         (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
  
     """  
@@ -235,7 +235,7 @@ class KineticAnalyzer:
   
   def getKTypeProb(self, K_type):
     """
-    Get the probability value of the certain kinetic law type.
+    Get the probability value of the certain kinetics type.
 
     Args:
         K_type: an object with an attribute K_type_str representing 
@@ -246,11 +246,11 @@ class KineticAnalyzer:
         (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
         (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
         (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
 
     Returns:
-        kinetics_value: float-the probability of the certain kinetic law type.
+        kinetics_value: float-the probability of the certain kinetics type.
     """  
     K_type_str = K_type.K_type_str
     df_temp = self.getKTypeDistribution()
@@ -268,7 +268,7 @@ class KineticAnalyzer:
   def getTopKTypePerMType(self, M_type):
 
     """
-    Get the most frequent kinetic law type from a certain mass transfer type. 
+    Get the most frequent kinetics type from a certain mass transfer type. 
 
     Args: 
         M_type: an object with attributes rct_num and prd_num representing 
@@ -280,7 +280,7 @@ class KineticAnalyzer:
 
     Returns:
         kinetic_type_list: list of k_type. Sometimes there could be more than one
-        top kinetic law type to make the length of kinetic_type_list larger than one. 
+        top kinetics type to make the length of kinetic_type_list larger than one. 
          
         K_type: an object with an attribute K_type_str representing 
         the type of kinetic law.
@@ -290,7 +290,7 @@ class KineticAnalyzer:
         (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
         (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
         (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
     """  
     rct_num = M_type.rct_num
@@ -312,7 +312,7 @@ class KineticAnalyzer:
 
   def getKTypeProbPerMType(self, M_type, K_type):
     """
-    Get the probability value of the certain kinetic law type from a certain mass transfer type.
+    Get the probability value of the certain kinetics type from a certain mass transfer type.
 
     Args:
         M_type: an object with attributes rct_num and prd_num representing 
@@ -322,18 +322,18 @@ class KineticAnalyzer:
         
         prd_num: int-0, 1, 2, 3 (representing > 2).
 
-        K_type: an object with an attribute K_type_str representing the type of kinetic law.
+        K_type: an object with an attribute K_type_str representing the type of kinetics.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
         (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
         (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
         (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
         (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
-        "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL) and "NA" 
+        "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
 
     Returns:
-        kinetics_value: float-the probability of the certain kinetic law type.
+        kinetics_value: float-the probability of the certain kinetics type.
     """  
     K_type_str = K_type.K_type_str
 
@@ -358,7 +358,7 @@ class KineticAnalyzer:
 
     returns: 
         rct_prd_num_list: list of M_type info with the most frequent mass transfer 
-        type. Sometimes there could be more than one top kinetic law type to make the length 
+        type. Sometimes there could be more than one top kinetics type to make the length 
         of rct_prd_num_list larger than one. 
         
         M_type: an object with attributes rct_num and prd_num representing 
@@ -451,7 +451,7 @@ class KineticAnalyzer:
   ##Plots 
   def plotKTypeDistribution(self, path = "", fileName = 'KTypeDistribution.pdf'):
     """
-    Plot the kinetic law type distribution and save it as a pdf file.
+    Plot the kinetics type distribution and save it as a pdf file.
 
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
@@ -481,7 +481,7 @@ class KineticAnalyzer:
 
   def plotKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.pdf"):
     """
-    Plot the kinetic law type distribution for a certain mass transfer type and save it as
+    Plot the kinetics type distribution for a certain mass transfer type and save it as
     a pdf file.
 
     Args:  
@@ -551,7 +551,7 @@ class KineticAnalyzer:
 
   def plotKTypeDistributionVsMType(self, path = "", fileName = 'KTypeDistributionVsMType.pdf'):
     """
-    Plot the kinetic law type distribution vs each mass transfer type and save it as a pdf 
+    Plot the kinetics type distribution vs each mass transfer type and save it as a pdf 
     file.
   
     Args: 
@@ -678,7 +678,7 @@ class KineticAnalyzer:
   
   def _tableKTypeDistribution(self, path = "", fileName = "KTypeDistribution.xlsx"):
     """
-    Save the kinetic law type distribution to an excel file.
+    Save the kinetics type distribution to an excel file.
 
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
@@ -700,7 +700,7 @@ class KineticAnalyzer:
 
   def _tableKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.xlsx"):
     """
-    Save the kinetic law type distribution for a certain mass transfer type to an excel file.
+    Save the kinetics type distribution for a certain mass transfer type to an excel file.
 
     Args: 
         M_type: an object with attributes rct_num and prd_num representing 
@@ -774,7 +774,7 @@ class KineticAnalyzer:
 
   def _printBriefStatOfKTypeDistribution(self):
     """
-    Print the brief statistics for the kinetic law type distribution.
+    Print the brief statistics for the kinetics type distribution.
     """  
     (df_classification, df_gen_stat, _, _, biomodel_non_count, _, _) = self.tuple
     rxn_num = len(df_classification)

@@ -4,8 +4,8 @@
 Examples
 =============
 
-1) Kinetic law type distribution from curated BioModels Database. The blue bars investigate 
-the kinetic law type distribution on the average of all the reactions from all the models. 
+1) Kinetics type distribution from curated BioModels Database. The blue bars investigate 
+the kinetics type distribution on the average of all the reactions from all the models. 
 The orange bars indicate the distribution on the average of reactions for each model. The 
 trend for two color bars is qualitatively similar. The error bars on the top of orange bars 
 represent the uncertainty among different models. 
@@ -21,10 +21,10 @@ probability values of generating reaction networks from the certain kinetics of 
 UNIMO etc. 
 
 2) Kinetic law type distribution for signaling networks (A) and metabolic networks (B) from 
-BioModels Database. The blue bars investigate the kinetic law type distribution on the 
+BioModels Database. The blue bars investigate the kinetics type distribution on the 
 average of all the reactions from all the models. The orange bars indicate the distribution 
 on the average of reactions for each model. The trend for two color bars is qualitatively 
-similar for each subplot. However, there is significant difference of the kinetic law type 
+similar for each subplot. However, there is significant difference of the kinetics type 
 distributions between the signaling and metabolic networks. The error bars on the top of 
 orange bars represent the uncertainty among different models.
 
