@@ -166,9 +166,9 @@
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistribution">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the kinetic law type distribution.</p>
+<dd><p>Get the kinetics type distribution.</p>
 <dl>
-<dt>Returns:</dt><dd><p>df_gen_stat_final: dataFrame-kinetic law type distribution. 
+<dt>Returns:</dt><dd><p>df_gen_stat_final: dataFrame-kinetics type distribution. 
 The column names are: “Classifications”, “Percentage”, “Percentage standard error”, 
 “Percentage per model”, “Percentage per model standard error”.</p>
 <p>The column of “Classifications” covers the ten kinetic law types.</p>
@@ -179,14 +179,14 @@ The column names are: “Classifications”, “Percentage”, “Percentage sta
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the kinetic law type distribution for the certein mass transfer type.</p>
+<dd><p>Get the kinetics type distribution for the certein mass transfer type.</p>
 <dl>
 <dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
-<dt>Returns:</dt><dd><p>df_gen_stat_PR_final: dataFrame-the kinetic law distribution for a certain mass trasfer.</p>
+<dt>Returns:</dt><dd><p>df_gen_stat_PR_final: dataFrame-the kinetics distribution for a certain mass trasfer.</p>
 <p>The column names are: “Classifications”, “Percentage”, “Percentage standard error”, 
 “Percentage per model”, “Percentage per model standard error”.</p>
 <p>The column of “Classifications” covers the ten kinetic law types.</p>
@@ -224,18 +224,18 @@ the number of reactants and products.</p>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getTopKType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the most frequent kinetic law type.</p>
+<dd><p>Get the most frequent kinetics type.</p>
 <dl>
 <dt>Returns:</dt><dd><p>kinetic_type_list: list of K_type. Sometimes there could be more than one
-top kinetic law type to make the length of kinetic_type_list larger than one.</p>
+top kinetics type to make the length of kinetic_type_list larger than one.</p>
 <p>K_type: an object with an attribute K_type_str representing 
-the type of kinetic law.</p>
+the type of kinetics.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
 (Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
 (Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
-“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+“FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
 </dl>
@@ -244,7 +244,7 @@ the type of kinetic law.</p>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeProb">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the probability value of the certain kinetic law type.</p>
+<dd><p>Get the probability value of the certain kinetics type.</p>
 <dl>
 <dt>Args:</dt><dd><p>K_type: an object with an attribute K_type_str representing 
 the type of kinetic law.</p>
@@ -253,10 +253,10 @@ the type of kinetic law.</p>
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
 (Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
-“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+“FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
-<dt>Returns:</dt><dd><p>kinetics_value: float-the probability of the certain kinetic law type.</p>
+<dt>Returns:</dt><dd><p>kinetics_value: float-the probability of the certain kinetics type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,7 +264,7 @@ the type of kinetic law.</p>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getTopKTypePerMType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKTypePerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKTypePerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the most frequent kinetic law type from a certain mass transfer type.</p>
+<dd><p>Get the most frequent kinetics type from a certain mass transfer type.</p>
 <dl>
 <dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
@@ -272,7 +272,7 @@ the number of reactants and products.</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
 <dt>Returns:</dt><dd><p>kinetic_type_list: list of k_type. Sometimes there could be more than one
-top kinetic law type to make the length of kinetic_type_list larger than one.</p>
+top kinetics type to make the length of kinetic_type_list larger than one.</p>
 <p>K_type: an object with an attribute K_type_str representing 
 the type of kinetic law.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
@@ -280,7 +280,7 @@ the type of kinetic law.</p>
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
 (Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
-“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+“FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
 </dl>
@@ -289,22 +289,22 @@ the type of kinetic law.</p>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProbPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the probability value of the certain kinetic law type from a certain mass transfer type.</p>
+<dd><p>Get the probability value of the certain kinetics type from a certain mass transfer type.</p>
 <dl>
 <dt>Args:</dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
-<p>K_type: an object with an attribute K_type_str representing the type of kinetic law.</p>
+<p>K_type: an object with an attribute K_type_str representing the type of kinetics.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
 (Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
 (Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
 (Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
 (Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
-“FR” (Kinetics in the format of fraction other than MM, MMCAT or HILL) and “NA” 
+“FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
-<dt>Returns:</dt><dd><p>kinetics_value: float-the probability of the certain kinetic law type.</p>
+<dt>Returns:</dt><dd><p>kinetics_value: float-the probability of the certain kinetics type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -316,7 +316,7 @@ the number of reactants and products.</p>
 the certain type of mass transfer).</p>
 <dl>
 <dt>returns: </dt><dd><p>rct_prd_num_list: list of M_type info with the most frequent mass transfer 
-type. Sometimes there could be more than one top kinetic law type to make the length 
+type. Sometimes there could be more than one top kinetics type to make the length 
 of rct_prd_num_list larger than one.</p>
 <p>M_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>

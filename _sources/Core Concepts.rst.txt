@@ -6,7 +6,7 @@ Core Concepts
 -------
 K Type
 -------
-Kinetic law type (K type) including ten types:
+Kinetics type (K type) including ten types:
 
 - "ZERO" (Zeroth order);
 - "UNDR" (Uni-directional mass action);
