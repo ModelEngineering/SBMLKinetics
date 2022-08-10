@@ -122,7 +122,7 @@ class KineticAnalyzer:
         prd_num: int-0, 1, 2, 3 (representing > 2).
         
     Returns:
-        df_gen_stat_PR_final: dataFrame-the kinetics distribution for a certain mass trasfer.
+        df_gen_stat_PR_final: dataFrame-the kinetics distribution for a reaction type.
         
         The column names are: "Classifications", "Percentage", "Percentage standard error", 
         "Percentage per model", "Percentage per model standard error".
