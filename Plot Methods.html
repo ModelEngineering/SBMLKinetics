@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plot Methods &mdash; SBMLKinetics 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Query Methods" href="Query%20Methods.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SBMLKinetics
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot Methods</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SBMLKinetics</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Plot Methods</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Plot Methods.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plot-methods">
+<span id="id1"></span><h1>Plot Methods<a class="headerlink" href="#plot-methods" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.plotKTypeDistribution">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistribution.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the kinetics type distribution and save it as a pdf file.</p>
+<dl>
+<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
+<p>fileName: str-file name with which the pdf file save to, ending with “.pdf”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistributionPerRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">R_type</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistributionPerRType.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the kinetics type distribution for a certain reaction type and save it as
+a pdf file.</p>
+<dl>
+<dt>Args:  </dt><dd><p>R_type: an object with attributes rct_num and prd_num representing 
+the number of reactants and products.</p>
+<p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
+<p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
+<p>fileName: str-file name with which the pdf file save to, ending with “.pdf”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.plotKTypeDistributionVsRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotKTypeDistributionVsRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'KTypeDistributionVsRType.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotKTypeDistributionVsRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the kinetics type distribution vs each reaction type and save it as a pdf 
+file.</p>
+<dl>
+<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
+<p>fileName: str-file name with which the pdf file save to, ending with ‘.pdf’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.plotRTypeDistribution">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotRTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'RTypeDistribution.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotRTypeDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the distribution of reaction involved for reaction type and save it 
+as a pdf file.</p>
+<dl>
+<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
+<p>fileName: str-file name with which the pdf file save to, ending with ‘.pdf’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SBMLKinetics.KineticAnalyzer.plotRTypeDistributionPerModel">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">plotRTypeDistributionPerModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">fileName</span><span class="o">=</span><span class="default_value">'RTypeDistributionPerModel.pdf'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.plotRTypeDistributionPerModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the distribution of reactions involved for each reaction type per model and 
+save it as a pdf file.</p>
+<dl>
+<dt>Args: </dt><dd><p>path: str-path to the file, with a format like <code class="docutils literal notranslate"><span class="pre">D:/path/to/</span></code> (or <code class="docutils literal notranslate"><span class="pre">D:\\path\\</span> <span class="pre">to\\</span></code>)</p>
+<p>fileName: str-file name with which the pdf file save to, ending with ‘.pdf’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Query%20Methods.html" class="btn btn-neutral float-left" title="Query Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Jin Xu
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
