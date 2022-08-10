@@ -17,26 +17,26 @@ Tutorial
 
    #Query Distributions 
    analyzer.getKTypeDistribution()
-   analyzer.getKTypeDistributionPerMType(M_type = SBMLKinetics.types.M_type(1,1))
-   analyzer.getMTypeDistribution()
-   analyzer.getMTypeDistributionPerModel()
+   analyzer.getKTypeDistributionPerRType(R_type = SBMLKinetics.types.R_type(1,1))
+   analyzer.getRTypeDistribution()
+   analyzer.getRTypeDistributionPerModel()
 
    #Query Elements
    analyzer.getTopKType()[0].K_type_str
    analyzer.getKTypeProb(K_type = SBMLKinetics.types.K_type("NA")
-   analyzer.getTopKTypePerMType(M_type = SBMLKinetics.types.M_type(1,1))[0].K_type_str
-   analyzer.getKTypeProbPerMType(M_type = SBMLKinetics.types.M_type(1,1), K_type=SBMLKinetics.types.K_type("NA"))
-   analyzer.getTopMType()[0].rct_num
-   analyzer.getMTypeProb(M_type = SBMLKinetics.types.M_type(1,1))
+   analyzer.getTopKTypePerRType(R_type = SBMLKinetics.types.R_type(1,1))[0].K_type_str
+   analyzer.getKTypeProbPerRType(R_type = SBMLKinetics.types.R_type(1,1), K_type=SBMLKinetics.types.K_type("NA"))
+   analyzer.getTopRType()[0].rct_num
+   analyzer.getRTypeProb(R_type = SBMLKinetics.types.R_type(1,1))
    analyzer.getNumBiomodelsAnalyzed()
    analyzer.getNumRxnsAnalyzed()
 
    #Plots
    analyzer.plotKTypeDistribution(path = 'D:/path/to/folder/')
-   analyzer.plotKTypeDistributionPerMType(M_type = SBMLKinetics.types.M_type(1,1))
-   analyzer.plotKTypeDistributionVsMType()
-   analyzer.plotMtypeDistribution()
-   analyzer.plotMTypeDistributionPerModel()
+   analyzer.plotKTypeDistributionPerRType(R_type = SBMLKinetics.types.R_type(1,1))
+   analyzer.plotKTypeDistributionVsRType()
+   analyzer.plotRTypeDistribution()
+   analyzer.plotRTypeDistributionPerModel()
 
 For example, the output of analyzer.getKTypeDistribution() is a dataframe as below.
 

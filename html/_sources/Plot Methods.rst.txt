@@ -8,11 +8,11 @@ Plot Methods
 
 .. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistribution
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionPerRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionVsMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotKTypeDistributionVsRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.plotMtypeDistribution
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotRTypeDistribution
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.plotMTypeDistributionPerModel
+.. autofunction:: SBMLKinetics.KineticAnalyzer.plotRTypeDistributionPerModel
 

@@ -23,10 +23,10 @@ Example: K_type = SBMLKinetics.types.K_type("NA").
 
 
 -------
-M Type
+R Type
 -------
-Mass transfer type (M type) is quantitatively represented by the number of reactants 
+Reaction type (R type) is quantitatively represented by the number of reactants 
 (r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).
 
-Example: M_type = SBMLKinetics.types.M_type(1,1).
+Example: R_Type = SBMLKinetics.types.R_Type(1,1).
 

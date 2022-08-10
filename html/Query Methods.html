@@ -177,16 +177,16 @@ The column names are: “Classifications”, “Percentage”, “Percentage sta
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistributionPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the kinetics type distribution for the certein mass transfer type.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeDistributionPerRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">R_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the kinetics type distribution for the certein reaction type.</p>
 <dl>
-<dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+<dt>Args: </dt><dd><p>R_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
-<dt>Returns:</dt><dd><p>df_gen_stat_PR_final: dataFrame-the kinetics distribution for a certain mass trasfer.</p>
+<dt>Returns:</dt><dd><p>df_gen_stat_PR_final: dataFrame-the kinetics distribution for a reaction type.</p>
 <p>The column names are: “Classifications”, “Percentage”, “Percentage standard error”, 
 “Percentage per model”, “Percentage per model standard error”.</p>
 <p>The column of “Classifications” covers the ten kinetic law types.</p>
@@ -195,11 +195,11 @@ the number of reactants and products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getMTypeDistribution">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeDistribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the distribution of reaction involved for each type of mass transfer.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getRTypeDistribution">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getRTypeDistribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getRTypeDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the distribution of reaction involved for each reaction type.</p>
 <dl>
-<dt>Returns:</dt><dd><p>df_table_PR_final: dataFrame-Mass transfer type distribution.</p>
+<dt>Returns:</dt><dd><p>df_table_PR_final: dataFrame-Reaction type distribution.</p>
 <p>The column names represent number of reactants: “R = 0”, “R = 1”, “R = 2”, “R &gt; 2”.</p>
 <p>The row names represent number of products: “P = 0”, “P = 1”, “P = 2”, “P &gt; 2”.</p>
 </dd>
@@ -207,11 +207,11 @@ the number of reactants and products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeDistributionPerModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the distribution of reaction involved for each type of mass transfer per model.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getRTypeDistributionPerModel">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getRTypeDistributionPerModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getRTypeDistributionPerModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the distribution of reaction involved for each reaction type per model.</p>
 <dl>
-<dt>Returns:</dt><dd><p>df_table_PR_per_model final: dataFrame-Mass transfer type distribution.</p>
+<dt>Returns:</dt><dd><p>df_table_PR_per_model final: dataFrame-Reaction type distribution.</p>
 <p>The column names represent number of reactants: “R = 0”, “R = 1”, “R = 2”, “R &gt; 2”.</p>
 <p>The row names represent number of products: “P = 0”, “P = 1”, “P = 2”, “P &gt; 2”.</p>
 </dd>
@@ -262,11 +262,11 @@ the type of kinetic law.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getTopKTypePerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKTypePerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKTypePerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the most frequent kinetics type from a certain mass transfer type.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getTopKTypePerRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopKTypePerRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">R_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopKTypePerRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the most frequent kinetics type from a certain reaction type.</p>
 <dl>
-<dt>Args: </dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+<dt>Args: </dt><dd><p>R_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
@@ -287,11 +287,11 @@ the type of kinetic law.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProbPerMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the probability value of the certain kinetics type from a certain mass transfer type.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getKTypeProbPerRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getKTypeProbPerRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">R_type</span></em>, <em class="sig-param"><span class="n">K_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getKTypeProbPerRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the probability value of the certain kinetics type from a certain reaction type.</p>
 <dl>
-<dt>Args:</dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+<dt>Args:</dt><dd><p>R_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
@@ -310,15 +310,15 @@ the number of reactants and products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getTopMType">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopMType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopMType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the most frequent mass transfer type (with the most number of reactions involved in
-the certain type of mass transfer).</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getTopRType">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopRType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the most frequent reaction type (with the most number of reactions involved in
+the certain reaction type).</p>
 <dl>
-<dt>returns: </dt><dd><p>rct_prd_num_list: list of M_type info with the most frequent mass transfer 
+<dt>returns: </dt><dd><p>rct_prd_num_list: list of R_type info with the most frequent reaction 
 type. Sometimes there could be more than one top kinetics type to make the length 
 of rct_prd_num_list larger than one.</p>
-<p>M_type: an object with attributes rct_num and prd_num representing 
+<p>R_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
@@ -327,15 +327,15 @@ the number of reactants and products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getMTypeProb">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getMTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">M_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getMTypeProb" title="Permalink to this definition">¶</a></dt>
+<dt id="SBMLKinetics.KineticAnalyzer.getRTypeProb">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getRTypeProb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">R_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getRTypeProb" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
-<dt>Args:</dt><dd><p>M_type: an object with attributes rct_num and prd_num representing 
+<dt>Args:</dt><dd><p>R_type: an object with attributes rct_num and prd_num representing 
 the number of reactants and products.</p>
 <p>rct_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 </dd>
-<dt>Returns:</dt><dd><p>M_value: float-the probability of the certain mass transfer type.</p>
+<dt>Returns:</dt><dd><p>R_value: float-the probability of the certain reaction type.</p>
 </dd>
 </dl>
 </dd></dl>
