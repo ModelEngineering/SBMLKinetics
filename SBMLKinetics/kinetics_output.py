@@ -42,7 +42,7 @@ class KineticAnalyzer:
   "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
   (not classified kinetics). 
 
-  Mass transfer type (M type) is quantitatively represented by the number of reactants 
+  Reaction type (R type) is quantitatively represented by the number of reactants 
   (r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).
 
   Args: 
@@ -109,12 +109,12 @@ class KineticAnalyzer:
     return df_gen_stat_final
 
 
-  def getKTypeDistributionPerMType(self, M_type):
+  def getKTypeDistributionPerRType(self, R_type):
     """
-    Get the kinetics type distribution for the certein mass transfer type.
+    Get the kinetics type distribution for the certein reaction type.
 
     Args: 
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -130,8 +130,8 @@ class KineticAnalyzer:
         The column of "Classifications" covers the ten kinetic law types.
         
     """  
-    rct_num = M_type.rct_num
-    prd_num = M_type.prd_num
+    rct_num = R_type.rct_num
+    prd_num = R_type.prd_num
 
     (_, df_gen_stat, _, df_gen_stat_PR, _, _, _) = self.tuple
 
@@ -158,12 +158,12 @@ class KineticAnalyzer:
     else:
       raise Exception("Not a valid reactant or product number.")
 
-  def getMTypeDistribution(self):
+  def getRTypeDistribution(self):
     """
-    Get the distribution of reaction involved for each type of mass transfer.
+    Get the distribution of reaction involved for each reaction type.
 
     Returns:
-        df_table_PR_final: dataFrame-Mass transfer type distribution. 
+        df_table_PR_final: dataFrame-Reaction type distribution. 
         
         The column names represent number of reactants: "R = 0", "R = 1", "R = 2", "R > 2".
 
@@ -180,12 +180,12 @@ class KineticAnalyzer:
     except Exception as e:
       raise Exception(e)
 
-  def getMTypeDistributionPerModel(self):
+  def getRTypeDistributionPerModel(self):
     """
-    Get the distribution of reaction involved for each type of mass transfer per model.
+    Get the distribution of reaction involved for each reaction type per model.
 
     Returns:
-        df_table_PR_per_model final: dataFrame-Mass transfer type distribution. 
+        df_table_PR_per_model final: dataFrame-Reaction type distribution. 
         
         The column names represent number of reactants: "R = 0", "R = 1", "R = 2", "R > 2".
 
@@ -265,13 +265,13 @@ class KineticAnalyzer:
       
       return kinetics_value
 
-  def getTopKTypePerMType(self, M_type):
+  def getTopKTypePerRType(self, R_type):
 
     """
-    Get the most frequent kinetics type from a certain mass transfer type. 
+    Get the most frequent kinetics type from a certain reaction type. 
 
     Args: 
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -293,11 +293,11 @@ class KineticAnalyzer:
         "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
     """  
-    rct_num = M_type.rct_num
-    prd_num = M_type.prd_num
+    rct_num = R_type.rct_num
+    prd_num = R_type.prd_num
 
     if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
-      df_temp = self.getKTypeDistributionPerMType(M_type = M_type)
+      df_temp = self.getKTypeDistributionPerRType(R_type = R_type)
 
       max_value = df_temp['Percentage'].max()
       idx_list = df_temp.index[df_temp['Percentage'] == max_value].tolist()
@@ -310,12 +310,12 @@ class KineticAnalyzer:
     else:
       raise Exception("Not a valid reactant or product number.")
 
-  def getKTypeProbPerMType(self, M_type, K_type):
+  def getKTypeProbPerRType(self, R_type, K_type):
     """
-    Get the probability value of the certain kinetics type from a certain mass transfer type.
+    Get the probability value of the certain kinetics type from a certain reaction type.
 
     Args:
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -337,7 +337,7 @@ class KineticAnalyzer:
     """  
     K_type_str = K_type.K_type_str
 
-    df_temp = self.getKTypeDistributionPerMType(M_type = M_type)
+    df_temp = self.getKTypeDistributionPerRType(R_type = R_type)
 
     idx_list = df_temp.index[df_temp['Classifications'] == K_type_str].tolist()
     if len(idx_list) == 0:
@@ -350,18 +350,18 @@ class KineticAnalyzer:
       
       return kinetics_value
 
-  def getTopMType(self):
+  def getTopRType(self):
 
     """
-    Get the most frequent mass transfer type (with the most number of reactions involved in
-    the certain type of mass transfer). 
+    Get the most frequent reaction type (with the most number of reactions involved in
+    the certain reaction type). 
 
     returns: 
-        rct_prd_num_list: list of M_type info with the most frequent mass transfer 
+        rct_prd_num_list: list of R_type info with the most frequent reaction 
         type. Sometimes there could be more than one top kinetics type to make the length 
         of rct_prd_num_list larger than one. 
         
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -370,7 +370,7 @@ class KineticAnalyzer:
 
     """  
 
-    df_temp = self.getMTypeDistributionPerModel()
+    df_temp = self.getRTypeDistributionPerModel()
 
     max_value = 0
     rct_prd_num_list = []
@@ -393,15 +393,15 @@ class KineticAnalyzer:
         else:
           prd_num = 3 
         
-        rct_prd_num_list.append(types.M_type(rct_num, prd_num))
+        rct_prd_num_list.append(types.R_type(rct_num, prd_num))
 
     return rct_prd_num_list
 
-  def getMTypeProb(self, M_type):
+  def getRTypeProb(self, R_type):
 
     """
     Args:
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -409,13 +409,13 @@ class KineticAnalyzer:
         prd_num: int-0, 1, 2, 3 (representing > 2).
 
     Returns:
-        M_value: float-the probability of the certain mass transfer type.
+        R_value: float-the probability of the certain reaction type.
     """  
-    rct_num = M_type.rct_num
-    prd_num = M_type.prd_num
+    rct_num = R_type.rct_num
+    prd_num = R_type.prd_num
 
     if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
-      df_temp = self.getMTypeDistribution()
+      df_temp = self.getRTypeDistribution()
       value = df_temp.iat[prd_num, rct_num]
     else:
         raise Exception("Not a valid reactant or product number.")
@@ -479,13 +479,13 @@ class KineticAnalyzer:
       raise Exception("Please enter a valid pdf file name.")
 
 
-  def plotKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.pdf"):
+  def plotKTypeDistributionPerRType(self, R_type, path = "", fileName = "KTypeDistributionPerRType.pdf"):
     """
-    Plot the kinetics type distribution for a certain mass transfer type and save it as
+    Plot the kinetics type distribution for a certain reaction type and save it as
     a pdf file.
 
     Args:  
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -497,8 +497,8 @@ class KineticAnalyzer:
         fileName: str-file name with which the pdf file save to, ending with ".pdf".
     """  
 
-    rct_num = M_type.rct_num
-    prd_num = M_type.prd_num
+    rct_num = R_type.rct_num
+    prd_num = R_type.prd_num
 
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
@@ -516,7 +516,7 @@ class KineticAnalyzer:
 
       if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
         i = prd_num*4 + rct_num
-        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerMType(M_type = M_type)
+        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerR(R_type = R_type)
         yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
           "Percentage per model standard error"]].to_numpy().T
         ax = df_gen_stat_PR_plot[i].plot(kind="bar",x="Classifications", y=["Percentage","Percentage per model"],\
@@ -549,9 +549,9 @@ class KineticAnalyzer:
       raise Exception("Please enter a valid pdf file name.")
 
 
-  def plotKTypeDistributionVsMType(self, path = "", fileName = 'KTypeDistributionVsMType.pdf'):
+  def plotKTypeDistributionVsRType(self, path = "", fileName = 'KTypeDistributionVsRType.pdf'):
     """
-    Plot the kinetics type distribution vs each mass transfer type and save it as a pdf 
+    Plot the kinetics type distribution vs each reaction type and save it as a pdf 
     file.
   
     Args: 
@@ -579,7 +579,7 @@ class KineticAnalyzer:
       axes = fig.subplots(nrows=4, ncols=4)
       for i in range(16):
         df_gen_stat_PR_plot[i] = \
-          self.getKTypeDistributionPerMType(types.M_type(rct_num=i//4, prd_num=i%4))
+          self.getKTypeDistributionPerRType(types.R_type(rct_num=i//4, prd_num=i%4))
         yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
           "Percentage per model standard error"]].to_numpy().T
         df_gen_stat_PR_plot[i].plot(ax = axes[i//4,i%4] , kind="bar", 
@@ -609,9 +609,9 @@ class KineticAnalyzer:
       raise Exception("Please enter a valid pdf file name.")
 
 
-  def plotMtypeDistribution(self, path = "", fileName = 'MTypeDistribution.pdf'):
+  def plotRTypeDistribution(self, path = "", fileName = 'RTypeDistribution.pdf'):
     """
-    Plot the distribution of reaction involved for each type of mass transfer and save it 
+    Plot the distribution of reaction involved for reaction type and save it 
     as a pdf file.
   
     Args: 
@@ -622,7 +622,7 @@ class KineticAnalyzer:
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
 
-      df_table_PR_plot = self.getMTypeDistribution()
+      df_table_PR_plot = self.getRTypeDistribution()
 
       # Defining figure size for the output plot 
       fig, bx = plt.subplots(figsize = (12, 7))
@@ -643,9 +643,9 @@ class KineticAnalyzer:
       raise Exception("Please enter a valid pdf file name.")
 
 
-  def plotMTypeDistributionPerModel(self, path = "", fileName = 'MTypeDistributionPerModel.pdf'):
+  def plotRTypeDistributionPerModel(self, path = "", fileName = 'RTypeDistributionPerModel.pdf'):
     """
-    Plot the distribution of reactions involved for each type of mass transfer per model and 
+    Plot the distribution of reactions involved for each reaction type per model and 
     save it as a pdf file.
       
     Args: 
@@ -656,7 +656,7 @@ class KineticAnalyzer:
     if str(fileName).lower()[-4:] == ".pdf" and fileName[:-4] != "":
       path_fileName = path + fileName[:-4] + ".pdf"
 
-      df_table_PR_per_model_plot = self.getMTypeDistributionPerModel()
+      df_table_PR_per_model_plot = self.getRTypeDistributionPerModel()
 
       fig, cx = plt.subplots(figsize = (12, 7))
       idx = df_table_PR_per_model_plot.index.tolist()
@@ -698,12 +698,12 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.")
 
-  def _tableKTypeDistributionPerMType(self, M_type, path = "", fileName = "KTypeDistributionPerMType.xlsx"):
+  def _tableKTypeDistributionPerRType(self, R_type, path = "", fileName = "KTypeDistributionPerRType.xlsx"):
     """
-    Save the kinetics type distribution for a certain mass transfer type to an excel file.
+    Save the kinetics type distribution for a certain reaction type to an excel file.
 
     Args: 
-        M_type: an object with attributes rct_num and prd_num representing 
+        R_Type: an object with attributes rct_num and prd_num representing 
         the number of reactants and products.
 
         rct_num: int-0, 1, 2, 3 (representing > 2).
@@ -717,7 +717,7 @@ class KineticAnalyzer:
     """
 
     if str(fileName).lower()[-5:] == ".xlsx" and fileName[:-5] != "":
-      df_gen_stat_final = self.getKTypeDistributionPerMType(M_type = M_type)
+      df_gen_stat_final = self.getKTypeDistributionPerRType(R_type = R_type)
       # Create a Pandas Excel writer using XlsxWriter as the engine.
       path_fileName = path + fileName[:-5] + ".xlsx"
       writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
@@ -727,9 +727,9 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.")
 
-  def _tableMTypeDistribution(self, path = "", fileName = "MTypeDistribution.xlsx"):
+  def _tableRTypeDistribution(self, path = "", fileName = "RTypeDistribution.xlsx"):
     """
-    Save the distribution of reaction involved for each type of mass transfer to an excel file.
+    Save the distribution of reaction involved for each reaction type to an excel file.
 
     Args: 
         path: str-path to the file, with a format like ``D:/path/to/`` (or ``D:\\\path\\\ to\\\``)
@@ -739,7 +739,7 @@ class KineticAnalyzer:
     """  
 
     if str(fileName).lower()[-5:] == ".xlsx" and fileName[:-5] != "":
-      df_gen_stat_final = self.getMTypeDistribution()
+      df_gen_stat_final = self.getRTypeDistribution()
       # Create a Pandas Excel writer using XlsxWriter as the engine.
       path_fileName = path + fileName[:-5] + ".xlsx"
       writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
@@ -749,9 +749,9 @@ class KineticAnalyzer:
     else:
       raise Exception("Please enter a valid excel file name.") 
 
-  def _tableMTypeDistributionPerModel(self, path = "", fileName = "MTypeDistributionPerModel.xlsx"):
+  def _tableRTypeDistributionPerModel(self, path = "", fileName = "RTypeDistributionPerModel.xlsx"):
     """
-    Save the distribution of reaction involved for each type of mass transfer per model to an 
+    Save the distribution of reaction involved for each reaction type per model to an 
     excel file.
 
     Args: 
@@ -762,7 +762,7 @@ class KineticAnalyzer:
     """  
 
     if str(fileName).lower()[-5:] == ".xlsx" and fileName[:-5] != "":
-      df_gen_stat_final = self.getMTypeDistributionPerModel()
+      df_gen_stat_final = self.getRTypeDistributionPerModel()
       # Create a Pandas Excel writer using XlsxWriter as the engine.
       path_fileName = path + fileName[:-5] + ".xlsx"
       writer = pd.ExcelWriter(path_fileName, engine='xlsxwriter')
@@ -844,35 +844,35 @@ if __name__ == '__main__':
 
   # #Query Distributions
   # print(analyzer.getKTypeDistribution()) 
-  # print(analyzer.getKTypeDistributionPerMType(M_type = types.M_type(1,1)))
-  # print(analyzer.getMTypeDistribution())
-  # print(analyzer.getMTypeDistributionPerModel())
+  # print(analyzer.getKTypeDistributionPerRType(R_type = types.R_type(1,1)))
+  # print(analyzer.getRTypeDistribution())
+  # print(analyzer.getRTypeDistributionPerModel())
 
   
   #Query Elements
   # print(analyzer.getTopKType()[0].K_type_str)
   # print(analyzer.getKTypeProb(K_type = types.K_type("NA")))
-  # print(analyzer.getTopKTypePerMType(M_type = types.M_type(1,1))[0].K_type_str)
-  # print(analyzer.getKTypeProbPerMType(M_type = types.M_type(1,1), K_type=types.K_type("NA")))
-  # print(analyzer.getTopMType()[0].rct_num)
-  # print(analyzer.getMTypeProb(M_type = types.M_type(1,1)))
+  # print(analyzer.getTopKTypePerRType(R_type = types.R_type(1,1))[0].K_type_str)
+  # print(analyzer.getKTypeProbPerRType(R_type = types.R_type(1,1), K_type=types.K_type("NA")))
+  # print(analyzer.getTopRType()[0].rct_num)
+  # print(analyzer.getRTypeProb(R_type = types.R_type(1,1)))
   # print(analyzer.getNumBiomodelsAnalyzed())
   # print(analyzer.getNumRxnsAnalyzed())
 
 
   # #Plots #tests are not necessary
   # analyzer.plotKTypeDistribution(path = 'D:/summer-2020/Jo/')
-  # analyzer.plotKTypeDistributionPerMType(M_type = types.M_type(1,1))
-  # analyzer.plotKTypeDistributionVsMType()
-  # analyzer.plotMtypeDistribution()
-  # analyzer.plotMTypeDistributionPerModel()
+  # analyzer.plotKTypeDistributionPerRType(R_type = types.R_type(1,1))
+  # analyzer.plotKTypeDistributionVsRType()
+  # analyzer.plotRTypeDistribution()
+  # analyzer.plotRTypeDistributionPerModel()
 
   # #Tables
   # analyzer._tableKTypeDistribution(path = 'D:/summer-2020/Jo/', fileName = "Kinetics.xlsx")
   # analyzer._tableKTypeDistribution()
-  # analyzer._tableKTypeDistributionPerMType(M_type = types.M_type(1,1))
-  # analyzer._tableMTypeDistribution()
-  # analyzer._tableMTypeDistributionPerModel()
+  # analyzer._tableKTypeDistributionPerRType(R_type = types.R_type(1,1))
+  # analyzer._tableRTypeDistribution()
+  # analyzer._tableRTypeDistributionPerModel()
 
 
   # analyzer._printBriefStatOfKTypeDistribution()

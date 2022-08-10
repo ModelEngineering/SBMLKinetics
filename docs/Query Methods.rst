@@ -9,11 +9,11 @@ Query Distributions
 ---------------------
 .. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeDistribution
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeDistributionPerRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getMTypeDistribution
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getRTypeDistribution
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getMTypeDistributionPerModel
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getRTypeDistributionPerModel
 
 ---------------------
 Query Elements
@@ -22,13 +22,13 @@ Query Elements
 
 .. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeProb
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getTopKTypePerMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getTopKTypePerRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeProbPerMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getKTypeProbPerRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getTopMType
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getTopRType
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getMTypeProb
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getRTypeProb
 
 .. autofunction:: SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed
 

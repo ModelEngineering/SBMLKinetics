@@ -68,91 +68,91 @@ class TestKineticsClassification(unittest.TestCase):
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
 
-  def testGetKTypeDistributionPerMType1(self):
-    # Test getKTypeDistributionPerMType() column names
+  def testGetKTypeDistributionPerRType1(self):
+    # Test getKTypeDistributionPerRType() column names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
+    df_temp = self.SBMLData.getKTypeDistributionPerRType(R_type = types.R_type(1,1))
     test = all(item in df_temp.columns for item in ['Classifications', 'Percentage',
     'Percentage standard error', 'Percentage per model', 'Percentage per model standard error'])
     self.assertTrue(test)
 
-  def testGetKTypeDistributionPerMType2(self):
-    # Test getKTypeDistributionPerMType() if there is at least one row
+  def testGetKTypeDistributionPerRType2(self):
+    # Test getKTypeDistributionPerRType() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
+    df_temp = self.SBMLData.getKTypeDistributionPerRType(R_type = types.R_type(1,1))
     self.assertTrue(len(df_temp.index)>0)
 
-  def testGetKTypeDistributionPerMType3(self):
+  def testGetKTypeDistributionPerRType3(self):
     # Test column 'Percentage' a list of floating numbers
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
+    df_temp = self.SBMLData.getKTypeDistributionPerRType(R_type = types.R_type(1,1))
     list_percentage = df_temp['Percentage'].tolist()
     test = all(isinstance(item, float) for item in list_percentage)
     self.assertTrue(test) 
 
-  def testGetKTypeDistributionPerMType4(self):
+  def testGetKTypeDistributionPerRType4(self):
     # Test column 'Percentage' does not have nan values
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getKTypeDistributionPerMType(M_type = types.M_type(1,1))
+    df_temp = self.SBMLData.getKTypeDistributionPerRType(R_type = types.R_type(1,1))
     list_percentage = df_temp['Percentage'].tolist()
     test = any(math.isnan(item) for item in list_percentage)
     self.assertFalse(test)
 
-  def testGetMTypeDistribution1(self):
-    # Test getMTypeDistribution() column names
+  def testGetRTypeDistribution1(self):
+    # Test getRTypeDistribution() column names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getMTypeDistribution()
+    df_temp = self.SBMLData.getRTypeDistribution()
     test = all(item in df_temp.columns for item in ['R = 0', 'R = 1',
     'R = 2', 'R > 2'])
     self.assertTrue(test)
 
-  def testGetMTypeDistribution2(self):
-    # Test getMTypeDistribution() if there is at least one row
+  def testGetRTypeDistribution2(self):
+    # Test getRTypeDistribution() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getMTypeDistribution()
+    df_temp = self.SBMLData.getRTypeDistribution()
     self.assertTrue(len(df_temp.index)>0)
 
-  def testGetMTypeDistribution3(self):
-    # Test getMTypeDistribution() row names
+  def testGetRTypeDistribution3(self):
+    # Test getRTypeDistribution() row names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getMTypeDistribution()
+    df_temp = self.SBMLData.getRTypeDistribution()
     test = all(item in df_temp.index for item in ['P = 0', 'P = 1',
     'P = 2', 'P > 2'])
     self.assertTrue(test)
 
-  def testGetMTypeDistributionPerModel1(self):
-    # Test getMTypeDistributionPerModel() column names
+  def testGetRTypeDistributionPerModel1(self):
+    # Test getRTypeDistributionPerModel() column names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    df_temp = self.SBMLData.getRTypeDistributionPerModel()
     test = all(item in df_temp.columns for item in ['R = 0', 'R = 1',
     'R = 2', 'R > 2'])
     self.assertTrue(test)
 
-  def testGetMTypeDistributionPerModel2(self):
-    # Test getMTypeDistributionPerModel() if there is at least one row
+  def testGetRTypeDistributionPerModel2(self):
+    # Test getRTypeDistributionPerModel() if there is at least one row
     if IGNORE_TEST:
       return 
-    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    df_temp = self.SBMLData.getRTypeDistributionPerModel()
     self.assertTrue(len(df_temp.index)>0)
 
-  def testGetMTypeDistributionPerModel3(self):
-    # Test getMTypeDistributionPerModel() row names
+  def testGetRTypeDistributionPerModel3(self):
+    # Test getRTypeDistributionPerModel() row names
     if IGNORE_TEST:
       return
 
-    df_temp = self.SBMLData.getMTypeDistributionPerModel()
+    df_temp = self.SBMLData.getRTypeDistributionPerModel()
     test = all(item in df_temp.index for item in ['P = 0', 'P = 1',
     'P = 2', 'P > 2'])
     self.assertTrue(test)
@@ -177,33 +177,33 @@ class TestKineticsClassification(unittest.TestCase):
       return 
     self.assertTrue(self.SBMLData.getKTypeProb(K_type = types.K_type("NA")) == 1./3)
 
-  def testGetTopKTypePerMType(self):
-    # Test getTopKTypePerMType()
+  def testGetTopKTypePerRType(self):
+    # Test getTopKTypePerRType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getTopKTypePerMType(M_type = types.M_type(1,1))[0].K_type_str 
+    self.assertTrue(self.SBMLData.getTopKTypePerRType(R_type = types.R_type(1,1))[0].K_type_str 
     == ['ZERO', 'UNDR', 'NA'][0])
 
-  def testGetKTypeProbPerMType(self):
-    # Test getKTypeProbPerMType()
+  def testGetKTypeProbPerRType(self):
+    # Test getKTypeProbPerRType()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getKTypeProbPerMType(M_type = types.M_type(1,1), \
+    self.assertTrue(self.SBMLData.getKTypeProbPerRType(R_type = types.R_type(1,1), \
       K_type=types.K_type("NA")) 
     == 1./3)
 
-  def testGetTopMType(self):
-    # Test getTopMType()
+  def testGetTopRType(self):
+    # Test getTopRType()
     if IGNORE_TEST:
       return 
 
-    self.assertTrue(self.SBMLData.getTopMType()[0].rct_num == 1)
+    self.assertTrue(self.SBMLData.getTopRType()[0].rct_num == 1)
   
-  def testGetMTypeProb(self):
-    # Test getTopMTypeProb()
+  def testGetRTypeProb(self):
+    # Test getTopRTypeProb()
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getMTypeProb(M_type = types.M_type(1,1)) 
+    self.assertTrue(self.SBMLData.getRTypeProb(R_type = types.R_type(1,1)) 
     == 1.)
 
 

@@ -1,9 +1,9 @@
 # This script was written by Jin Xu and available on Github
 # https://github.com/ModelEngineering/kinetics_validator
-# This file defines the objects of M_type and K_type.
+# This file defines the objects of R_type and K_type.
 
 
-class M_type:
+class R_type:
     def __init__(self, rct_num, prd_num):
         if type(rct_num) == int and type(prd_num) == int and 0<=rct_num<=3 and 0<=prd_num<=3:
             self.rct_num = rct_num
@@ -11,7 +11,7 @@ class M_type:
         else:
             ValueError('Please enter a valid integer number of reactant or product!')
 
-# print(type(M_type(0, 0).rct_num))
+# print(type(R_type(0, 0).rct_num))
 
 class K_type:
     def __init__(self, K_type_str):

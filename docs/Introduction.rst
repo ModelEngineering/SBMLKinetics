@@ -12,6 +12,7 @@ as input. Users can also use this tool to compare different data sets. For insta
 compare the distribution of kinetics for signaling and metabolic networks and find the 
 substantial differences between two types of networks. If you are using any of the code, 
 please cite the PYPI web page (https://pypi.org/project/SBMLKinetics/).
+
 ------------
 Installation 
 ------------
