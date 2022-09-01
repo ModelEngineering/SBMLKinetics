@@ -516,7 +516,7 @@ class KineticAnalyzer:
 
       if prd_num in [0,1,2,3] and rct_num in [0,1,2,3]:
         i = prd_num*4 + rct_num
-        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerR(R_type = R_type)
+        df_gen_stat_PR_plot[i] = self.getKTypeDistributionPerRType(R_type = R_type)
         yerr = df_gen_stat_PR_plot[i][["Percentage standard error", \
           "Percentage per model standard error"]].to_numpy().T
         ax = df_gen_stat_PR_plot[i].plot(kind="bar",x="Classifications", y=["Percentage","Percentage per model"],\
@@ -862,7 +862,7 @@ if __name__ == '__main__':
 
   # #Plots #tests are not necessary
   # analyzer.plotKTypeDistribution(path = 'D:/summer-2020/Jo/')
-  # analyzer.plotKTypeDistributionPerRType(R_type = types.R_type(1,1))
+  analyzer.plotKTypeDistributionPerRType(R_type = types.R_type(1,1))
   # analyzer.plotKTypeDistributionVsRType()
   # analyzer.plotRTypeDistribution()
   # analyzer.plotRTypeDistributionPerModel()
