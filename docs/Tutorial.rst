@@ -28,7 +28,7 @@ Tutorial
    analyzer.getKTypeProbPerRType(R_type = SBMLKinetics.types.R_type(1,1), K_type=SBMLKinetics.types.K_type("NA"))
    analyzer.getTopRType()[0].rct_num
    analyzer.getRTypeProb(R_type = SBMLKinetics.types.R_type(1,1))
-   analyzer.getNumBiomodelsAnalyzed()
+   analyzer.getNumSBMLModelsAnalyzed()
    analyzer.getNumRxnsAnalyzed()
 
    #Plots

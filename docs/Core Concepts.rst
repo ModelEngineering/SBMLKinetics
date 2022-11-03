@@ -10,11 +10,11 @@ Kinetics type (K type) including ten types:
 
 - "ZERO" (Zeroth order);
 - "UNDR" (Uni-directional mass action);
-- "UNMO" (Uni-term with moderator);
+- "UNMO" (Uni-term with the moderator);
 - "BIDR" (Bi-directional mass action);
-- "BIMO" (Bi-terms with moderator);
-- "MM" (Michaelis-Menten kinetics without explicit enzyme);
-- "MMCAT" (Michaelis-Menten kinetics with explicit enzyme);
+- "BIMO" (Bi-terms with the moderator);
+- "MM" (Michaelis-Menten kinetics without an explicit enzyme);
+- "MMCAT" (Michaelis-Menten kinetics with an explicit enzyme);
 - "HILL" (Hill equations);
 - "FR" (Kinetics in the format of fraction other than MM, MMCAT or HILL);
 - "NA" (not classified kinetics). 

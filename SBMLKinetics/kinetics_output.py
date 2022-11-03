@@ -215,10 +215,10 @@ class KineticAnalyzer:
         the type of kinetics.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        (Uni-directional mass action), "UNMO" (Uni-term with the moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with the moderator), "MM" 
+        (Michaelis-Menten kinetics without an explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with an explicit enzyme), "HILL" (Hill equations), 
         "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
  
@@ -242,10 +242,10 @@ class KineticAnalyzer:
         the type of kinetic law.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        (Uni-directional mass action), "UNMO" (Uni-term with the moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with the moderator), "MM" 
+        (Michaelis-Menten kinetics without an explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with an explicit enzyme), "HILL" (Hill equations), 
         "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
 
@@ -286,10 +286,10 @@ class KineticAnalyzer:
         the type of kinetic law.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        (Uni-directional mass action), "UNMO" (Uni-term with the moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with the moderator), "MM" 
+        (Michaelis-Menten kinetics without an explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with an explicit enzyme), "HILL" (Hill equations), 
         "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
     """  
@@ -325,10 +325,10 @@ class KineticAnalyzer:
         K_type: an object with an attribute K_type_str representing the type of kinetics.
 
         K_type_str: str-"ZERO" (Zeroth order), "UNDR" 
-        (Uni-directional mass action), "UNMO" (Uni-term with moderator), "BIDR" 
-        (Bi-directional mass action), "BIMO" (Bi-terms with moderator), "MM" 
-        (Michaelis-Menten kinetics without explicit enzyme), "MMCAT" 
-        (Michaelis-Menten kinetics with explicit enzyme), "HILL" (Hill equations), 
+        (Uni-directional mass action), "UNMO" (Uni-term with the moderator), "BIDR" 
+        (Bi-directional mass action), "BIMO" (Bi-terms with the moderator), "MM" 
+        (Michaelis-Menten kinetics without an explicit enzyme), "MMCAT" 
+        (Michaelis-Menten kinetics with an explicit enzyme), "HILL" (Hill equations), 
         "FR" (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and "NA" 
         (not classified kinetics). 
 
@@ -353,7 +353,7 @@ class KineticAnalyzer:
   def getTopRType(self):
 
     """
-    Get the most frequent reaction type (with the most number of reactions involved in
+    Get the most frequent reaction type (with the largest number of reactions involved in
     the certain reaction type). 
 
     returns: 
@@ -422,17 +422,17 @@ class KineticAnalyzer:
 
     return value
 
-  def getNumBiomodelsAnalyzed(self):
+  def getNumSBMLModelsAnalyzed(self):
     """
-    Get the number of biomodels analyzed.
+    Get the number of SBML models analyzed.
     
     Returns:
-        biomodels_num: int-number of biomodels.
+        SBMLModels_num: int-number of SBML models.
     """  
     (_, _, df_mol_stat, _, _, _, _) = self.tuple
-    biomodels_num = len(df_mol_stat)
+    SBMLModels_num = len(df_mol_stat)
     
-    return biomodels_num
+    return SBMLModels_num
   
 
   def getNumRxnsAnalyzed(self):
@@ -786,7 +786,7 @@ class KineticAnalyzer:
         print(df_gen_stat.iloc[i][CLASSIFICATIONS] + ":" + str(df_gen_stat.iloc[i][PERCENTAGE]))
     else:
       print("There are no reactions.")
-    print("number of biomodels with some reactions not classified:", biomodel_non_count)
+    print("number of SBML models with some reactions not classified:", biomodel_non_count)
 
   def _printKTypePerRxn(self):
     """
@@ -856,7 +856,7 @@ if __name__ == '__main__':
   # print(analyzer.getKTypeProbPerRType(R_type = types.R_type(1,1), K_type=types.K_type("NA")))
   # print(analyzer.getTopRType()[0].rct_num)
   # print(analyzer.getRTypeProb(R_type = types.R_type(1,1)))
-  # print(analyzer.getNumBiomodelsAnalyzed())
+  # print(analyzer.getNumSBMLModelsAnalyzed())
   # print(analyzer.getNumRxnsAnalyzed())
 
 

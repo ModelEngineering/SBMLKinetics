@@ -161,7 +161,7 @@ class TestKineticsClassification(unittest.TestCase):
     # Test the basic statistics functions
     if IGNORE_TEST:
       return 
-    self.assertTrue(self.SBMLData.getNumBiomodelsAnalyzed() == 1)
+    self.assertTrue(self.SBMLData.getNumSBMLModelsAnalyzed() == 1)
     self.assertTrue(self.SBMLData.getNumRxnsAnalyzed() == 3)
 
 ##Query Elements
