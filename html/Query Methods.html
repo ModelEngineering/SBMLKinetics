@@ -231,10 +231,10 @@ top kinetics type to make the length of kinetic_type_list larger than one.</p>
 <p>K_type: an object with an attribute K_type_str representing 
 the type of kinetics.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
-(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
-(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
-(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
-(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+(Uni-directional mass action), “UNMO” (Uni-term with the moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with the moderator), “MM” 
+(Michaelis-Menten kinetics without an explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with an explicit enzyme), “HILL” (Hill equations), 
 “FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
@@ -249,10 +249,10 @@ the type of kinetics.</p>
 <dt>Args:</dt><dd><p>K_type: an object with an attribute K_type_str representing 
 the type of kinetic law.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
-(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
-(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
-(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
-(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+(Uni-directional mass action), “UNMO” (Uni-term with the moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with the moderator), “MM” 
+(Michaelis-Menten kinetics without an explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with an explicit enzyme), “HILL” (Hill equations), 
 “FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
@@ -276,10 +276,10 @@ top kinetics type to make the length of kinetic_type_list larger than one.</p>
 <p>K_type: an object with an attribute K_type_str representing 
 the type of kinetic law.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
-(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
-(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
-(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
-(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+(Uni-directional mass action), “UNMO” (Uni-term with the moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with the moderator), “MM” 
+(Michaelis-Menten kinetics without an explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with an explicit enzyme), “HILL” (Hill equations), 
 “FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
@@ -297,10 +297,10 @@ the number of reactants and products.</p>
 <p>prd_num: int-0, 1, 2, 3 (representing &gt; 2).</p>
 <p>K_type: an object with an attribute K_type_str representing the type of kinetics.</p>
 <p>K_type_str: str-“ZERO” (Zeroth order), “UNDR” 
-(Uni-directional mass action), “UNMO” (Uni-term with moderator), “BIDR” 
-(Bi-directional mass action), “BIMO” (Bi-terms with moderator), “MM” 
-(Michaelis-Menten kinetics without explicit enzyme), “MMCAT” 
-(Michaelis-Menten kinetics with explicit enzyme), “HILL” (Hill equations), 
+(Uni-directional mass action), “UNMO” (Uni-term with the moderator), “BIDR” 
+(Bi-directional mass action), “BIMO” (Bi-terms with the moderator), “MM” 
+(Michaelis-Menten kinetics without an explicit enzyme), “MMCAT” 
+(Michaelis-Menten kinetics with an explicit enzyme), “HILL” (Hill equations), 
 “FR” (Kinetic law in the format of fraction other than MM, MMCAT or HILL) and “NA” 
 (not classified kinetics).</p>
 </dd>
@@ -312,7 +312,7 @@ the number of reactants and products.</p>
 <dl class="py function">
 <dt id="SBMLKinetics.KineticAnalyzer.getTopRType">
 <code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getTopRType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getTopRType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the most frequent reaction type (with the most number of reactions involved in
+<dd><p>Get the most frequent reaction type (with the largest number of reactions involved in
 the certain reaction type).</p>
 <dl>
 <dt>returns: </dt><dd><p>rct_prd_num_list: list of R_type info with the most frequent reaction 
@@ -341,11 +341,11 @@ the number of reactants and products.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed">
-<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getNumBiomodelsAnalyzed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of biomodels analyzed.</p>
+<dt id="SBMLKinetics.KineticAnalyzer.getNumSBMLModelsAnalyzed">
+<code class="sig-prename descclassname">SBMLKinetics.KineticAnalyzer.</code><code class="sig-name descname">getNumSBMLModelsAnalyzed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SBMLKinetics.KineticAnalyzer.getNumSBMLModelsAnalyzed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of SBML models analyzed.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p>biomodels_num: int-number of biomodels.</p>
+<dt>Returns:</dt><dd><p>SBMLModels_num: int-number of SBML models.</p>
 </dd>
 </dl>
 </dd></dl>
