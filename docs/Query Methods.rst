@@ -30,7 +30,7 @@ Query Elements
 
 .. autofunction:: SBMLKinetics.KineticAnalyzer.getRTypeProb
 
-.. autofunction:: SBMLKinetics.KineticAnalyzer.getNumBiomodelsAnalyzed
+.. autofunction:: SBMLKinetics.KineticAnalyzer.getNumSBMLModelsAnalyzed
 
 .. autofunction:: SBMLKinetics.KineticAnalyzer.getNumRxnsAnalyzed
 
