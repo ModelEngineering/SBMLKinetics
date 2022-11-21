@@ -11,7 +11,7 @@ Database as an example to improve modeling best practices. Our tool can analyze 
 with SBML files as input. Users can also use this tool to compare different data sets. For 
 instance, we compare the distribution of kinetics for the signaling and metabolic networks and 
 find the substantial differences between two types of networks. If you are using any of the 
-code, please cite the PYPI web page (https://pypi.org/project/SBMLKinetics/).
+code, please cite the article (https://www.biorxiv.org/content/10.1101/2022.11.17.516936) and the PYPI web page (https://pypi.org/project/SBMLKinetics/).
 
 ## For users
 ### Installation
