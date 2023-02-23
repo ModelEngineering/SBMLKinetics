@@ -26,7 +26,7 @@ Example: K_type = SBMLKinetics.types.K_type("NA").
 R Type
 -------
 Reaction type (R type) is quantitatively represented by the number of reactants 
-(r = 0, 1, 2, 3 (representing>2)) and products (p= 0, 1, 2, 3 (representing>2)).
+(R = 0, 1, 2, 3 (representing>2)) and products (P = 0, 1, 2, 3 (representing>2)).
 
 Example: R_Type = SBMLKinetics.types.R_Type(1,1).
 

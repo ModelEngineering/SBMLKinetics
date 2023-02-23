@@ -11,6 +11,7 @@ Welcome to SBMLKinetics's documentation!
    :caption: Contents:
 
    Introduction
+   Methods
    Core Concepts
    Tutorial
    Examples

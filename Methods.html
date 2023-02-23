@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Methods &mdash; SBMLKinetics 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Core Concepts" href="Core%20Concepts.html" />
+    <link rel="prev" title="Introduction" href="Introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SBMLKinetics
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#define-kinetics-type-k-type">Define kinetics type (K type)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-reaction-type-r-type">Define reaction type (R type)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Core%20Concepts.html">Core Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Query%20Methods.html">Query Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Plot%20Methods.html">Plot Methods</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SBMLKinetics</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Methods</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Methods.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="methods">
+<span id="id1"></span><h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="define-kinetics-type-k-type">
+<h2>Define kinetics type (K type)<a class="headerlink" href="#define-kinetics-type-k-type" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Zeroth order: the number of species in the kinetic law is zero;</p></li>
+<li><p>Uni-directional mass action: the kinetic law is a single product of terms and all species in the kinetic law are reactants;</p></li>
+<li><p>Uni-term with the moderator: the kinetic law is a single product of terms and NOT UNDR;</p></li>
+<li><p>Bi-directional mass action: the kinetic law is the difference between two products of terms and the first product of terms with all reactants while the second product of terms with all products;</p></li>
+<li><p>Bi-terms with the moderator: the kinetic law is the difference between two products of terms and NOT BIDR;</p></li>
+<li><p>Michaelis-Menten kinetics without explicit enzyme: the kinetic law is in the format of Michaelis-Menten expressions without an explicit enzyme;</p></li>
+<li><p>Michaelis-Menten kinetics with an explicit enzyme: the kinetic law is in the format of Michaelis-Menten expressions with an explicit enzyme;</p></li>
+<li><p>Hill equation: the kinetic law is in the format of Hill equations;</p></li>
+<li><p>Fraction format other than MM, MMCAT and HILL: the kinetic law is in the format of fraction with at least one species in the denominator and NOT MM, MMCAT or HILL;</p></li>
+<li><p>Not classified: not classified kinetics.</p></li>
+</ul>
+<p>To classify the K types, we have considered the following features as kinetics properties (K properties).</p>
+<ul class="simple">
+<li><ol class="loweralpha simple">
+<li><p>the number of species in the kinetic law;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="2">
+<li><p>whether the kinetic law is a single product of terms;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="3">
+<li><p>whether the kinetic law is the difference between two products of terms;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="4">
+<li><p>whether the first (/second) product of terms with all reactants (/products);</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="5">
+<li><p>whether the kinetic law is in the format of Michaelis-Menten expressions with the single reactant in the numerator;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="6">
+<li><p>whether the kinetic law is in the format of Michaelis-Menten expressions with the product of the single reactant and another species in the numerator;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="7">
+<li><p>whether the kinetic law is in the format of Hill equation;</p></li>
+</ol>
+</li>
+<li><ol class="loweralpha simple" start="8">
+<li><p>whether the kinetic law is in the fraction format with at least one species in the denominator.</p></li>
+</ol>
+</li>
+</ul>
+<p>For example, ZERO means there are no species in the kinetic law. Therefore, the number of species
+in the kinetic law should be zero referring to a. In addition, the kinetics of UNDR is a
+single product of terms referring to b and the species in the product of terms are all
+reactants referring to d. See Table below for details about how K properties determine the K types
+in practice.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>K properties</p></th>
+<th class="head"><p>ZERO</p></th>
+<th class="head"><p>UNDR</p></th>
+<th class="head"><p>UNMO</p></th>
+<th class="head"><p>BIDR</p></th>
+<th class="head"><p>BIMO</p></th>
+<th class="head"><p>MM</p></th>
+<th class="head"><p>MMCAT</p></th>
+<th class="head"><p>HILL</p></th>
+<th class="head"><p>FR</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><ol class="loweralpha simple">
+<li></li>
+</ol>
+</td>
+<td><p>= 0</p></td>
+<td><p>&gt; 0</p></td>
+<td><p>&gt; 0</p></td>
+<td><p>&gt; 0</p></td>
+<td><p>&gt; 0</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>1</p></td>
+<td><p>&gt; 0</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="loweralpha simple" start="2">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><ol class="loweralpha simple" start="3">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><ol class="loweralpha simple" start="4">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><ol class="loweralpha simple" start="5">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Yes</p></td>
+<td></td>
+<td></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="loweralpha simple" start="6">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Yes</p></td>
+<td></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><ol class="loweralpha simple" start="7">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="loweralpha simple" start="8">
+<li></li>
+</ol>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="define-reaction-type-r-type">
+<h2>Define reaction type (R type)<a class="headerlink" href="#define-reaction-type-r-type" title="Permalink to this headline">¶</a></h2>
+<p>R type is defined mainly by the structure of reactions. It is a simplification of reaction
+stoichiometry considering the number of reactants and the number of products. For example,
+there are two reactants and one product in the reaction of A + B -&gt; C.
+We define R type quantitatively with a pair of the number of reactants (R = 0, 1, 2, &gt;2) and
+products (P = 0, 1, 2, &gt;2). As a comparison, the stoichiometry matrix indicates reactants and
+products by negative and positive signs respectively.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Core%20Concepts.html" class="btn btn-neutral float-right" title="Core Concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2022, Jin Xu
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
