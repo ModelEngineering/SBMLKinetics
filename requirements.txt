@@ -7,8 +7,7 @@ pylint
 python-libsbml
 pip>20
 sympy
-tellurium
-roadrunner
+tellurium==2.2.4
 urllib3
 seaborn
 xlsxwriter
