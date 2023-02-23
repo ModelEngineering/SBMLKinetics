@@ -1,6 +1,6 @@
 
 # This script was written by Jin Xu and available on Github
-# https://github.com/ModelEngineering/kinetics_validator
+# https://github.com/ModelEngineering/SBMLKinetics
 # This file includes all the functions to do the kinetics classification.
 
 

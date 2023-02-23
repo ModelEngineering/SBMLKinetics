@@ -1,5 +1,5 @@
 # This script was written by Jin Xu and available on Github
-# https://github.com/ModelEngineering/kinetics_validator
+# https://github.com/ModelEngineering/SBMLKinetics
 # This file defines the objects of R_type and K_type.
 
 

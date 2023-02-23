@@ -32,7 +32,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Jin Xu, Joseph Hellerstein',
     author_email='jxu2019@uw.edu',
-    url='https://github.com/ModelEngineering/kinetics_validator',
+    url='https://github.com/ModelEngineering/SBMLKinetics',
     license='MIT License',
     install_requires=[
         'coverage',
