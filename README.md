@@ -1,4 +1,4 @@
-<img src="https://api.travis-ci.org/ModelEngineering/SBMLKinetics.svg?branch=master" width="100"/>
+
 
 [![Coverage](https://codecov.io/gh/ModelEngineering/SBMLKinetics/branch/master/graph/badge.svg)](https://codecov.io/gh/ModelEngineering/SBMLKinetics)
 
