@@ -45,6 +45,7 @@ setup(
         'pip>20',
         'sympy',
         'tellurium',
+        'roadrunner',
         'urllib3',
         'seaborn',
         'xlsxwriter',
