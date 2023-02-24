@@ -44,7 +44,7 @@ setup(
         'python-libsbml',
         'pip>20',
         'sympy',
-        'tellurium==2.2.4',
+        'tellurium!=2.2.7',
         'urllib3',
         'seaborn',
         'xlsxwriter',
