@@ -13,7 +13,7 @@ import numpy as np
 import os
 import libsbml
 import unittest
-import tellurium as te
+#import tellurium as te
 import zipfile
 
 
@@ -57,12 +57,12 @@ class TestSimpleSBML(unittest.TestCase):
     test(self.simple.getSpecies, self.simple.species)
     test(self.simple.getParameter, self.simple.parameters)
 
-  def testConstructWithRoadrunner(self):
-    if IGNORE_TEST:
-      return
-    model = te.loadSBMLModel(helpers.TEST_PATH)
-    simple = helpers.getSimple()
-    self.assertGreater(len(simple.reactions), 0)
+  # def testConstructWithRoadrunner(self):
+  #   if IGNORE_TEST:
+  #     return
+  #   model = te.loadSBMLModel(helpers.TEST_PATH)
+  #   simple = helpers.getSimple()
+  #   self.assertGreater(len(simple.reactions), 0)
     
 
 
