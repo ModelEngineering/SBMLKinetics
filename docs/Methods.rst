@@ -24,16 +24,20 @@ To classify the K types, we have considered the following features as kinetics p
 - a. the number of species in the kinetic law;
 - b. whether the kinetic law is a single product of terms;
 - c. whether the kinetic law is the difference between two products of terms;
-- d. whether the first (/second) product of terms with all reactants (/products);
+- d. whether the first (/second) product of terms contain(s) all reactants (/products);
 - e. whether the kinetic law is in the format of Michaelis-Menten expressions with the single reactant in the numerator;
 - f. whether the kinetic law is in the format of Michaelis-Menten expressions with the product of the single reactant and another species in the numerator;
 - g. whether the kinetic law is in the format of Hill equation;
 - h. whether the kinetic law is in the fraction format with at least one species in the denominator.
 
-For example, ZERO means there are no species in the kinetic law. Therefore, the number of species 
-in the kinetic law should be zero referring to a. In addition, the kinetics of UNDR is a 
-single product of terms referring to b and the species in the product of terms are all 
-reactants referring to d. See Table below for details about how K properties determine the K types
+If the number of species in the kinetic law is zero referring to a, the reaction falls into 
+the K type of ZERO. For example, there are no speices in the kinetic law "cell·k1aa" of the 
+reaction "EmptySet -> Y". Therefore, it falls into the type ZERO.
+If the kinetic law is a single product of terms referring to b and the product of terms contains 
+all reactants referring to d, the reaction falls into the K type of UNDR. For example, there is 
+only one single product of terms in the kinetic law "cell·CP·k9" of the reaction "CP -> C2". 
+In addition, the product of terms contains the reactant "CP". Therefore, it falls into the type UNDR.
+See Table below for details about how K properties determine the K types 
 in practice. 
 
 .. list-table:: 
