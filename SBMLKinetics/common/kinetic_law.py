@@ -1,6 +1,6 @@
 '''Provides Information on SBML Kinetics Laws'''
 # This script was written by Jin Xu and available on Github
-# https://github.com/ModelEngineering/SBMLKinetics
+# https://github.com/SunnyXu/SBMLKinetics
 # This file includes all the functions of types to classify the kinetics.
 
 

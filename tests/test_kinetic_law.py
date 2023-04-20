@@ -2,7 +2,7 @@
 Tests for Kinetic Law
 """
 # This script was written by Jin Xu and available on Github
-# https://github.com/ModelEngineering/SBMLKinetics
+# https://github.com/SunnyXu/SBMLKinetics
 # This file includes all the tests of types to classify the kinetics.
 
 from SBMLKinetics.common import constants as cn
