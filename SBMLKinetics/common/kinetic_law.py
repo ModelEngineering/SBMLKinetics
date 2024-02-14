@@ -28,7 +28,10 @@ class KineticLaw(object):
     # libsbml object for kinetics
     self.libsbml_kinetics = libsbml_kinetics
     # String version of chemical formula
-    self.formula = self.libsbml_kinetics.getFormula()
+    try:
+      self.formula = self.libsbml_kinetics.getFormula()
+    except:
+      self.formula = ""
     # Reaction for the kinetics law
     self.reaction = reaction
     # Parameters and chemical species
