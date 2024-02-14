@@ -37,9 +37,9 @@ class KineticLaw(object):
     # Parameters and chemical species
     # self.symbols = self._getSymbols()
     try:
-        self.symbols = self._getSymbols()
+      self.symbols = self._getSymbols()
     except Exception:
-        self.symbols = []
+      self.symbols = []
     # Expanded kinetic formula (remove embedded functions)
     if function_definitions is None:
       self.expanded_formula = None
