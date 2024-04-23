@@ -31,7 +31,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Jin Xu, Joseph Hellerstein',
-    author_email='jxu2019@uw.edu',
+    author_email='jin.xu.phys@gmail.com',
     url='https://github.com/SunnyXu/SBMLKinetics',
     license='MIT License',
     install_requires=[
